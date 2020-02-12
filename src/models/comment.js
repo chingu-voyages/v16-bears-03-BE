@@ -1,18 +1,13 @@
 //Requires Mongoose
 const mongoose = require("mongoose");
 
-//Creates variables to store Schema
-
-const Schema = mongoose.Schema;
-
 //Creates comment schema
 
-const commentSchema = Schema({
+const commentSchema = new mongoose.Schema({
   userID: { type: Schema.Types.ObjectId, ref: "User" },
-  username: { type: Schema.Types.ObjectId, ref: "User" },
-  text: String,
-  date: { type: Date, default: Date.now() },
-  channel: String
+  username: String,
+  text: { type: String, required: true },
+  date: { type: Date, default: Date.now(), required: true }
 });
 
 //Creates comment model to construct documents for our database
