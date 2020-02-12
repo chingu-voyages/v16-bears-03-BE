@@ -18,9 +18,6 @@ app.get("/", (req, res) => {
   res.send("Hello, boilerplate!");
 });
 
-// Create user route
-app.use('/api/users', require('./routes/users'));
-
 app.use(function errorHandler(error, req, res, next) {
   let response;
   if (NODE_ENV === "production") {
