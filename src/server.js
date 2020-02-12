@@ -12,7 +12,7 @@ function runServer(databaseUrl, port = PORT) {
     // mongoose.set('debug', true);
     mongoose.set("useCreateIndex", true);
     
-    mongoose.connect(databaseUrl, { useNewUrlParser: true}, err => {
+    mongoose.connect(databaseUrl, { useNewUrlParser: true, useUnifiedTopology: true  }, err => {
       if (err) {
         return reject(err);
       }
