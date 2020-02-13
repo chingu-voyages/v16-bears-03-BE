@@ -20,7 +20,8 @@ app.get("/", (req, res) => {
   res.send("Hello, boilerplate!");
 });
 
-app.use('/api/comments', require('./routes/comments)'));
+// Create user route
+app.use('/api/users', require('./routes/users'));
 
 app.use(function errorHandler(error, req, res, next) {
   let response;
