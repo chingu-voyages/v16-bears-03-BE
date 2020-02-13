@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { check, validationResult } = require("express-validator");
 const Comment = require("../models/Comment");
-const comment_controller = require("../controllers/comment-controller");
+const User = require("../models/users");
 
 //Comment Routes
 
@@ -25,41 +25,58 @@ router.get("/", function(req, res) {
 });
 
 /*
-Routes Post requests at "/create" 
+Routes Post requests 
 Verifies userID exists 
 Creates new comment document from request body
 Populates username of comment document
 Sends JSON of comment back in response 
 */
 
-router.post("/", async (req, res) => {
-  const { userID, text, date } = req.body;
+router.post(
+  "/",
+  [
+    check("userID", "no userID")
+      .not()
+      .isEmpty(),
+    check("text", "Comment is empty").not(),
+    isEmpty()
+  ],
+  async (req, res) => {
 
-  const user = await User.findOne({ userID });
-
-  try {
-    if (!user) {
-      return res.status(404).send("User does not exist");
+    //express-validator
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({ errors: errors.array() });
     }
 
-    let new_comment = await Comment.create({
-      userID,
-      text,
-      date
-    });
+    const { userID, text, date } = req.body;
 
-    new_comment = await new_comment
-      .populate("username", userID.username)
-      .execPopulate();
+    const user = await User.findOne({ userID });
 
-    return res.json(new_comment);
-  } catch (error) {
-    return res.status(500).send(error);
+    try {
+      if (!user) {
+        return res.status(404).json({error: "No user Found"});
+      }
+
+      let new_comment = await Comment.create({
+        userID,
+        text,
+        date
+      });
+
+      new_comment = await new_comment
+        .populate("username", userID.username)
+        .execPopulate();
+
+      return res.json(new_comment);
+    } catch (error) {
+      return res.status(500).send(error);
+    }
   }
-});
+);
 
 /*
-Routes DELETE requests at "/delete" 
+Routes DELETE requests 
 Takes request body and saves it as a comment in the database
 Populates username field once saved
 */
@@ -75,7 +92,7 @@ router.delete("/:commentID", (req, res) => {
   });
 });
 
-/*Routes PUT requests at "/edit".
+/*Routes PUT requests 
 Receives an updated comment in request and updates comment in db
 Sends updated comment in response
 */
