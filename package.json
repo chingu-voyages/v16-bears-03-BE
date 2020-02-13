@@ -9,7 +9,7 @@
     "client": "cd client && npm start",
     "start": "node src/server.js",
     "predeploy": "npm audit",
-    "dev":"concurrently \"npm run server\" \"npm run client\" "
+    "dev": "concurrently \"npm run server\" \"npm run client\" "
   },
   "keywords": [],
   "author": "",

@@ -14,51 +14,63 @@ router.get("/", function(req, res) {
   const { userID, username, text, date } = req.body;
 
   Comment.find({
-    $or: [{ userID: userID }, { text: text }, { date: date }]
+    $or: [{ userID }, { username }, { text }, { date }]
   })
     .lean()
     .exec(function(err, comments) {
       if (err) {
         {
-          res.status(500).send(err);
+          return res.status(500).send(err);
         }
       } else {
-        res.send(JSON.stringify(comments));
+        return res.json(comments);
       }
     });
 });
 
 /*
 Routes Post requests at "/create" 
+Verifies userID exists 
 Creates new comment document from request body
 Populates username of comment document
 Sends JSON of comment back in response 
 */
 
-router.post("/create", async function(req, res) {
+router.post("/", async (req, res) => {
   const { userID, text, date } = req.body;
+
+  const user = await User.findOne({ userID });
+
+  
+  if (!user) {
+    return res.status(400).send("User does not exist");
+  }
 
   let new_comment = await Comment.create(
     {
-      "userID": userID,
-      "text": text,
-      "date": date
+      userID,
+      text,
+      date
     },
     function(err) {
       if (err) {
-        res.status(500).send(err);
+        return res.status(500).send(err);
       }
     }
   );
 
-   new_comment.populate("username", userID.username)
-    .execPopulate(function(err, comment) {
+  new_comment = await new_comment
+    .populate("username", userID.username)
+    .execPopulate(function(err) {
       if (err) {
-        res.status(500).send(err);
-      } else {
-        res.send(JSON.stringify(comment));
+       return res.status(500).send(err);
       }
     });
+
+  return res.json(new_comment);
+  
+    
+  
 });
 
 /*
@@ -66,14 +78,14 @@ Routes DELETE requests at "/delete"
 Takes request body and saves it as a comment in the database
 Populates username field once saved
 */
-router.delete("/delete", function(req, res) {
-  const { _id } = req.body;
+router.delete("/:commentID", (req, res) => {
+  const { commentID } = req.params;
 
-  Comment.findByIdAndDelete({ _id: _id }).exec(function(err) {
+  Comment.findByIdAndDelete(commentID).exec(function(err) {
     if (err) {
-      res.status(500).send(err);
+      return res.status(500).send(err);
     } else {
-      res.send("comment deleted");
+      return res.send("comment deleted");
     }
   });
 });
@@ -82,14 +94,17 @@ router.delete("/delete", function(req, res) {
 Receives an updated comment in request and updates comment in db
 Sends updated comment in response
 */
-router.put("/edit", function(req, res) {
-  const { _id, text } = req.body;
+router.put("/:commentID", (req, res) => {
+  const { commentID } = req.params;
+  const { text } = req.body;
 
-  Comment.findByIdAndUpdate(_id, { text: text }).exec(function(err, comment) {
+  Comment.findByIdAndUpdate(commentID, { text }).exec(function(err, comment) {
     if (err) {
-      res.status(500).send(err);
+      return res.status(500).send(err);
     } else {
-      res.send(JSON.stringify(comment));
+      return res.json(comment);
     }
   });
 });
+
+export default router;
