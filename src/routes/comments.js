@@ -8,14 +8,10 @@ const comment_controller = require("../controllers/comment-controller");
 
 /*
 Routes GET requests at root 
-returns a promise of a JSON object containing a list of comments
+returns a promise of a JSON object containing all the comments
 */
 router.get("/", function(req, res) {
-  const { userID, username, text, date } = req.body;
-
-  Comment.find({
-    $or: [{ userID }, { username }, { text }, { date }]
-  })
+  Comment.find()
     .lean()
     .exec(function(err, comments) {
       if (err) {
@@ -41,36 +37,25 @@ router.post("/", async (req, res) => {
 
   const user = await User.findOne({ userID });
 
-  
-  if (!user) {
-    return res.status(400).send("User does not exist");
-  }
+  try {
+    if (!user) {
+      return res.status(404).send("User does not exist");
+    }
 
-  let new_comment = await Comment.create(
-    {
+    let new_comment = await Comment.create({
       userID,
       text,
       date
-    },
-    function(err) {
-      if (err) {
-        return res.status(500).send(err);
-      }
-    }
-  );
-
-  new_comment = await new_comment
-    .populate("username", userID.username)
-    .execPopulate(function(err) {
-      if (err) {
-       return res.status(500).send(err);
-      }
     });
 
-  return res.json(new_comment);
-  
-    
-  
+    new_comment = await new_comment
+      .populate("username", userID.username)
+      .execPopulate();
+
+    return res.json(new_comment);
+  } catch (error) {
+    return res.status(500).send(error);
+  }
 });
 
 /*
@@ -83,7 +68,7 @@ router.delete("/:commentID", (req, res) => {
 
   Comment.findByIdAndDelete(commentID).exec(function(err) {
     if (err) {
-      return res.status(500).send(err);
+      return res.status(404).send(err);
     } else {
       return res.send("comment deleted");
     }
@@ -100,7 +85,7 @@ router.put("/:commentID", (req, res) => {
 
   Comment.findByIdAndUpdate(commentID, { text }).exec(function(err, comment) {
     if (err) {
-      return res.status(500).send(err);
+      return res.status(404).send(err);
     } else {
       return res.json(comment);
     }
