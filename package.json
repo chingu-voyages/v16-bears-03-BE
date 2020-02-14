@@ -9,7 +9,15 @@
     "client": "cd client && npm start",
     "start": "node src/server.js",
     "predeploy": "npm audit",
-    "dev": "concurrently \"npm run server\" \"npm run client\" "
+    "dev": "concurrently \"npm run server\" \"npm run client\" ",
+    "format": "prettier --write \"**/*\"",
+    "format:md": "prettier --write \"**/*.md\""
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm test"
+    }
   },
   "keywords": [],
   "author": "",
@@ -26,8 +34,14 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "husky": "^4.2.3",
+    "lint-staged": "^10.0.7",
     "mocha": "^6.2.2",
     "nodemon": "^1.19.4",
+    "prettier": "1.19.1",
     "supertest": "^4.0.2"
+  },
+  "lint-staged": {
+    "*.{js,css,md}": "prettier --write"
   }
 }
