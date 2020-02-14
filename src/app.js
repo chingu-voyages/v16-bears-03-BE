@@ -4,10 +4,10 @@ const morgan = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
 const { NODE_ENV } = require("./config");
-const commentRouter = require("./routes/comments")
+
 
 const app = express();
-app.use('/api/comment', commentRouter)
+
 
 const morganOption = NODE_ENV === "production" ? "tiny" : "common";
 
@@ -22,6 +22,10 @@ app.get("/", (req, res) => {
 
 // Create user route
 app.use('/api/users', require('./routes/users'));
+
+// Create comment route
+app.use('/api/comments', require('./routes/comments'));
+
 
 app.use(function errorHandler(error, req, res, next) {
   let response;

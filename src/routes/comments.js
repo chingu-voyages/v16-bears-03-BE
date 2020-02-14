@@ -1,14 +1,15 @@
 const express = require("express");
 const router = express.Router();
-const { check, validationResult } = require("express-validator");
+const { body, validationResult } = require("express-validator");
 const Comment = require("../models/Comment");
-const User = require("../models/users");
+const User = require("../models/User");
+const mongoose = require("mongoose");
 
 //Comment Routes
 
 /*
-Routes GET requests at root 
-returns a promise of a JSON object containing all the comments
+Route GET requests at root 
+return response containing all comments in JSON on success
 */
 router.get("/", function(req, res) {
   Comment.find()
@@ -25,24 +26,25 @@ router.get("/", function(req, res) {
 });
 
 /*
-Routes Post requests 
-Verifies userID exists 
-Creates new comment document from request body
-Populates username of comment document
-Sends JSON of comment back in response 
+Route Post requests 
+Validate request body
+Verify userID exists in db
+Create new comment document from request body
+Populate username of comment document
+Return response containing new comment in JSON
 */
 
 router.post(
   "/",
   [
-    check("userID", "no userID")
+    body("userID", "invalid userID").isLength({
+      min: 24
+    }),
+    body("text", "Comment is empty")
       .not()
-      .isEmpty(),
-    check("text", "Comment is empty").not(),
-    isEmpty()
+      .isEmpty()
   ],
   async (req, res) => {
-
     //express-validator
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -51,11 +53,12 @@ router.post(
 
     const { userID, text, date } = req.body;
 
-    const user = await User.findOne({ userID });
+    const _id = new mongoose.Types.ObjectId(userID);
 
     try {
+      const user = await User.findOne({ _id });
       if (!user) {
-        return res.status(404).json({error: "No user Found"});
+        return res.status(404).json({ error: "No user Found" });
       }
 
       let new_comment = await Comment.create({
@@ -76,12 +79,13 @@ router.post(
 );
 
 /*
-Routes DELETE requests 
-Takes request body and saves it as a comment in the database
-Populates username field once saved
+Route DELETE requests 
+Create mongoose ObjectId from parameter
+Find and delete comment in db using findByIdAndDelete()
+Return confirmation message on success
 */
 router.delete("/:commentID", (req, res) => {
-  const { commentID } = req.params;
+  const commentID = new mongoose.Types.ObjectId(req.params.commentID);
 
   Comment.findByIdAndDelete(commentID).exec(function(err) {
     if (err) {
@@ -92,21 +96,27 @@ router.delete("/:commentID", (req, res) => {
   });
 });
 
-/*Routes PUT requests 
-Receives an updated comment in request and updates comment in db
-Sends updated comment in response
+/*
+Route PUT requests 
+Create mongoose ObjectId from parameter
+Find and update comment in db using findByIdAndUpdate()
+Return response containing updated comment in JSON on succes
 */
 router.put("/:commentID", (req, res) => {
-  const { commentID } = req.params;
+  const commentID = new mongoose.Types.ObjectId(req.params.commentID);
   const { text } = req.body;
 
-  Comment.findByIdAndUpdate(commentID, { text }).exec(function(err, comment) {
+  Comment.findByIdAndUpdate(
+    commentID,
+    { text },
+    { upsert: true, new: true }
+  ).exec(function(err, comment) {
     if (err) {
-      return res.status(404).send(err);
+      return res.status(404).json(req.body);
     } else {
       return res.json(comment);
     }
   });
 });
 
-export default router;
+module.exports = router;
