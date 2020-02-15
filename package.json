@@ -22,7 +22,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "lerna run test"
+      "pre-push": "git fetch && git rebase origin/dev && lerna run test"
     }
   },
   "keywords": [],
