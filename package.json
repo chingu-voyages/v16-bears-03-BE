@@ -21,7 +21,7 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "git fetch && git rebase origin/dev && npm test && cd client && npm test"
+      "pre-push": "git fetch && git rebase origin/dev && npm test"
     }
   },
   "keywords": [],
