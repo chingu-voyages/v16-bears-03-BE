@@ -11,12 +11,18 @@
     "predeploy": "npm audit",
     "dev": "concurrently \"npm run server\" \"npm run client\" ",
     "format": "prettier --write \"**/*\"",
-    "format:md": "prettier --write \"**/*.md\""
+    "format:md": "prettier --write \"**/*.md\"",
+    "lint:scss": "stylelint 'src/**/*.scss' --syntax scss",
+    "lint:scss:fix": "stylelint 'src/**/*.scss' --syntax scss --fix",
+    "lint:js": "eslint . --ext .js,.jsx",
+    "lint:js:fix": "npm run eslint . --ext .js,.jsx --fix",
+    "lint-staged": "lint-staged",
+    "lerna:lint:js": "lerna run lint:js:fix"
   },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "npm test"
+      "pre-push": "lerna run test"
     }
   },
   "keywords": [],
@@ -35,6 +41,7 @@
   "devDependencies": {
     "chai": "^4.2.0",
     "husky": "^4.2.3",
+    "lerna": "^3.20.2",
     "lint-staged": "^10.0.7",
     "mocha": "^6.2.2",
     "nodemon": "^1.19.4",
@@ -42,6 +49,9 @@
     "supertest": "^4.0.2"
   },
   "lint-staged": {
-    "*.{js,css,md}": "prettier --write"
+    "packages/**/*.{js,jsx}": [
+      "npm run --silent lerna:lint:js",
+      "git add"
+    ]
   }
 }
