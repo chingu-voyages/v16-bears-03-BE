@@ -9,19 +9,28 @@ const mongoose = require("mongoose");
 
 /*
 Route GET requests at root 
-return response containing all comments in JSON on success
+Populate comment document with user document referenced in "user" field
+return response containing array of all comments in JSON on success
 */
-router.get("/", function(req, res) {
+router.get("/", async (req, res) => {
   Comment.find()
-    .lean()
-    .exec(function(err, comments) {
-      if (err) {
-        {
-          return res.status(500).send(err);
-        }
-      } else {
-        return res.json(comments);
-      }
+    .populate("user")
+    .exec()
+    .then(comments =>
+      res.json(
+        comments.map(comment => {
+          return {
+            _id: comment._id,
+            user: comment.user._id,
+            name: comment.user.name,
+            text: comment.text,
+            date: comment.date
+          };
+        })
+      )
+    )
+    .catch(err => {
+      res.status(500).json({ error: "Something went wrong" });
     });
 });
 
@@ -30,16 +39,15 @@ Route Post requests
 Validate request body
 Verify userID exists in db
 Create new comment document from request body
-Populate username of comment document
 Return response containing new comment in JSON
 */
 
 router.post(
   "/",
   [
-    body("userID", "invalid userID").isLength({
-      min: 24
-    }),
+    body("user", "invalid userID")
+      .not()
+      .isEmpty(),
     body("text", "Comment is empty")
       .not()
       .isEmpty()
@@ -51,29 +59,22 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const { userID, text, date } = req.body;
-
-    const _id = new mongoose.Types.ObjectId(userID);
+    const { user, text, date } = req.body;
 
     try {
-      const user = await User.findOne({ _id });
-      if (!user) {
-        return res.status(404).json({ error: "No user Found" });
-      }
+      const _id = new mongoose.Types.ObjectId(user);
+
+      await User.findById(_id);
 
       let new_comment = await Comment.create({
-        userID,
+        user: _id,
         text,
         date
       });
 
-      new_comment = await new_comment
-        .populate("username", userID.username)
-        .execPopulate();
-
       return res.json(new_comment);
     } catch (error) {
-      return res.status(500).send(error);
+      return res.status(500).json({ error: "Something went Wrong" });
     }
   }
 );
@@ -84,16 +85,16 @@ Create mongoose ObjectId from parameter
 Find and delete comment in db using findByIdAndDelete()
 Return confirmation message on success
 */
-router.delete("/:commentID", (req, res) => {
-  const commentID = new mongoose.Types.ObjectId(req.params.commentID);
-
-  Comment.findByIdAndDelete(commentID).exec(function(err) {
-    if (err) {
-      return res.status(404).send(err);
-    } else {
-      return res.send("comment deleted");
-    }
-  });
+router.delete("/:commentID", async (req, res) => {
+  Comment.findByIdAndDelete(new mongoose.Types.ObjectId(req.params.commentID))
+    .then(deleted => {
+      if (deleted) {
+        res.json({ deleted: deleted });
+      } else {
+        return Promise.reject("Error: Comment not found");
+      }
+    })
+    .catch(err => res.status(404).json(err));
 });
 
 /*
@@ -102,21 +103,16 @@ Create mongoose ObjectId from parameter
 Find and update comment in db using findByIdAndUpdate()
 Return response containing updated comment in JSON on succes
 */
-router.put("/:commentID", (req, res) => {
-  const commentID = new mongoose.Types.ObjectId(req.params.commentID);
+router.put("/:commentID", async (req, res) => {
   const { text } = req.body;
 
   Comment.findByIdAndUpdate(
-    commentID,
+    new mongoose.Types.ObjectId(req.params.commentID),
     { text },
-    { upsert: true, new: true }
-  ).exec(function(err, comment) {
-    if (err) {
-      return res.status(404).json(req.body);
-    } else {
-      return res.json(comment);
-    }
-  });
+    { upsert: false, new: true }
+  )
+    .then(comment => res.json(comment))
+    .catch(err => res.status(404).json({ error: "Something went wrong" }));
 });
 
 module.exports = router;
