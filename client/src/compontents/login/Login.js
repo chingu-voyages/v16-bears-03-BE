@@ -5,17 +5,26 @@ import Label from './../../theme/label';
 import Input from './../../theme/input';
 import Button from './../../theme/button';
 
-function Login() {
-    const [name, setName] = useState('');
-    const [password, setPassword] = useState('');
-
-    const H2=styled.h2`
+const H2=styled.h2`
     text-align:center;`
+
+    const P=styled.p`
+    margin-left:25%;
+    font-size:12px;   
+    &:hover{
+        text-decoration-color:gray;
+        text-decoration:underline;
+    }
+    `
 
     const FormWrap=styled.div`
     margin-top:30px;
     margin-left:25%;
     `
+
+function Login(props) {
+    const [name, setName] = useState('');
+    const [password, setPassword] = useState('');
 
     return (
 
@@ -28,6 +37,8 @@ function Login() {
                 <Input type="text" name="password" id="password" required></Input><br />
                 <Button background="purple" type="submit">Sign In</Button>
                 </FormWrap>
+                <hr />
+                <P onClick={props.registerForm}>Register</P>
 
             </Form>
 
