@@ -39,20 +39,16 @@ function App() {
   const [status,setStatus]=useState(false);
   const [newUser,setNewUser]=useState(false);
 
-  function registerForm(){
-    setNewUser(true)
-  }
-
-  function loginForm(){
-    setNewUser(false)
-  }
+function set_new_user(value){
+  setNewUser(value)
+}
 
   return (
     <AppWrap>
       <H1>Slack Clone</H1>
       <GlobalStyles />
       <FormWrapper>
-        {!newUser?<Login registerForm={registerForm} />:<Register loginForm={loginForm}/>}        
+        {!newUser?<Login  set_new_user={set_new_user}   />:<Register set_new_user={set_new_user} />}        
       </FormWrapper>      
     </AppWrap>
   );
