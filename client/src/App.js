@@ -24,8 +24,6 @@ margin-top:50px;
 margin-left:10%;
 `
 const FormWrapper=styled.div`
-display:flex;
-flex-wrap:wrap;
 margin:80px auto auto auto;
 width:70%;
 @media (max-width:480px){
