@@ -26,7 +26,6 @@ const FormWrap = styled.div`
 
 function Register(props) {
 
-
     return (
 
         <Form form="register">

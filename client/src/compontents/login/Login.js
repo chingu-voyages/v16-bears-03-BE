@@ -14,6 +14,7 @@ const H2=styled.h2`
     &:hover{
         text-decoration-color:gray;
         text-decoration:underline;
+        cursor:pointer;
     }
     `
 
