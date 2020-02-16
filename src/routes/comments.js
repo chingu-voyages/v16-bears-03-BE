@@ -21,8 +21,7 @@ router.get("/", async (req, res) => {
         comments.map(comment => {
           return {
             _id: comment._id,
-            user: comment.user._id,
-            name: comment.user.name,
+            user: comment.user.name,
             text: comment.text,
             date: comment.date
           };
