@@ -27,7 +27,7 @@ const FormWrapper=styled.div`
 margin:80px auto auto auto;
 width:70%;
 @media (max-width:480px){
-  width:90%;
+  width:100%;
 }
 `
 
