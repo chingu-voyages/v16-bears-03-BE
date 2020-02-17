@@ -9,7 +9,19 @@
     "client": "cd client && npm start",
     "start": "node src/server.js",
     "predeploy": "npm audit",
-    "dev": "concurrently \"npm run server\" \"npm run client\" "
+    "dev": "concurrently \"npm run server\" \"npm run client\" ",
+    "format": "prettier --write \"**/*\"",
+    "format:md": "prettier --write \"**/*.md\"",
+    "lint:js": "eslint . --ext .js,.jsx",
+    "lint:js:fix": "npm run eslint . --ext .js,.jsx --fix",
+    "lint-staged": "lint-staged",
+    "lerna:lint:js": "lerna run lint:js:fix"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "git fetch && git rebase origin/dev && lerna run test"
+    }
   },
   "keywords": [],
   "author": "",
@@ -26,8 +38,18 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "husky": "^4.2.3",
+    "lerna": "^3.20.2",
+    "lint-staged": "^10.0.7",
     "mocha": "^6.2.2",
     "nodemon": "^1.19.4",
+    "prettier": "1.19.1",
     "supertest": "^4.0.2"
+  },
+  "lint-staged": {
+    "packages/**/*.{js,jsx}": [
+      "npm run --silent lerna:lint:js",
+      "git add"
+    ]
   }
 }
