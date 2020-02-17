@@ -28,8 +28,8 @@ app.get("/", (req, res) => {
   res.send("Hello, boilerplate!");
 });
 
-// User can loggin
-app.use("/api/auth", authRouter);
+// User can log in
+app.use("/api/users/register", authRouter);
 
 // Create user route
 app.use("/api/users", userRouter);
