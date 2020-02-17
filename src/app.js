@@ -29,7 +29,7 @@ app.get("/", (req, res) => {
 });
 
 // User can log in
-app.use("/api/users/register", authRouter);
+app.use("/api/users/login", authRouter);
 
 // Create user route
 app.use("/api/users", userRouter);
