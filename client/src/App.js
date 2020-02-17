@@ -1,7 +1,7 @@
 import React,{useState} from 'react';
 import styled,{createGlobalStyle} from 'styled-components';
-import Login from './compontents/login/Login';
-import Register from './compontents/register/Register';
+import Login from './components/login/Login';
+import Register from './components/register/Register';
 
 const GlobalStyles=createGlobalStyle`
 body{
