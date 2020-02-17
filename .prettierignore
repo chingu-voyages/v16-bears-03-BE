@@ -1,0 +1,6 @@
+package.json
+.next
+.github
+bin
+node_modules
+jest-coverage
