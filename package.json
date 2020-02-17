@@ -12,8 +12,6 @@
     "dev": "concurrently \"npm run server\" \"npm run client\" ",
     "format": "prettier --write \"**/*\"",
     "format:md": "prettier --write \"**/*.md\"",
-    "lint:scss": "stylelint 'src/**/*.scss' --syntax scss",
-    "lint:scss:fix": "stylelint 'src/**/*.scss' --syntax scss --fix",
     "lint:js": "eslint . --ext .js,.jsx",
     "lint:js:fix": "npm run eslint . --ext .js,.jsx --fix",
     "lint-staged": "lint-staged",
