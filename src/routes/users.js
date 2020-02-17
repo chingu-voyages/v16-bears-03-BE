@@ -10,7 +10,7 @@ const User = require("../models/User");
  */
 
 router.post(
-  "/",
+  "/register",
   [
     check("name", "Name is required")
       .not()
