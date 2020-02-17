@@ -4,6 +4,10 @@ const morgan = require("morgan");
 const cors = require("cors");
 const helmet = require("helmet");
 const { NODE_ENV } = require("./config");
+const passport = require("passport");
+
+const { router: authRouter, localStrategy, jwtStrategy } = require("./auth");
+const userRouter = require("./routes/users");
 
 const app = express();
 
@@ -14,12 +18,21 @@ app.use(helmet());
 app.use(cors());
 app.use(express.json());
 
+passport.use(localStrategy);
+passport.use(jwtStrategy);
+
+app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
+
+const jwtAuth = passport.authenticate("jwt", { session: false });
+
 app.get("/", (req, res) => {
   res.send("Hello, boilerplate!");
 });
 
-// Create user route
-app.use('/api/users', require('./routes/users'));
+app.get("/api/protected", jwtAuth, (req, res) => {
+  return res.json({ data: "rosebud" });
+});
 
 app.use(function errorHandler(error, req, res, next) {
   let response;
