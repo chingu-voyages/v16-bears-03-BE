@@ -29,6 +29,9 @@ height:400px;
 margin:0 auto;
 border-radius:5%;
 border:1px solid rgb(44, 8, 82); 
+@media (max-width:480px){
+  width:300px;
+};
 ${(props) => {
         if (props.form === "register") {
             return `background:rgb(44, 8, 82);
