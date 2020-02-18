@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import Login from './components/login/Login';
 import Register from './components/register/Register';
+import axios from 'axios';
 
 const GlobalStyles = createGlobalStyle`
 body{
