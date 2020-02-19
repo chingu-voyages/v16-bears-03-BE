@@ -1,35 +1,36 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const { body, validationResult } = require("express-validator");
-const Comment = require("../models/Comment");
-const User = require("../models/User");
-const mongoose = require("mongoose");
+const { body, validationResult } = require('express-validator');
+const Comment = require('../models/Comment');
+const User = require('../models/User');
+const passport = require('passport');
 
-//Comment Routes
+const jwtAuth = passport.authenticate('jwt', { session: false });
 
 /*
 Route GET requests at root 
 Populate comment document with user document referenced in "user" field
 return response containing array of all comments in JSON on success
 */
-router.get("/", async (req, res) => {
+router.get('/', jwtAuth, (req, res) => {
   Comment.find()
-    .populate("user")
-    .exec()
+    .populate('user')
     .then(comments =>
       res.json(
         comments.map(comment => {
+          const { _id, text, date } = comment;
           return {
-            _id: comment._id,
-            user: comment.user.name,
-            text: comment.text,
-            date: comment.date
+            _id,
+            text,
+            date,
+            ...(comment.user ? { user: comment.user.name } : { user: 'Deleted User' }),
           };
-        })
-      )
+        }),
+      ),
     )
     .catch(err => {
-      res.status(500).json({ error: "Something went wrong" });
+      console.log(err);
+      res.status(500).json({ error: 'Something went wrong' });
     });
 });
 
@@ -42,40 +43,64 @@ Return response containing new comment in JSON
 */
 
 router.post(
-  "/",
+  '/',
   [
-    body("user", "invalid userID")
+    body('user', 'must provide user id')
       .not()
       .isEmpty(),
-    body("text", "Comment is empty")
+    body('text', 'Comment is empty')
       .not()
-      .isEmpty()
+      .isEmpty(),
   ],
-  async (req, res) => {
+  jwtAuth,
+  (req, res) => {
     //express-validator
     const errors = validationResult(req);
+
     if (!errors.isEmpty()) {
       return res.status(400).json({ errors: errors.array() });
     }
 
+    if (!(req.user._id === req.body.user)) {
+      return res
+        .status(400)
+        .json({ message: "User ID in body and user ID associated with token don't match" });
+    }
+
     const { user, text, date } = req.body;
 
-    try {
-      const _id = new mongoose.Types.ObjectId(user);
-
-      await User.findById(_id);
-
-      let new_comment = await Comment.create({
-        user: _id,
-        text,
-        date
+    User.findById(user)
+      .then(user => {
+        if (user) {
+          Comment.create({
+            user: user._id,
+            text,
+            date,
+          })
+            .then(comment => {
+              const { date, _id, text } = comment;
+              res.status(201).json({
+                date,
+                _id,
+                text,
+                user: user.name,
+              });
+            })
+            .catch(err => {
+              console.log(err);
+              res.status(500).json({ message: 'Something went wrong' });
+            });
+        } else {
+          const message = 'User not found';
+          console.log(message);
+          return res.status(400).send(message);
+        }
+      })
+      .catch(err => {
+        console.log(err);
+        res.status(500).json({ message: 'Something went wrong' });
       });
-
-      return res.json(new_comment);
-    } catch (error) {
-      return res.status(500).json({ error: "Something went Wrong" });
-    }
-  }
+  },
 );
 
 /*
@@ -84,34 +109,54 @@ Create mongoose ObjectId from parameter
 Find and delete comment in db using findByIdAndDelete()
 Return confirmation message on success
 */
-router.delete("/:commentID", async (req, res) => {
-  Comment.findByIdAndDelete(new mongoose.Types.ObjectId(req.params.commentID))
-    .then(deleted => {
-      if (deleted) {
-        res.json({ deleted: deleted });
-      } else {
-        return Promise.reject("Error: Comment not found");
+router.delete('/:commentID', jwtAuth, (req, res) => {
+  Comment.findById(req.params.commentID)
+    .then(comment => {
+      if (!comment) {
+        return res.status(404).json({ Error: 'Comment not found' });
       }
+
+      if (req.user._id !== comment.user.toString()) {
+        return res.status(403).json({ message: "This isn't your comment" });
+      }
+
+      comment.remove().then(comment => res.status(204).end());
     })
-    .catch(err => res.status(404).json(err));
+    .catch(err => res.status(500).json('Something went wrong'));
 });
 
 /*
-Route PUT requests 
+Route PATCH requests 
 Create mongoose ObjectId from parameter
 Find and update comment in db using findByIdAndUpdate()
 Return response containing updated comment in JSON on succes
 */
-router.put("/:commentID", async (req, res) => {
-  const { text } = req.body;
+router.patch('/:commentID', jwtAuth, (req, res) => {
+  const { text: textToUpdate } = req.body;
+  const { name } = req.user;
 
-  Comment.findByIdAndUpdate(
-    new mongoose.Types.ObjectId(req.params.commentID),
-    { text },
-    { upsert: false, new: true }
-  )
-    .then(comment => res.json(comment))
-    .catch(err => res.status(404).json({ error: "Something went wrong" }));
+  Comment.findById(req.params.commentID)
+    .then(comment => {
+      if (!comment) {
+        return res.status(404).json({ Error: 'Comment not found' });
+      }
+
+      if (req.user._id !== comment.user.toString()) {
+        return res.status(403).json({ message: "This isn't your comment" });
+      }
+
+      comment.text = textToUpdate;
+
+      comment.save().then(comment => {
+        const { text, date } = comment;
+        res.status(201).json({
+          text,
+          date,
+          user: name,
+        });
+      });
+    })
+    .catch(err => res.status(500).json('Something went wrong'));
 });
 
 module.exports = router;
