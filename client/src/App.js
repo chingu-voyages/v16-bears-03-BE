@@ -66,7 +66,7 @@ function App() {
     <div>
       <GlobalStyles />
       {/* TODO: If the user is not logged in, show login / register */}
-      {loggedUser ? (
+      {!loggedUser ? (
         <AppWrap>
           <H1>Slack Clone</H1>
           <FormWrapper>
