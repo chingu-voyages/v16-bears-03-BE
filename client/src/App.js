@@ -4,11 +4,27 @@ import Login from './components/login/Login';
 import Register from './components/register/Register';
 import axios from 'axios';
 
+import AppContainer from './components/main/AppContainer';
+
 const GlobalStyles = createGlobalStyle`
-body{
-  font-family: 'Arimo', sans-serif;
-}
+  html {
+    box-sizing: border-box;
+    font-size: 10px;
+  }
+  *, *:before, *:after {
+    box-sizing: inherit;
+  }
+  body {
+    font-family: 'Arimo', sans-serif;
+    padding: 0;
+    margin: 0;
+  }
+  a {
+    text-decoration: none;
+  }
+  button {  font-family: 'Arimo', sans-serif; }
 `;
+
 axios.defaults.baseURL = 'http://localhost:8000';
 
 const AppWrap = styled.div`
@@ -37,22 +53,34 @@ function App() {
   const [status, setStatus] = useState(false);
   const [newUser, setNewUser] = useState(false);
 
+  /**
+   * TODO: Get if the user is logged in
+   */
+  let loggedUser;
+
   function set_new_user(value) {
     setNewUser(value);
   }
 
   return (
-    <AppWrap>
-      <H1>Slack Clone</H1>
+    <div>
       <GlobalStyles />
-      <FormWrapper>
-        {!newUser ? (
-          <Login set_new_user={set_new_user} />
-        ) : (
-          <Register set_new_user={set_new_user} />
-        )}
-      </FormWrapper>
-    </AppWrap>
+      {/* TODO: If the user is not logged in, show login / register */}
+      {loggedUser ? (
+        <AppWrap>
+          <H1>Slack Clone</H1>
+          <FormWrapper>
+            {!newUser ? (
+              <Login set_new_user={set_new_user} />
+            ) : (
+              <Register set_new_user={set_new_user} />
+            )}
+          </FormWrapper>
+        </AppWrap>
+      ) : (
+        <AppContainer />
+      )}
+    </div>
   );
 }
 
