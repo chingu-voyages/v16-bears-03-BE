@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import Login from './components/login/Login';
 import Register from './components/register/Register';
+import Message from './components/message/Message';
 import axios from 'axios';
 
 import AppContainer from './components/main/AppContainer';
@@ -52,6 +53,7 @@ function App() {
   const [name, setName] = useState('');
   const [loggedUser, setLoggedUser] = useState(false);
   const [newUser, setNewUser] = useState(false);
+  const [message, setMessage] = useState([]);
 
   /**
    * TODO: Get if the user is logged in
@@ -60,7 +62,18 @@ function App() {
     setNewUser(value);
   }
 
+  function set_message(msg) {
+    //msg is an array;
+    setMessage(msg);
+
+    //message will be disappeared after 5 seconds
+    setTimeout(() => {
+      setMessage([]);
+    }, 5000);
+  }
+
   return (
+<<<<<<< HEAD
     <div>
       <GlobalStyles />
       {/* TODO: If the user is not logged in, show login / register */}
@@ -79,6 +92,20 @@ function App() {
         <AppContainer />
       )}
     </div>
+=======
+    <AppWrap>
+      <H1>Slack Clone</H1>
+      <Message message={message} />
+      <GlobalStyles />
+      <FormWrapper>
+        {!newUser ? (
+          <Login set_new_user={set_new_user} set_message={set_message} />
+        ) : (
+          <Register set_new_user={set_new_user} set_message={set_message} />
+        )}
+      </FormWrapper>
+    </AppWrap>
+>>>>>>> add message component and update register component
   );
 }
 
