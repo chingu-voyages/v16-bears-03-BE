@@ -61,7 +61,9 @@ function Register(props) {
             type="text"
             name="name"
             id="name"
+            pattern=".{6,15}"
             onChange={e => setName(e.target.value)}
+            title="6 to 15 characters is required."
             required
           />
           <br />
@@ -70,10 +72,12 @@ function Register(props) {
           Password:
           <br />
           <Input
-            type="text"
+            type="password"
             name="password"
             id="password"
+            pattern=".{6,}"
             onChange={e => setPassword(e.target.value)}
+            title="6 characters or more is required."
             required
           />
           <br />
@@ -81,10 +85,11 @@ function Register(props) {
         <Label htmlFor="email">Email:</Label>
         <br />
         <Input
-          type="text"
+          type="email"
           name="email"
           id="email"
           onChange={e => setEmail(e.target.value)}
+          title="Please enter an email address."
           required
         />
         <br />
