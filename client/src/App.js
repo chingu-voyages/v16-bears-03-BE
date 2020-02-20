@@ -40,6 +40,7 @@ const H1 = styled.h1`
   color: white;
   margin-top: 50px;
   margin-left: 10%;
+  font-size: 3rem;
 `;
 const FormWrapper = styled.div`
   margin: 80px auto auto auto;
@@ -66,25 +67,38 @@ function App() {
     //msg is an array;
     setMessage(msg);
 
-    //message will be disappeared after 5 seconds
+    //message will be disappeared after 7 seconds
     setTimeout(() => {
       setMessage([]);
-    }, 5000);
+    }, 7000);
+  }
+
+  function set_LoggedUser(value) {
+    setLoggedUser(value);
   }
 
   return (
-<<<<<<< HEAD
     <div>
       <GlobalStyles />
       {/* TODO: If the user is not logged in, show login / register */}
       {!loggedUser ? (
         <AppWrap>
           <H1>Slack Clone</H1>
+          <Message message={message} />
+          <GlobalStyles />
           <FormWrapper>
             {!newUser ? (
-              <Login set_new_user={set_new_user} />
+              <Login
+                set_new_user={set_new_user}
+                set_message={set_message}
+                set_LoggedUser={set_LoggedUser}
+              />
             ) : (
-              <Register set_new_user={set_new_user} />
+              <Register
+                set_new_user={set_new_user}
+                set_message={set_message}
+                set_LoggedUser={set_LoggedUser}
+              />
             )}
           </FormWrapper>
         </AppWrap>
@@ -92,20 +106,7 @@ function App() {
         <AppContainer />
       )}
     </div>
-=======
-    <AppWrap>
-      <H1>Slack Clone</H1>
-      <Message message={message} />
-      <GlobalStyles />
-      <FormWrapper>
-        {!newUser ? (
-          <Login set_new_user={set_new_user} set_message={set_message} />
-        ) : (
-          <Register set_new_user={set_new_user} set_message={set_message} />
-        )}
-      </FormWrapper>
-    </AppWrap>
->>>>>>> add message component and update register component
+
   );
 }
 

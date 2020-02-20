@@ -15,6 +15,7 @@ const P = styled.p`
 
 const H2 = styled.h2`
   text-align: center;
+  font-size: 2.2rem;
 `;
 
 const FormWrap = styled.div`
@@ -34,15 +35,17 @@ function Register(props) {
     axios
       .post('/api/users/register', newUser)
       .then(res => {
-        console.log(res.data);
         const user = { password, email };
         axios
           .post('/api/users/login', user)
-          .then(res => console.log(res.data))
+          .then(res => {
+            //received token
+            console.log(res.data);
+            props.set_LoggedUser(true);
+          })
           .catch(err => props.set_message(err.response.data.errors));
       })
       .catch(err => {
-        console.log(err.response.data.errors);
         props.set_message(err.response.data.errors);
       });
   }
