@@ -1,24 +1,19 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
-require('dotenv').config();
 
-const url = process.env.Comment_Route;
+const jwt =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVlNGRlZWYyOWI3MDk0MmUzODU5MTg2MyIsIm5hbWUiOiJtZXJyeSIsImVtYWlsIjoibWVycnlAeWFob28uY29tIiwicGFzc3dvcmQiOiIkMmEkMTAkUTY0LkdENzFBODBWdS9kV3dxY25lLno0ZDJzUTlhenV0Vm9Hby5QRkk2SmpKdE5TYkVEL2kiLCJfX3YiOjB9LCJpYXQiOjE1ODIyMTIxNTcsImV4cCI6MTU4MjgxNjk1Nywic3ViIjoibWVycnkifQ.Tz9qXAZdn6pPLotAFuUTkiND0AvRbR1E0wObvmF3Xy4';
+const config = { headers: { authorization: `bearer ${jwt}` } };
 
-const CreateComment = (props) => {
+const CreateComment = props => {
   const [comment, setComment] = useState('');
-  const {setNewComment} = props;
-  console.log(setNewComment)
 
   const handleSubmit = text => {
     axios
-      .post('http://localhost:8000/api/comments', { user: '5e4c0f6933560b0ce8f7d0b9', text: text })
-      .then( res => 
-        console.log(res)
-      )
-      .catch(err =>
-        console.log(err)
-      );
+      .post('/api/comments', { user: '5e4deef29b70942e38591863', text: text }, config)
+      .then(res => console.log(res))
+      .catch(err => console.error(err));
 
     setComment('');
   };
@@ -27,7 +22,6 @@ const CreateComment = (props) => {
     if (event.keyCode === 13) {
       event.preventDefault();
       handleSubmit(comment);
-      setNewComment(comment)
     }
   };
 
@@ -38,7 +32,7 @@ const CreateComment = (props) => {
   return (
     <Wrapper>
       <Form onSubmit={handleSubmit}>
-        <TextField onChange={handleOnChange} onKeyDown={handleEnter} value={comment} setNewComment ={setNewComment}></TextField>
+        <TextField onChange={handleOnChange} onKeyDown={handleEnter} value={comment}></TextField>
       </Form>
     </Wrapper>
   );
@@ -50,7 +44,8 @@ const Wrapper = styled.div`
 `;
 
 const Form = styled.form`
-width: 100%;`
+  width: 100%;
+`;
 
 const TextField = styled.textarea`
   padding: 0.25rem;
@@ -68,25 +63,22 @@ const TextField = styled.textarea`
   width: 90%;
   border-radius: 5px;
 
-&::-webkit-scrollbar-track{
-    
-  -webkit-appearance: none;
-  border: 0.01rem solid transparent;
-  background-clip: content-box;
+  &::-webkit-scrollbar-track {
+    -webkit-appearance: none;
+    border: 0.01rem solid transparent;
+    background-clip: content-box;
+  }
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 0.4rem;
+    height: 0;
+  }
 
-}
-&::-webkit-scrollbar {
-    
--webkit-appearance: none;
-  width: 0.4rem;
-  height: 0;
-}
-
-&::-webkit-scrollbar-thumb {
--webkit-appearance: none;
-  border: 1px solid #2C0852;
-  background: #2C0852;
-}`
-
+  &::-webkit-scrollbar-thumb {
+    -webkit-appearance: none;
+    border: 1px solid #2c0852;
+    background: #2c0852;
+  }
+`;
 
 export default CreateComment;

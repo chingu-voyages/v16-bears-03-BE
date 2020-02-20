@@ -3,19 +3,21 @@ import axios from 'axios';
 import styled from 'styled-components';
 import Comment from './Comment';
 
+const jwt =
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVlNGRlZWYyOWI3MDk0MmUzODU5MTg2MyIsIm5hbWUiOiJtZXJyeSIsImVtYWlsIjoibWVycnlAeWFob28uY29tIiwicGFzc3dvcmQiOiIkMmEkMTAkUTY0LkdENzFBODBWdS9kV3dxY25lLno0ZDJzUTlhenV0Vm9Hby5QRkk2SmpKdE5TYkVEL2kiLCJfX3YiOjB9LCJpYXQiOjE1ODIyMTIxNTcsImV4cCI6MTU4MjgxNjk1Nywic3ViIjoibWVycnkifQ.Tz9qXAZdn6pPLotAFuUTkiND0AvRbR1E0wObvmF3Xy4';
+const config = { headers: { authorization: `bearer ${jwt}` } };
+
 const ViewComments = props => {
-    const{newComment} = props
   const [allComments, setAllComments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  
 
   useEffect(() => {
     const getComments = async () => {
       setIsLoading(true);
 
       try {
-        const result = await axios.get('http://localhost:8000/api/comments');
+        const result = await axios.get('/api/comments', config);
 
         setAllComments(result.data);
 
@@ -26,7 +28,7 @@ const ViewComments = props => {
       }
     };
     getComments();
-  }, [newComment]);
+  }, []);
 
   return (
     <Wrapper>
