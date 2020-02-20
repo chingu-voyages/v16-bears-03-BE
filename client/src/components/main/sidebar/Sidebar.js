@@ -22,9 +22,22 @@ function Sidebar() {
     const getUsers = async () => {
       setIsLoading(true);
 
+      /**
+       * TODO: Remove jwt and config variables after login implementation
+       *
+       * Temporary ardcoded token for this user
+       * "email": "idgfgno@yahoo.com",
+       * "password": "123456"
+       */
+      const jwt =
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVlNGUwMWVlZTczMmVmMDE3Y2E0ZjhhMCIsIm5hbWUiOiJJZ05vIiwiZW1haWwiOiJpZGdmZ25vQHlhaG9vLmNvbSIsInBhc3N3b3JkIjoiJDJhJDEwJEM3MXQ0SS9rLjlKOWZ6VnhOaXk1LmV6bnF2ZlhvWlJRNG82dVZCc1YvWEdsSllQZElFUERxIiwiX192IjowfSwiaWF0IjoxNTgyMTcxNDA4LCJleHAiOjE1ODI3NzYyMDgsInN1YiI6IklnTm8ifQ.ZcSy5dBxBuFBSv5KLfQvs622ay1sPnrau3RPkzu3Qbg';
+      const config = {
+        headers: { authorization: `bearer ${jwt}` },
+      };
+
       try {
         // Get all users
-        const result = await axios('/api/users');
+        const result = await axios('/api/users', config);
 
         setAllUsers(result.data);
         setIsLoading(false);
