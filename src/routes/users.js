@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const User = require('../models/User');
+const passport = require('passport');
+const jwtAuth = passport.authenticate('jwt', { session: false });
 
 /**
  * @route POST api/users
@@ -62,7 +64,7 @@ router.post(
  * @access Public
  * @desc Get all users
  */
-router.get('/', async (req, res) => {
+router.get('/', jwtAuth, async (req, res) => {
   try {
     const allUsers = await User.find();
     let users;
