@@ -3,7 +3,6 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Comment = require('../models/Comment');
 const User = require('../models/User');
-const passport = require('passport');
 
 /*
 Route GET requests at root 
@@ -118,7 +117,7 @@ router.delete('/:commentID', (req, res) => {
         return res.status(403).json({ message: "This isn't your comment" });
       }
 
-      comment.remove().then(comment => res.status(204).end());
+      comment.remove().then(() => res.status(204).end());
     })
     .catch(err => res.status(500).json('Something went wrong'));
 });
