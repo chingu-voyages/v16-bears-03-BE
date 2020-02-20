@@ -34,13 +34,19 @@ function Login(props) {
         <Label htmlFor="email">
           Email:
           <br />
-          <Input type="text" name="email" id="email" required />
+          <Input
+            type="email"
+            name="email"
+            id="email"
+            title="Please enter an email address."
+            required
+          />
           <br />
         </Label>
         <Label htmlFor="password">
           Password:
           <br />
-          <Input type="text" name="password" id="password" required />
+          <Input type="password" name="password" id="password" required />
           <br />
         </Label>
         <Button background="purple" type="submit">
