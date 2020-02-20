@@ -50,7 +50,7 @@ const FormWrapper = styled.div`
 
 function App() {
   const [name, setName] = useState('');
-  const [loggedUser, setLoggedUser] = useState(false);
+  const [loggedUser, setLoggedUser] = useState(true);
   const [newUser, setNewUser] = useState(false);
 
   /**

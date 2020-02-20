@@ -32,7 +32,7 @@ const CreateComment = props => {
   return (
     <Wrapper>
       <Form onSubmit={handleSubmit}>
-        <TextField onChange={handleOnChange} onKeyDown={handleEnter} value={comment}></TextField>
+        <TextField onChange={handleOnChange} onKeyDown={handleEnter} value={comment}/>
       </Form>
     </Wrapper>
   );
@@ -49,19 +49,17 @@ const Form = styled.form`
 
 const TextField = styled.textarea`
   padding: 0.25rem;
-  border: 0.05rem solid #241722;
+  border: 0.1rem solid #241722;
   resize: none;
   outline: none;
   scrollbar-color: #241722 white;
   scrollbar-width: thin;
   border-radius: 0.15rem;
-  font-size: 0.75rem;
-  margin-left: 1rem;
-  margin-right: 1rem;
-  margin-top: 0.2rem;
-  height: 60px;
-  width: 90%;
-  border-radius: 5px;
+  font-size: 1.6rem;
+  height: 6rem;
+  width: 98%;
+  border-radius: .5rem;
+  margin-left: .5rem;
 
   &::-webkit-scrollbar-track {
     -webkit-appearance: none;
@@ -76,7 +74,7 @@ const TextField = styled.textarea`
 
   &::-webkit-scrollbar-thumb {
     -webkit-appearance: none;
-    border: 1px solid #2c0852;
+    border: .1rem solid #2c0852;
     background: #2c0852;
   }
 `;

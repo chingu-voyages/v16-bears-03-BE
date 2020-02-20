@@ -49,8 +49,11 @@ const Wrapper = styled.div`
   display: grid;
   grid-auto-rows: auto;
   grid-auto-columns: auto;
-  grid-row-gap: 7px;
+  grid-row-gap: .7rem;
   overflow: auto;
+  border-top: .1rem solid black;
+  padding: 1rem .5rem;
+  
 
   &::-webkit-scrollbar-track {
     -webkit-appearance: none;
@@ -65,7 +68,7 @@ const Wrapper = styled.div`
 
   &::-webkit-scrollbar-thumb {
     -webkit-appearance: none;
-    border: 1px solid #2c0852;
+    border: .1rem solid #2c0852;
     background: #2c0852;
   }
 `;

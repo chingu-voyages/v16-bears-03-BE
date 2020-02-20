@@ -8,18 +8,18 @@ const ChatWindow = props => {
 
   return (
     <Container>
-      <ViewComments></ViewComments>
-      <CreateComment></CreateComment>
+      <ViewComments/>
+      <CreateComment/>
     </Container>
   );
 };
 
 const Container = styled.div`
-  width: 800px;
+  width: 100%;
   display: grid;
-  grid-template-rows: 4fr 1fr;
+  grid-template-rows: repeat(2, auto);
   grid-template-columns: 1fr;
-  font-family: 'Arimo', sans-serif;
+  align-self: flex-end;
 `;
 
 export default ChatWindow;
