@@ -50,14 +50,12 @@ const FormWrapper = styled.div`
 
 function App() {
   const [name, setName] = useState('');
-  const [status, setStatus] = useState(false);
+  const [loggedUser, setLoggedUser] = useState(false);
   const [newUser, setNewUser] = useState(false);
 
   /**
    * TODO: Get if the user is logged in
    */
-  let loggedUser;
-
   function set_new_user(value) {
     setNewUser(value);
   }
