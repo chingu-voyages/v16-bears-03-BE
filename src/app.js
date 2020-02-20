@@ -24,11 +24,8 @@ passport.use(jwtStrategy);
 
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
-// Require a valid JWT token for all api endpoints
-app.all('/api/*', jwtAuth);
-
 // Protected test endpoint
-app.get('/api/protected', (req, res) => {
+app.get('/api/protected', jwtAuth, (req, res) => {
   return res.json({ data: 'rosebud' });
 });
 
@@ -39,7 +36,7 @@ app.use('/api/users/login', authRouter);
 app.use('/api/users', userRouter);
 
 // Comment route
-app.use('/api/comments', commentRouter);
+app.use('/api/comments', jwtAuth, commentRouter);
 
 app.use(function errorHandler(error, req, res, next) {
   let response;
