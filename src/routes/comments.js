@@ -5,14 +5,12 @@ const Comment = require('../models/Comment');
 const User = require('../models/User');
 const passport = require('passport');
 
-const jwtAuth = passport.authenticate('jwt', { session: false });
-
 /*
 Route GET requests at root 
 Populate comment document with user document referenced in "user" field
 return response containing array of all comments in JSON on success
 */
-router.get('/', jwtAuth, (req, res) => {
+router.get('/', (req, res) => {
   Comment.find()
     .populate('user')
     .then(comments =>
@@ -52,7 +50,7 @@ router.post(
       .not()
       .isEmpty(),
   ],
-  jwtAuth,
+
   (req, res) => {
     //express-validator
     const errors = validationResult(req);
@@ -109,7 +107,7 @@ Create mongoose ObjectId from parameter
 Find and delete comment in db using findByIdAndDelete()
 Return confirmation message on success
 */
-router.delete('/:commentID', jwtAuth, (req, res) => {
+router.delete('/:commentID', (req, res) => {
   Comment.findById(req.params.commentID)
     .then(comment => {
       if (!comment) {
@@ -131,7 +129,7 @@ Create mongoose ObjectId from parameter
 Find and update comment in db using findByIdAndUpdate()
 Return response containing updated comment in JSON on succes
 */
-router.patch('/:commentID', jwtAuth, (req, res) => {
+router.patch('/:commentID', (req, res) => {
   const { text: textToUpdate } = req.body;
   const { name } = req.user;
 
