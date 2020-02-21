@@ -59,7 +59,6 @@ function Register(props) {
           <br />
           <Input
             type="text"
-            name="name"
             id="name"
             pattern=".{6,15}"
             onChange={e => setName(e.target.value)}
@@ -68,12 +67,12 @@ function Register(props) {
           />
           <br />
         </Label>
+
         <Label htmlFor="password">
           Password:
           <br />
           <Input
             type="password"
-            name="password"
             id="password"
             pattern=".{6,}"
             onChange={e => setPassword(e.target.value)}
@@ -82,17 +81,20 @@ function Register(props) {
           />
           <br />
         </Label>
-        <Label htmlFor="email">Email:</Label>
-        <br />
-        <Input
-          type="email"
-          name="email"
-          id="email"
-          onChange={e => setEmail(e.target.value)}
-          title="Please enter an email address."
-          required
-        />
-        <br />
+
+        <Label htmlFor="email">
+          Email:
+          <br />
+          <Input
+            type="email"
+            id="email"
+            onChange={e => setEmail(e.target.value)}
+            title="Please enter an email address."
+            required
+          />
+          <br />
+        </Label>
+
         <Button type="submit">Sign Up</Button>
       </FormWrap>
       <hr />
