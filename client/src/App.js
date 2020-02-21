@@ -8,6 +8,7 @@ import AppContainer from './components/main/AppContainer';
 
 const GlobalStyles = createGlobalStyle`
   html {
+    height: 100%;
     box-sizing: border-box;
     font-size: 10px;
   }
@@ -15,9 +16,19 @@ const GlobalStyles = createGlobalStyle`
     box-sizing: inherit;
   }
   body {
+    height: 100%;
     font-family: 'Arimo', sans-serif;
     padding: 0;
     margin: 0;
+  }
+  #root {
+    height: 100%;
+    margin: 0;
+
+    &>div{
+    height: 100%;
+    margin: 0;
+        }
   }
   a {
     text-decoration: none;
@@ -50,7 +61,7 @@ const FormWrapper = styled.div`
 
 function App() {
   const [name, setName] = useState('');
-  const [loggedUser, setLoggedUser] = useState(true);
+  const [loggedUser, setLoggedUser] = useState(false);
   const [newUser, setNewUser] = useState(false);
 
   /**

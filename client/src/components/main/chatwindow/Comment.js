@@ -1,16 +1,36 @@
 import React from 'react';
 import styled from 'styled-components';
 
+//Receives UTC date and returns time and date in local twelve-hour time
+
+const formatDate = date => {
+  const dateInLocalTime = new Date(date);
+
+  const hours =
+    dateInLocalTime.getHours() > 12 ? dateInLocalTime.getHours() - 12 : dateInLocalTime.getHours();
+  const minutes =
+    dateInLocalTime.getMinutes() < 10
+      ? `0${dateInLocalTime.getMinutes()}`
+      : dateInLocalTime.getMinutes();
+
+  if (dateInLocalTime.getHours() > 12 && dateInLocalTime.getHours() < 24) {
+    return `${dateInLocalTime.toDateString()} ${hours}:${minutes}pm`;
+  } else {
+    return `${dateInLocalTime.toDateString()} ${hours}:${minutes}am`;
+  }
+};
+
+// Comment Component
+
 const Comment = props => {
   const { name, date, text } = props;
-  const dateInLocalTime = new Date(date).toString();
 
   return (
     <Wrapper>
       <Avatar />
       <UserDateWrapper>
         <Name>{name}</Name>
-        <Time>{dateInLocalTime}</Time>
+        <Time>{formatDate(date)}</Time>
       </UserDateWrapper>
       <Text>{text}</Text>
     </Wrapper>
@@ -22,7 +42,9 @@ const Wrapper = styled.div`
   grid-template-rows: auto 1fr;
   grid-template-columns: auto 1fr;
   grid-column-gap: 1rem;
-  width: 80%;
+  width: 100%;
+  flex-basis: 100%;
+  margin-bottom: 0.5rem;
 `;
 
 const Avatar = styled.div`
@@ -57,7 +79,7 @@ const Text = styled.div`
   font-size: 1.5rem;
   font-weight: 400;
   color: #1c1d1c;
-  margin-top: .5rem;
+  margin-top: 0.5rem;
 `;
 
 export default Comment;

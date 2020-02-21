@@ -8,6 +8,7 @@ const Aside = styled.aside`
   background: rgb(44, 8, 82);
   color: white;
   font-size: 2rem;
+  grid-area: 1/1/3/2;
   li {
     list-style-type: none;
   }

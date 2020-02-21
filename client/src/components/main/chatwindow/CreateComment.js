@@ -1,18 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
 
-const jwt =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVlNGRlZWYyOWI3MDk0MmUzODU5MTg2MyIsIm5hbWUiOiJtZXJyeSIsImVtYWlsIjoibWVycnlAeWFob28uY29tIiwicGFzc3dvcmQiOiIkMmEkMTAkUTY0LkdENzFBODBWdS9kV3dxY25lLno0ZDJzUTlhenV0Vm9Hby5QRkk2SmpKdE5TYkVEL2kiLCJfX3YiOjB9LCJpYXQiOjE1ODIyMTIxNTcsImV4cCI6MTU4MjgxNjk1Nywic3ViIjoibWVycnkifQ.Tz9qXAZdn6pPLotAFuUTkiND0AvRbR1E0wObvmF3Xy4';
+/*
+Posts new comment to database when enter key pressed
+Set newComment to true using Parent's dispatch
+*/
+
+const jwt = '';
 const config = { headers: { authorization: `bearer ${jwt}` } };
 
 const CreateComment = props => {
+  const { setNewComment } = props;
   const [comment, setComment] = useState('');
 
   const handleSubmit = text => {
     axios
       .post('/api/comments', { user: '5e4deef29b70942e38591863', text: text }, config)
-      .then(res => console.log(res))
       .catch(err => console.error(err));
 
     setComment('');
@@ -22,6 +26,7 @@ const CreateComment = props => {
     if (event.keyCode === 13) {
       event.preventDefault();
       handleSubmit(comment);
+      setNewComment(true);
     }
   };
 
@@ -32,7 +37,7 @@ const CreateComment = props => {
   return (
     <Wrapper>
       <Form onSubmit={handleSubmit}>
-        <TextField onChange={handleOnChange} onKeyDown={handleEnter} value={comment}/>
+        <TextField onChange={handleOnChange} onKeyDown={handleEnter} value={comment} />
       </Form>
     </Wrapper>
   );
@@ -58,8 +63,8 @@ const TextField = styled.textarea`
   font-size: 1.6rem;
   height: 6rem;
   width: 98%;
-  border-radius: .5rem;
-  margin-left: .5rem;
+  border-radius: 0.5rem;
+  margin-left: 0.5rem;
 
   &::-webkit-scrollbar-track {
     -webkit-appearance: none;
@@ -74,7 +79,7 @@ const TextField = styled.textarea`
 
   &::-webkit-scrollbar-thumb {
     -webkit-appearance: none;
-    border: .1rem solid #2c0852;
+    border: 0.1rem solid #2c0852;
     background: #2c0852;
   }
 `;

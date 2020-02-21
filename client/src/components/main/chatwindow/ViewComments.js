@@ -1,13 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import Comment from './Comment';
 
-const jwt =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVlNGRlZWYyOWI3MDk0MmUzODU5MTg2MyIsIm5hbWUiOiJtZXJyeSIsImVtYWlsIjoibWVycnlAeWFob28uY29tIiwicGFzc3dvcmQiOiIkMmEkMTAkUTY0LkdENzFBODBWdS9kV3dxY25lLno0ZDJzUTlhenV0Vm9Hby5QRkk2SmpKdE5TYkVEL2kiLCJfX3YiOjB9LCJpYXQiOjE1ODIyMTIxNTcsImV4cCI6MTU4MjgxNjk1Nywic3ViIjoibWVycnkifQ.Tz9qXAZdn6pPLotAFuUTkiND0AvRbR1E0wObvmF3Xy4';
+/*
+Requests all comments from database and renders to screen when component first loads and newComment prop changes
+*/
+
+const jwt = '';
 const config = { headers: { authorization: `bearer ${jwt}` } };
 
+//keeps overflow scroll at the bottom of container
+
+const scrollToBottom = ref => {
+  ref.current.scrollTop = ref.current.scrollHeight;
+};
+
 const ViewComments = props => {
+  const refContainer = useRef(null);
+
+  const { newComment, setNewComment } = props;
   const [allComments, setAllComments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -20,18 +32,23 @@ const ViewComments = props => {
         const result = await axios.get('/api/comments', config);
 
         setAllComments(result.data);
-
+        setNewComment(false);
         setIsLoading(false);
       } catch (error) {
         console.error('Unable to get comments', error);
         setIsError(true);
       }
     };
+
     getComments();
-  }, []);
+  }, [setNewComment, newComment]);
+
+  useEffect(() => {
+    scrollToBottom(refContainer);
+  });
 
   return (
-    <Wrapper>
+    <Wrapper ref={refContainer}>
       {isLoading && <div>Loading...</div>}
       {isError ? (
         <div>"Something Went Wrong"</div>
@@ -46,14 +63,11 @@ const ViewComments = props => {
 
 const Wrapper = styled.div`
   width: 100%;
-  display: grid;
-  grid-auto-rows: auto;
-  grid-auto-columns: auto;
-  grid-row-gap: .7rem;
+  display: flex;
+  flex-flow: row wrap;
   overflow: auto;
-  border-top: .1rem solid black;
-  padding: 1rem .5rem;
-  
+  border-top: 0.1rem solid black;
+  padding: 1rem 0.5rem;
 
   &::-webkit-scrollbar-track {
     -webkit-appearance: none;
@@ -62,14 +76,15 @@ const Wrapper = styled.div`
   }
   &::-webkit-scrollbar {
     -webkit-appearance: none;
-    width: 0.4rem;
+    width: 0.7rem;
     height: 0;
   }
 
   &::-webkit-scrollbar-thumb {
     -webkit-appearance: none;
-    border: .1rem solid #2c0852;
-    background: #2c0852;
+    border: 0.1rem solid #919191;
+    background: #919191;
+    border-radius: 1rem;
   }
 `;
 
