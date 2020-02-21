@@ -38,7 +38,7 @@ function Login(props) {
         const jwt = res.data.authToken;
         const user = res.data.user; //including id,name and email
         {
-          /* pass user info to user component and app compoent*/
+          /* Todo: pass user info to user component and app compoent*/
         }
         props.set_LoggedUser(true);
       })
