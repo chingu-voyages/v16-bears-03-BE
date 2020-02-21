@@ -37,6 +37,9 @@ function Login(props) {
       .then(res => {
         const jwt = res.data.authToken;
         const user = res.data.user; //including id,name and email
+        {
+          /* pass user info to user component and app compoent*/
+        }
         props.set_LoggedUser(true);
       })
       .catch(err => props.set_message([{ msg: 'Incorrect email or password' }]));
