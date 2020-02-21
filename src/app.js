@@ -1,18 +1,18 @@
-require("dotenv").config();
-const express = require("express");
-const morgan = require("morgan");
-const cors = require("cors");
-const helmet = require("helmet");
-const { NODE_ENV } = require("./config");
-const passport = require("passport");
+require('dotenv').config();
+const express = require('express');
+const morgan = require('morgan');
+const cors = require('cors');
+const helmet = require('helmet');
+const { NODE_ENV } = require('./config');
+const passport = require('passport');
 
-const { router: authRouter, localStrategy, jwtStrategy } = require("./auth");
-const userRouter = require("./routes/users");
-const commentRouter = require("./routes/comments");
+const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
+const userRouter = require('./routes/users');
+const commentRouter = require('./routes/comments');
 
 const app = express();
 
-const morganOption = NODE_ENV === "production" ? "tiny" : "common";
+const morganOption = NODE_ENV === 'production' ? 'tiny' : 'common';
 
 app.use(morgan(morganOption));
 app.use(helmet());
@@ -22,29 +22,26 @@ app.use(express.json());
 passport.use(localStrategy);
 passport.use(jwtStrategy);
 
-const jwtAuth = passport.authenticate("jwt", { session: false });
+const jwtAuth = passport.authenticate('jwt', { session: false });
 
-app.get("/", (req, res) => {
-  res.send("Hello, boilerplate!");
+// Protected test endpoint
+app.get('/api/protected', jwtAuth, (req, res) => {
+  return res.json({ data: 'rosebud' });
 });
 
-// User can log in
-app.use("/api/users/login", authRouter);
+// Route for user authentication when logging in
+app.use('/api/users/login', authRouter);
 
-// Create user route
-app.use("/api/users", userRouter);
+// User route
+app.use('/api/users', userRouter);
 
-// Create comment route
-app.use("/api/comments", commentRouter);
-
-app.get("/api/protected", jwtAuth, (req, res) => {
-  return res.json({ data: "rosebud" });
-});
+// Comment route
+app.use('/api/comments', jwtAuth, commentRouter);
 
 app.use(function errorHandler(error, req, res, next) {
   let response;
-  if (NODE_ENV === "production") {
-    response = { error: { message: "server error" } };
+  if (NODE_ENV === 'production') {
+    response = { error: { message: 'server error' } };
   } else {
     console.error(error);
     response = { message: error.message, error };
