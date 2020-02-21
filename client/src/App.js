@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import Login from './components/login/Login';
 import Register from './components/register/Register';
+import Message from './components/message/Message';
 import axios from 'axios';
 
 import AppContainer from './components/main/AppContainer';
@@ -39,6 +40,7 @@ const H1 = styled.h1`
   color: white;
   margin-top: 50px;
   margin-left: 10%;
+  font-size: 3rem;
 `;
 const FormWrapper = styled.div`
   margin: 80px auto auto auto;
@@ -52,12 +54,27 @@ function App() {
   const [name, setName] = useState('');
   const [loggedUser, setLoggedUser] = useState(false);
   const [newUser, setNewUser] = useState(false);
+  const [message, setMessage] = useState([]);
 
   /**
    * TODO: Get if the user is logged in
    */
   function set_new_user(value) {
     setNewUser(value);
+  }
+
+  function set_message(msg) {
+    //msg is an array;
+    setMessage(msg);
+
+    //message will be disappeared after 7 seconds
+    setTimeout(() => {
+      setMessage([]);
+    }, 7000);
+  }
+
+  function set_LoggedUser(value) {
+    setLoggedUser(value);
   }
 
   return (
@@ -67,11 +84,21 @@ function App() {
       {!loggedUser ? (
         <AppWrap>
           <H1>Slack Clone</H1>
+          <Message message={message} />
+          <GlobalStyles />
           <FormWrapper>
             {!newUser ? (
-              <Login set_new_user={set_new_user} />
+              <Login
+                set_new_user={set_new_user}
+                set_message={set_message}
+                set_LoggedUser={set_LoggedUser}
+              />
             ) : (
-              <Register set_new_user={set_new_user} />
+              <Register
+                set_new_user={set_new_user}
+                set_message={set_message}
+                set_LoggedUser={set_LoggedUser}
+              />
             )}
           </FormWrapper>
         </AppWrap>
@@ -79,6 +106,7 @@ function App() {
         <AppContainer />
       )}
     </div>
+
   );
 }
 
