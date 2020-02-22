@@ -1,21 +1,43 @@
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
 import styled from 'styled-components';
 import CreateComment from './CreateComment';
 import ViewComments from './ViewComments';
+export const ChatContext = React.createContext(null);
 
 /*
 Parent component
-State is a boolean that changes when a new comment has been created and rendered
+State is an object that changes when comment is posted to db
 */
 
+//For testing, set jwt, user and loggedUser(in App.js)
+const jwt = '';
+
+const initialState = {
+  user: '',
+  config: { headers: { authorization: `bearer ${jwt}` } },
+  previousComment: '',
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'POST_TO_DB':
+      return { ...state, previousComment: action.text };
+
+    default:
+      return initialState;
+  }
+};
+
 const ChatWindow = props => {
-  const [newComment, setNewComment] = useState(false);
+  const [chatState, dispatch] = useReducer(reducer, initialState);
 
   return (
-    <Container>
-      <ViewComments newComment={newComment} setNewComment={setNewComment} />
-      <CreateComment setNewComment={setNewComment} />
-    </Container>
+    <ChatContext.Provider value={{ chatState, dispatch }}>
+      <Container>
+        <ViewComments />
+        <CreateComment />
+      </Container>
+    </ChatContext.Provider>
   );
 };
 

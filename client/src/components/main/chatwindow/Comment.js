@@ -44,7 +44,7 @@ const Wrapper = styled.div`
   grid-column-gap: 1rem;
   width: 100%;
   flex-basis: 100%;
-  margin-bottom: 0.5rem;
+  margin-bottom: 1rem;
 `;
 
 const Avatar = styled.div`
@@ -53,7 +53,7 @@ const Avatar = styled.div`
   border-radius: 50%;
   width: 3.6rem;
   height: 3.6rem;
-  align-self: center;
+  align-self: flex-start;
   margin-right: 0.25rem;
 `;
 

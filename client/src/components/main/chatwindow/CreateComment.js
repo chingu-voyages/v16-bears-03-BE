@@ -1,22 +1,22 @@
-import React, { useState} from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import axios from 'axios';
+import { ChatContext } from './ChatWindow';
 
 /*
-Posts new comment to database when enter key pressed
-Set newComment to true using Parent's dispatch
+Posts new comment to database when enter key pressed and triggers re-render by updating ChatWindow state
 */
 
-const jwt = '';
-const config = { headers: { authorization: `bearer ${jwt}` } };
-
 const CreateComment = props => {
-  const { setNewComment } = props;
   const [comment, setComment] = useState('');
+  const { chatState, dispatch } = useContext(ChatContext);
 
   const handleSubmit = text => {
     axios
-      .post('/api/comments', { user: '5e4deef29b70942e38591863', text: text }, config)
+      .post('/api/comments', { user: chatState.user, text: text }, chatState.config)
+      .then(() => {
+        dispatch({ type: 'POST_TO_DB', text });
+      })
       .catch(err => console.error(err));
 
     setComment('');
@@ -26,7 +26,6 @@ const CreateComment = props => {
     if (event.keyCode === 13) {
       event.preventDefault();
       handleSubmit(comment);
-      setNewComment(true);
     }
   };
 

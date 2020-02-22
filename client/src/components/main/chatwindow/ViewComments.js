@@ -1,14 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import Comment from './Comment';
+import { ChatContext } from './ChatWindow';
 
 /*
-Requests all comments from database and renders to screen when component first loads and newComment prop changes
+Requests all comments from database and renders to screen when component first loads and ChatWindow state changes
 */
-
-const jwt = '';
-const config = { headers: { authorization: `bearer ${jwt}` } };
 
 //keeps overflow scroll at the bottom of container
 
@@ -18,21 +16,19 @@ const scrollToBottom = ref => {
 
 const ViewComments = props => {
   const refContainer = useRef(null);
-
-  const { newComment, setNewComment } = props;
   const [allComments, setAllComments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const { chatState } = useContext(ChatContext);
 
+  //triggers when ChatWindow state changes
   useEffect(() => {
     const getComments = async () => {
       setIsLoading(true);
 
       try {
-        const result = await axios.get('/api/comments', config);
-
+        const result = await axios.get('/api/comments', chatState.config);
         setAllComments(result.data);
-        setNewComment(false);
         setIsLoading(false);
       } catch (error) {
         console.error('Unable to get comments', error);
@@ -41,7 +37,7 @@ const ViewComments = props => {
     };
 
     getComments();
-  }, [setNewComment, newComment]);
+  }, [chatState]);
 
   useEffect(() => {
     scrollToBottom(refContainer);
@@ -54,7 +50,14 @@ const ViewComments = props => {
         <div>"Something Went Wrong"</div>
       ) : (
         allComments.map(comment => {
-          return <Comment name={comment.user} date={comment.date} text={comment.text}></Comment>;
+          return (
+            <Comment
+              key={comment._id}
+              name={comment.user}
+              date={comment.date}
+              text={comment.text}
+            ></Comment>
+          );
         })
       )}
     </Wrapper>
