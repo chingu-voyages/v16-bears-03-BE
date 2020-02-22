@@ -58,7 +58,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    if (!(req.user._id === req.body.user)) {
+    if (!(req.user._id.toString() === req.body.user)) {
       return res
         .status(400)
         .json({ message: "User ID in body and user ID associated with token don't match" });
