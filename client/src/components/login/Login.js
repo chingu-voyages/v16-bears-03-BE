@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { Form, Label, Input, Button } from './../../theme/theme.js';
+import axios from 'axios';
 
 const H2 = styled.h2`
   text-align: center;
@@ -27,8 +28,25 @@ function Login(props) {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
 
+  function submitLoginForm(e) {
+    e.preventDefault();
+    const loginUser = { email, password };
+
+    axios
+      .post('api/users/login', loginUser)
+      .then(res => {
+        const jwt = res.data.authToken;
+        const user = res.data.user; //including id,name and email
+        {
+          /* Todo: pass user info to user component and app compoent*/
+        }
+        props.set_LoggedUser(true);
+      })
+      .catch(err => props.set_message([{ msg: 'Incorrect email or password' }]));
+  }
+
   return (
-    <Form background="white">
+    <Form background="white" onSubmit={submitLoginForm}>
       <H2>Login </H2>
       <FormWrap>
         <Label htmlFor="email">
@@ -36,19 +54,28 @@ function Login(props) {
           <br />
           <Input
             type="email"
-            name="email"
             id="email"
             title="Please enter an email address."
+            onChange={e => setEmail(e.target.value)}
             required
           />
           <br />
         </Label>
+
         <Label htmlFor="password">
           Password:
           <br />
-          <Input type="password" name="password" id="password" required />
+          <Input
+            type="password"
+            id="password"
+            pattern=".{6,}"
+            title="6 characters or more is required."
+            onChange={e => setPassword(e.target.value)}
+            required
+          />
           <br />
         </Label>
+
         <Button background="purple" type="submit">
           Sign In
         </Button>
