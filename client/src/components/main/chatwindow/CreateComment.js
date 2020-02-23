@@ -9,11 +9,20 @@ Posts new comment to database when enter key pressed and triggers re-render by u
 
 const CreateComment = props => {
   const [comment, setComment] = useState('');
-  const { chatState, dispatch } = useContext(ChatContext);
+  const { dispatch } = useContext(ChatContext);
 
   const handleSubmit = text => {
     axios
-      .post('/api/comments', { user: chatState.user, text: text }, chatState.config)
+      .post(
+        '/api/comments',
+        {
+          user: localStorage.userId,
+          text: text,
+        },
+        {
+          headers: { authorization: `bearer ${localStorage.authToken}` },
+        },
+      )
       .then(() => {
         dispatch({ type: 'POST_TO_DB', text });
       })

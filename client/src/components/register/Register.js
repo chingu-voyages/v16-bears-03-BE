@@ -39,9 +39,10 @@ function Register(props) {
         axios
           .post('/api/users/login', user)
           .then(res => {
-            //received token
-            console.log(res.data);
-            props.set_LoggedUser(true);
+            localStorage.setItem('authToken', res.data.authToken);
+            localStorage.setItem('userId', res.data.user.id);
+            localStorage.setItem('loggedIn', true);
+            props.onChange(Math.random());
           })
           .catch(err => props.set_message(err.response.data.errors));
       })
