@@ -8,7 +8,6 @@ yarn-error.log*
 # Generated files
 coverage
 .cache/
-public
 storybook-static/
 
 # Dependency directories
