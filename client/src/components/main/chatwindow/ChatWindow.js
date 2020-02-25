@@ -10,10 +10,11 @@ State is an object that changes when comment is posted to db
 */
 
 //For testing, set jwt, user and loggedUser(in App.js)
-const jwt = '';
+const jwt = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjVlNTA1NTUzOWJmZTIwNTQyOGFhYzNjOSIsIm5hbWUiOiJuZXdfdXNlciJ9LCJpYXQiOjE1ODIzMjMwMjcsImV4cCI6MTU4MjkyNzgyNywic3ViIjoibmV3X3VzZXIifQ.tKM9qHnX540ZV-emKwfk55rkiu2oYNP7bZ3AnVXI2XU'
+
 
 const initialState = {
-  user: '',
+  user: '5e5055539bfe205428aac3c9',
   config: { headers: { authorization: `bearer ${jwt}` } },
   previousComment: '',
 };
