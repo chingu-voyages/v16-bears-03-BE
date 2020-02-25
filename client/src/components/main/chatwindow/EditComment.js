@@ -18,7 +18,7 @@ const EditComment = props => {
         `/api/comments/${_id}`,
         {
           user: localStorage.userId,
-          text: text.replace(/\(edited\)$/, '') + ' (edited)',
+          text: text,
         },
         {
           headers: { authorization: `bearer ${localStorage.authToken}` },

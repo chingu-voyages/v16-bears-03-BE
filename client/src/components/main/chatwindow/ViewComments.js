@@ -60,6 +60,7 @@ const ViewComments = props => {
               name={comment.user}
               date={comment.date}
               text={comment.text}
+              isEdited = {comment.isEdited}
               user_id={comment.user_id}
             ></Comment>
           );

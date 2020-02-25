@@ -47,14 +47,15 @@ const useHideDropdown = ref => {
 // Comment Component
 
 const Comment = props => {
-  const { id, name, date, text, user_id, userImage } = props;
+  const { id, name, date, text, user_id, userImage, isEdited } = props;
   const dropdown = useRef(null);
   const [toggleMenu, setMenu] = useState(false);
   const [editComment, setEditComment] = useState(false);
   const [isHidden, setIsHidden] = useHideDropdown(dropdown);
+  const [deleteComment, setDeleteComment] = useState(false)
 
   const handleHover = e => {
-    setMenu(!toggleMenu);
+    setMenu(!toggleMenu)
   };
 
   const handleMenu = e => {
@@ -65,6 +66,8 @@ const Comment = props => {
     setEditComment(!editComment);
     setIsHidden(!isHidden);
   };
+
+  
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -92,15 +95,18 @@ const Comment = props => {
           {text}
         </StyledEditComment>
       ) : (
-        <Text>{text}</Text>
+        <Text><span>{text}</span>
+        <Edited isEdited = {isEdited}>(edited)</Edited>
+        </Text> 
       )}
+      
       <Menu show={toggleMenu} onClick={handleMenu}>
         ...
       </Menu>
       {!isHidden && (
         <List ref={dropdown}>
           <Button onClick={handleEditComment}>Edit Comment</Button>
-          <Button>Delete Comment</Button>
+          <Button onClick = {()=> setDeleteComment(true)}>Delete Comment</Button>
         </List>
       )}
     </Wrapper>
@@ -150,12 +156,23 @@ const Time = styled.div`
 `;
 
 const Text = styled.div`
-  grid-area: 2/2/3/3;
+  grid-area: 2/2/3/4;
   font-size: 1.5rem;
   font-weight: 400;
   color: #1c1d1c;
   margin-top: 0.5rem;
+  
+  & > span:first-child{
+    padding-top: 1rem;
+    padding-right: 1rem;
+    display: inline-block;
+  }
+
 `;
+
+const Edited = styled.span`
+display: ${props => (props.isEdited ? 'inline' : 'none') };
+font-size: 1rem;`;
 
 const StyledEditComment = styled(EditComment)`
   grid-area: 2/2/3/3;
@@ -189,6 +206,15 @@ const List = styled.div`
   display: flex;
   flex-flow: column wrap;
   border: 0.1rem solid black;
+  grid-area: 2/3/2/4;
+  position: relative;
+  height: 10rem;
+  z-index: 0;
+  background-color: #F9F9F9;
+  border-radius: .5rem;
 `;
+
+
+
 
 export default Comment;

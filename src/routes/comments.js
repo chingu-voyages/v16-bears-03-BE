@@ -15,11 +15,12 @@ router.get('/', (req, res) => {
     .then(comments =>
       res.json(
         comments.map(comment => {
-          const { _id, text, date } = comment;
+          const { _id, text, date, isEdited } = comment;
           return {
             _id,
             text,
             date,
+            isEdited,
             ...(comment.user ? { user: comment.user.name } : { user: 'Deleted User' }),
             ...(comment.user ? { user_id: comment.user._id } : { user_id: null }),
             ...(comment.user ? { userImage: comment.user.userImage } : { userImage: null }),
@@ -140,11 +141,13 @@ router.patch('/:commentID', (req, res) => {
         return res.status(404).json({ Error: 'Comment not found' });
       }
 
-      if (req.user._id !== comment.user.toString()) {
+      if (req.user._id.toString() !== comment.user.toString()){
+        console.log(typeof(req.user._id), typeof(comment.user))
         return res.status(403).json({ message: "This isn't your comment" });
       }
 
       comment.text = textToUpdate;
+      comment.isEdited = true;
 
       comment.save().then(comment => {
         const { text, date } = comment;
