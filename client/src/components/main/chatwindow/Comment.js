@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 
 //Receives UTC date and returns time and date in local twelve-hour time
@@ -23,15 +23,30 @@ const formatDate = date => {
 // Comment Component
 
 const Comment = props => {
-  const { name, date, text } = props;
+  const { id, name, date, text, user_id, userImage } = props;
+
+  useEffect(() => {
+    const script = document.createElement('script');
+
+    const defaultUserImg = `jdenticon.toSvg('${user_id}', 200)`;
+    const userSetImage = `"<img src='${userImage}' >"`;
+
+    script.innerHTML = `var placeholder = document.getElementById("${id}"); placeholder.innerHTML = ${
+      !userImage ? defaultUserImg : userSetImage
+    }`;
+
+    document.body.appendChild(script);
+  });
 
   return (
     <Wrapper>
-      <Avatar />
+      <Avatar id={id} />
+
       <UserDateWrapper>
         <Name>{name}</Name>
         <Time>{formatDate(date)}</Time>
       </UserDateWrapper>
+
       <Text>{text}</Text>
     </Wrapper>
   );
@@ -49,12 +64,17 @@ const Wrapper = styled.div`
 
 const Avatar = styled.div`
   grid-area: 1/1/3/2;
-  background-color: pink;
   border-radius: 50%;
   width: 3.6rem;
   height: 3.6rem;
   align-self: flex-start;
   margin-right: 0.25rem;
+
+  & > svg,
+  img {
+    height: 3.6rem;
+    width: 3.6rem;
+  }
 `;
 
 const UserDateWrapper = styled.div`

@@ -54,10 +54,13 @@ const ViewComments = props => {
         allComments.map(comment => {
           return (
             <Comment
+              id={comment._id}
               key={comment._id}
+              userImage={comment.userImage}
               name={comment.user}
               date={comment.date}
               text={comment.text}
+              user_id={comment.user_id}
             ></Comment>
           );
         })

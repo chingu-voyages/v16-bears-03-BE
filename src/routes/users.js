@@ -29,7 +29,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    let { name, email, password } = req.body;
+    let { name, email, password, userImage } = req.body;
 
     try {
       // See if user exists
@@ -49,6 +49,7 @@ router.post(
         name,
         email,
         password,
+        userImage,
       });
 
       res.status(201).json(user.serialize());
