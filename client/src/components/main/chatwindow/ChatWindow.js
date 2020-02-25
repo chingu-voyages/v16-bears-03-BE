@@ -9,12 +9,7 @@ Parent component
 State is an object that changes when comment is posted to db
 */
 
-//For testing, set jwt, user and loggedUser(in App.js)
-const jwt = '';
-
 const initialState = {
-  user: '',
-  config: { headers: { authorization: `bearer ${jwt}` } },
   previousComment: '',
 };
 

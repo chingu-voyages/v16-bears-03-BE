@@ -24,7 +24,6 @@ const FormWrap = styled.div`
 `;
 
 function Login(props) {
-  const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
 
@@ -35,12 +34,10 @@ function Login(props) {
     axios
       .post('api/users/login', loginUser)
       .then(res => {
-        const jwt = res.data.authToken;
-        const user = res.data.user; //including id,name and email
-        {
-          /* Todo: pass user info to user component and app compoent*/
-        }
-        props.set_LoggedUser(true);
+        localStorage.setItem('authToken', res.data.authToken);
+        localStorage.setItem('userId', res.data.user.id);
+        localStorage.setItem('loggedIn', true);
+        props.onChange(Math.random());
       })
       .catch(err => props.set_message([{ msg: 'Incorrect email or password' }]));
   }
