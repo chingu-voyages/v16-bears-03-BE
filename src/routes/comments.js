@@ -21,6 +21,8 @@ router.get('/', (req, res) => {
             text,
             date,
             ...(comment.user ? { user: comment.user.name } : { user: 'Deleted User' }),
+            ...(comment.user ? { user_id: comment.user._id } : { user_id: null }),
+            ...(comment.user ? { userImage: comment.user.userImage } : { userImage: null }),
           };
         }),
       ),

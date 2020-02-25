@@ -27,7 +27,9 @@ const ViewComments = props => {
       setIsLoading(true);
 
       try {
-        const result = await axios.get('/api/comments', chatState.config);
+        const result = await axios.get('/api/comments', {
+          headers: { authorization: `bearer ${localStorage.authToken}` },
+        });
         setAllComments(result.data);
         setIsLoading(false);
       } catch (error) {
@@ -52,10 +54,13 @@ const ViewComments = props => {
         allComments.map(comment => {
           return (
             <Comment
+              id={comment._id}
               key={comment._id}
+              userImage={comment.userImage}
               name={comment.user}
               date={comment.date}
               text={comment.text}
+              user_id={comment.user_id}
             ></Comment>
           );
         })

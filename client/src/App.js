@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import Login from './components/login/Login';
 import Register from './components/register/Register';
@@ -62,20 +62,15 @@ const FormWrapper = styled.div`
 `;
 
 function App() {
-  const [name, setName] = useState('');
-  const [loggedUser, setLoggedUser] = useState(true);
+  const [triggerRerender, setTriggerRerender] = useState(1);
   const [newUser, setNewUser] = useState(false);
   const [message, setMessage] = useState([]);
 
-  /**
-   * TODO: Get if the user is logged in
-   */
   function set_new_user(value) {
     setNewUser(value);
   }
 
   function set_message(msg) {
-    //msg is an array;
     setMessage(msg);
 
     //message will be disappeared after 7 seconds
@@ -84,15 +79,16 @@ function App() {
     }, 7000);
   }
 
-  function set_LoggedUser(value) {
-    setLoggedUser(value);
-  }
+  useEffect(() => {
+    if (localStorage.loggedIn) {
+      set_new_user();
+    }
+  }, [triggerRerender]);
 
   return (
     <div>
       <GlobalStyles />
-      {/* TODO: If the user is not logged in, show login / register */}
-      {!loggedUser ? (
+      {!localStorage.loggedIn ? (
         <AppWrap>
           <H1>Slack Clone</H1>
           <Message message={message} />
@@ -102,13 +98,13 @@ function App() {
               <Login
                 set_new_user={set_new_user}
                 set_message={set_message}
-                set_LoggedUser={set_LoggedUser}
+                onChange={setTriggerRerender}
               />
             ) : (
               <Register
                 set_new_user={set_new_user}
                 set_message={set_message}
-                set_LoggedUser={set_LoggedUser}
+                onChange={setTriggerRerender}
               />
             )}
           </FormWrapper>
@@ -117,7 +113,6 @@ function App() {
         <AppContainer />
       )}
     </div>
-
   );
 }
 
