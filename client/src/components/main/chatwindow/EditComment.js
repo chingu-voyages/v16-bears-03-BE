@@ -8,16 +8,25 @@ Posts new comment to database when enter key pressed and triggers re-render by u
 */
 
 const EditComment = props => {
-const { _id, className, children} = props;
+  const { _id, className, setEditComment, children } = props;
   const [comment, setComment] = useState(children);
-  const { chatState, dispatch } = useContext(ChatContext);
-  
+  const { dispatch } = useContext(ChatContext);
 
   const handleSubmit = text => {
     axios
-      .patch(`/api/comments/${props._id}`, { user: chatState.user, text: text }, chatState.config)
+      .patch(
+        `/api/comments/${_id}`,
+        {
+          user: localStorage.userId,
+          text: text.replace(/\(edited\)$/, '') + ' (edited)',
+        },
+        {
+          headers: { authorization: `bearer ${localStorage.authToken}` },
+        },
+      )
       .then(() => {
-        dispatch({ type: 'POST_TO_DB', text });
+        dispatch({ type: 'PATCH_TO_DB', text });
+        setEditComment(false);
       })
       .catch(err => console.error(err));
 
@@ -36,9 +45,12 @@ const { _id, className, children} = props;
   };
 
   return (
-    <Wrapper className = {className}>
+    <Wrapper className={className}>
       <Form onSubmit={handleSubmit}>
-        <TextField onChange={handleOnChange} onKeyDown={handleEnter} value ={comment}></TextField>
+        <TextField onChange={handleOnChange} onKeyDown={handleEnter} value={comment}></TextField>
+
+        <Button onClick={() => setEditComment(false)}>Cancel</Button>
+        <Button onClick={() => handleSubmit(comment)}>Save</Button>
       </Form>
     </Wrapper>
   );
@@ -50,6 +62,8 @@ const Wrapper = styled.div`
 `;
 
 const Form = styled.form`
+  display: flex;
+  flex-wrap: wrap;
   width: 100%;
 `;
 
@@ -65,7 +79,7 @@ const TextField = styled.textarea`
   height: 6rem;
   width: 98%;
   border-radius: 0.5rem;
-  margin-left: 0.5rem;
+  flex: 0 1 100%;
 
   &::-webkit-scrollbar-track {
     -webkit-appearance: none;
@@ -83,6 +97,21 @@ const TextField = styled.textarea`
     border: 0.1rem solid #2c0852;
     background: #2c0852;
   }
+`;
+
+const Button = styled.button`
+  user-select: none;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  cursor: pointer;
+  min-height: 2.8rem;
+  overflow-x: hidden;
+  padding: 0 0;
+  text-overflow: ellipsis;
+  font-size: 1.5rem;
+  text-align: left;
+  flex: 0 0 7.5%;
 `;
 
 export default EditComment;

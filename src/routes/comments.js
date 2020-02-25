@@ -115,7 +115,7 @@ router.delete('/:commentID', (req, res) => {
         return res.status(404).json({ Error: 'Comment not found' });
       }
 
-      if (req.user._id !== comment.user.toString()) {
+      if (req.user._id.toString() !== comment.user.toString()) {
         return res.status(403).json({ message: "This isn't your comment" });
       }
 

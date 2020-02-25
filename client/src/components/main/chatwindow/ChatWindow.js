@@ -17,7 +17,8 @@ const reducer = (state, action) => {
   switch (action.type) {
     case 'POST_TO_DB':
       return { ...state, previousComment: action.text };
-
+    case 'PATCH_TO_DB':
+      return {...state, previousComment: action.text}
     default:
       return initialState;
   }

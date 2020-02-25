@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import EditComment from './EditComment'
-
+import EditComment from './EditComment';
 
 //Receives UTC date and returns time and date in local twelve-hour time
 
@@ -24,81 +23,83 @@ const formatDate = date => {
 
 //custom hook that hides comment menu when document body is clicked
 
-const useHideDropdown = (ref)=>{
+const useHideDropdown = ref => {
+  const [isHidden, setIsHidden] = useState(true);
 
-  const [isHidden, setIsHidden ]= useState(true)
-
-  const handleClickOutside = (event) => {
+  const handleClickOutside = event => {
     if (ref.current && !ref.current.contains(event.target)) {
-      setIsHidden(!isHidden)
+      setIsHidden(!isHidden);
     }
-  }
-  
+  };
+
   useEffect(() => {
     // Bind the event listener
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
       // Unbind the event listener on clean up
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   });
-  
-  return [isHidden, setIsHidden]
-}
+
+  return [isHidden, setIsHidden];
+};
 
 // Comment Component
 
 const Comment = props => {
   const { id, name, date, text, user_id, userImage } = props;
-  const dropdown = useRef(null)
+  const dropdown = useRef(null);
   const [toggleMenu, setMenu] = useState(false);
   const [editComment, setEditComment] = useState(false);
-  const [isHidden, setIsHidden]= useHideDropdown(dropdown)
-  
+  const [isHidden, setIsHidden] = useHideDropdown(dropdown);
 
-  const handleHover = (e) => {
+  const handleHover = e => {
+    setMenu(!toggleMenu);
+  };
 
-    setMenu(!toggleMenu)
-  }
+  const handleMenu = e => {
+    setIsHidden(!isHidden);
+  };
 
-  const handleMenu = (e) => {
-    setIsHidden(!isHidden)
- 
-  }
+  const handleEditComment = e => {
+    setEditComment(!editComment);
+    setIsHidden(!isHidden);
+  };
 
-const handleEditComment = (e) => {
-  setEditComment(!editComment)
-  setIsHidden(!isHidden)
-}
+  useEffect(() => {
+    const script = document.createElement('script');
 
+    const defaultUserImg = `jdenticon.toSvg('${user_id}', 200)`;
+    const userSetImage = `"<img src='${userImage}' >"`;
 
-useEffect(() => {
-  const script = document.createElement('script');
+    script.innerHTML = `var placeholder = document.getElementById("${id}"); placeholder.innerHTML = ${
+      !userImage ? defaultUserImg : userSetImage
+    }`;
 
-  const defaultUserImg = `jdenticon.toSvg('${user_id}', 200)`;
-  const userSetImage = `"<img src='${userImage}' >"`;
-
-  script.innerHTML = `var placeholder = document.getElementById("${id}"); placeholder.innerHTML = ${
-    !userImage ? defaultUserImg : userSetImage
-  }`;
-
-  document.body.appendChild(script);
-})
-
+    document.body.appendChild(script);
+  });
 
   return (
-    <Wrapper onMouseEnter = {handleHover} onMouseLeave ={handleHover}>
+    <Wrapper onMouseEnter={handleHover} onMouseLeave={handleHover}>
       <Avatar id={id} />
 
       <UserDateWrapper>
         <Name>{name}</Name>
         <Time>{formatDate(date)}</Time>
       </UserDateWrapper>
-      {editComment ? <StyledEditComment _id = {12345}>{text}</StyledEditComment> : <Text>{text}</Text>}
-      <Menu show = {toggleMenu} onClick = {handleMenu} >...</Menu>
+      {editComment ? (
+        <StyledEditComment _id={id} setEditComment={setEditComment}>
+          {text}
+        </StyledEditComment>
+      ) : (
+        <Text>{text}</Text>
+      )}
+      <Menu show={toggleMenu} onClick={handleMenu}>
+        ...
+      </Menu>
       {!isHidden && (
-        <List ref = {dropdown}>
-          <Button onClick = {handleEditComment}>Edit Comment</Button>
+        <List ref={dropdown}>
+          <Button onClick={handleEditComment}>Edit Comment</Button>
           <Button>Delete Comment</Button>
         </List>
       )}
@@ -162,34 +163,32 @@ const StyledEditComment = styled(EditComment)`
 
 const Menu = styled.div`
   grid-area: 1/3/2/4;
-  display: ${props => props.show ? 'flex' : 'none'};
+  display: ${props => (props.show ? 'flex' : 'none')};
   align-items: center;
   justify-content: flex-start;
   font-size: 2rem;
-  
 `;
 
 const Button = styled.button`
-    user-select: none;
-    border: 0;
-    border-radius: 0;
-    background: transparent;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    min-height: 2.8rem;
-    overflow-x: hidden;
-    padding: 0 2.4rem;
-    text-overflow: ellipsis;
-    width: 100%;
-    font-size: 1.5rem;
-
+  user-select: none;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  min-height: 2.8rem;
+  overflow-x: hidden;
+  padding: 0 2.4rem;
+  text-overflow: ellipsis;
+  width: 100%;
+  font-size: 1.5rem;
 `;
 
-const List= styled.div`
+const List = styled.div`
   display: flex;
   flex-flow: column wrap;
-  border: .1rem solid black;
-`
+  border: 0.1rem solid black;
+`;
 
 export default Comment;
