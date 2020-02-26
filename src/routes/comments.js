@@ -110,7 +110,7 @@ Find and delete comment in db using findByIdAndDelete()
 Return confirmation message on success
 */
 router.delete('/:commentID', (req, res) => {
-  console.log("test8777777777777777")
+
   Comment.findById(req.params.commentID)
     .then(comment => {
       if (!comment) {
