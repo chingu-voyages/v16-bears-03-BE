@@ -1,5 +1,6 @@
 import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
+import Styled from './styles/styles';
 import axios from 'axios';
 import { ChatContext } from './ChatWindow';
 
@@ -49,8 +50,8 @@ const EditComment = props => {
       <Form onSubmit={handleSubmit}>
         <TextField onChange={handleOnChange} onKeyDown={handleEnter} value={comment}></TextField>
 
-        <Button onClick={() => setEditComment(false)}>Cancel</Button>
-        <Button onClick={() => handleSubmit(comment)}>Save</Button>
+        <Styled.Button onClick={() => setEditComment(false)}>Cancel</Styled.Button>
+        <Styled.DeleteButton onClick={() => handleSubmit(comment)}>Save</Styled.DeleteButton>
       </Form>
     </Wrapper>
   );
@@ -65,6 +66,10 @@ const Form = styled.form`
   display: flex;
   flex-wrap: wrap;
   width: 100%;
+  
+  & > button:last-child {
+    margin-left: 1rem;
+  }
 `;
 
 const TextField = styled.textarea`
@@ -80,6 +85,7 @@ const TextField = styled.textarea`
   width: 98%;
   border-radius: 0.5rem;
   flex: 0 1 100%;
+  margin: 1rem 0;
 
   &::-webkit-scrollbar-track {
     -webkit-appearance: none;
@@ -99,19 +105,5 @@ const TextField = styled.textarea`
   }
 `;
 
-const Button = styled.button`
-  user-select: none;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  cursor: pointer;
-  min-height: 2.8rem;
-  overflow-x: hidden;
-  padding: 0 0;
-  text-overflow: ellipsis;
-  font-size: 1.5rem;
-  text-align: left;
-  flex: 0 0 7.5%;
-`;
 
 export default EditComment;

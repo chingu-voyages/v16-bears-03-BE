@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
+import Styled from './styles/styles'
 import EditComment from './EditComment';
 import DeleteComment from './DeleteComment';
 
@@ -53,12 +54,10 @@ const Comment = props => {
   const [toggleMenu, setMenu] = useState(false);
   const [editComment, setEditComment] = useState(false);
   const [isHidden, setIsHidden] = useHideDropdown(dropdown);
-  const [deleteComment, setDeleteComment] = useState(false)
-
-
+  const [deleteComment, setDeleteComment] = useState(false);
 
   const handleHover = e => {
-    setMenu(!toggleMenu)
+    if (user_id == localStorage.userId) setMenu(!toggleMenu);
   };
 
   const handleMenu = e => {
@@ -70,7 +69,10 @@ const Comment = props => {
     setIsHidden(!isHidden);
   };
 
-  
+  const handleDeleteComment = e => {
+    setDeleteComment(!deleteComment);
+    setIsHidden(!isHidden);
+  };
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -98,22 +100,34 @@ const Comment = props => {
           {text}
         </StyledEditComment>
       ) : (
-        <Text><span>{text}</span>
-        <Edited isEdited = {isEdited}>(edited)</Edited>
-        </Text> 
+        <Text>
+          <span>{text}</span>
+          <Edited isEdited={isEdited}>(edited)</Edited>
+        </Text>
       )}
-      
+
       <Menu show={toggleMenu} onClick={handleMenu}>
         ...
       </Menu>
       {!isHidden && (
         <List ref={dropdown}>
-          <Button onClick={handleEditComment}>Edit Comment</Button>
-          <Button onClick = {()=> setDeleteComment(true)}>Delete Comment</Button>
+          <Styled.MenuButton onClick={handleEditComment}>Edit Comment</Styled.MenuButton>
+          <Styled.MenuDeleteButton onClick={handleDeleteComment}>Delete Comment</Styled.MenuDeleteButton>
         </List>
       )}
-            {deleteComment && (<DeleteComment id ={id} name ={name} date ={formatDate(date)} text ={text} user_id ={user_id} userImage = {userImage} isEdited ={isEdited} setDeleteComment ={setDeleteComment}></DeleteComment>)}
-
+      {deleteComment && (
+        <DeleteComment
+          id={id}
+          name={name}
+          date={formatDate(date)}
+          text={text}
+          user_id={user_id}
+          userImage={userImage}
+          isEdited={isEdited}
+          deleteComment={deleteComment}
+          setDeleteComment={setDeleteComment}
+        ></DeleteComment>
+      )}
     </Wrapper>
   );
 };
@@ -166,18 +180,18 @@ const Text = styled.div`
   font-weight: 400;
   color: #1c1d1c;
   margin-top: 0.5rem;
-  
-  & > span:first-child{
+
+  & > span:first-child {
     padding-top: 1rem;
     padding-right: 1rem;
     display: inline-block;
   }
-
 `;
 
 const Edited = styled.span`
-display: ${props => (props.isEdited ? 'inline' : 'none') };
-font-size: 1rem;`;
+  display: ${props => (props.isEdited ? 'inline' : 'none')};
+  font-size: 1rem;
+`;
 
 const StyledEditComment = styled(EditComment)`
   grid-area: 2/2/3/3;
@@ -186,6 +200,7 @@ const StyledEditComment = styled(EditComment)`
 const Menu = styled.div`
   grid-area: 1/3/2/4;
   display: ${props => (props.show ? 'flex' : 'none')};
+  cursor: pointer;
   align-items: center;
   justify-content: flex-start;
   font-size: 2rem;
@@ -214,12 +229,11 @@ const List = styled.div`
   grid-area: 2/3/2/4;
   position: relative;
   height: 10rem;
-  z-index: 0;
-  background-color: #F9F9F9;
-  border-radius: .5rem;
+  background-color: #f1f1f1;
+
+  box-shadow: 0px 0.1rem 1.2rem 0px rgba(0, 0, 0, 0.2);
+  justify-content: space-around;
+  border-radius: 0.4rem;
 `;
-
-
-
 
 export default Comment;

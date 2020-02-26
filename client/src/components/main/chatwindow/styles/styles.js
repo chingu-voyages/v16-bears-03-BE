@@ -47,52 +47,97 @@ const CommentText = styled.div`
   font-weight: 400;
   color: #1c1d1c;
   margin-top: 0.5rem;
-  
-  & > span:first-child{
+  overflow: auto;
+  max-height: 10rem;
+
+  & > span:first-child {
     padding-top: 1rem;
     padding-right: 1rem;
     display: inline-block;
   }
 
+  &::-webkit-scrollbar-track {
+    -webkit-appearance: none;
+    border: 0.01rem solid transparent;
+    background-clip: content-box;
+  }
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 0.7rem;
+    height: 0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    -webkit-appearance: none;
+    border: 0.1rem solid #919191;
+    background: #919191;
+    border-radius: 1rem;
+  }
 `;
 
 const CommentEdited = styled.span`
-display: ${props => (props.isEdited ? 'inline' : 'none') };
-font-size: 1rem;`;
-
+  display: ${props => (props.isEdited ? 'inline' : 'none')};
+  font-size: 1rem;
+`;
 
 const Button = styled.button`
-user-select: none;
-outline: none;
-cursor: pointer;
-border: none;
-border-radius: .4rem;
-align-items: center;
-position: relative;
-display: inline-flex;
-justify-content: center;
-text-align: center;
-white-space: nowrap;
--webkit-appearance: none;
--webkit-tap-highlight-color: transparent;
-font-size: 1.5rem;
-font-weight: 600;
-height: 3.6rem;
-min-width: 8rem;
-padding: 0 1.2rem .1rem;
-flex: 0 0 7.5%;`;
+  user-select: none;
+  outline: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 0.4rem;
+  position: relative;
+  align-items: center;
+  display: inline-flex;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  font-size: 1.5rem;
+  font-weight: 600;
+  height: 3.6rem;
+  min-width: 8rem;
+  padding: 0 1.2rem 0.1rem;
+  flex: 0 0 7.5%;
+
+  &:hover {
+    transform: translateY(0.1rem);
+    font-size: 1.75rem;
+    transition-duration: 0.1s;
+  }
+`;
 
 const DeleteButton = styled(Button)`
-transition: all 80ms linear;
-    background: #e01e5a;
-    color: #fff;
-    box-shadow: none;`;
+  transition: all 80ms linear;
+  background: #e01e5a;
+  color: #fff;
+  box-shadow: none;
+`;
 
+const MenuButton = styled(Button)`
+  font-weight: 400;
+  font-size: 1.7rem;
+`;
 
+const MenuDeleteButton = styled(Button)`
+  font-weight: 400;
+  font-size: 1.7rem;
+  color: #e01e5a;
+`;
 
+const Styled = {
+  CommentContainer,
+  CommentAvatar,
+  CommentNameDateWrapper,
+  CommentName,
+  CommentTime,
+  CommentText,
+  CommentEdited,
+  Button,
+  DeleteButton,
+  MenuButton,
+  MenuDeleteButton
+};
 
-
-const Styled = {CommentContainer, CommentAvatar, CommentNameDateWrapper, CommentName, CommentTime, CommentText, CommentEdited, Button, DeleteButton}
-
-export default Styled
-
+export default Styled;

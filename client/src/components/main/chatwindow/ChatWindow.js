@@ -18,6 +18,8 @@ const reducer = (state, action) => {
     case 'POST_TO_DB':
       return { ...state, previousComment: action.text };
     case 'PATCH_TO_DB':
+      return {...state, previousComment: action.text};
+    case 'DELETE_FROM_DB':
       return {...state, previousComment: action.text}
     default:
       return initialState;
