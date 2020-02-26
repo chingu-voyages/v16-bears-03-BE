@@ -49,7 +49,7 @@ const jwtStrategy = new JwtStrategy(
         return done(err, false);
       }
       if (user) {
-        return done(null, user);
+        return done(null, payload.user);
       } else {
         return done(null, false);
       }
