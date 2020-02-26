@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import styled from 'styled-components';
+import Styled from './styles/comment.styles';
 import axios from 'axios';
 import { ChatContext } from './ChatWindow';
 
@@ -43,53 +43,12 @@ const CreateComment = props => {
   };
 
   return (
-    <Wrapper>
-      <Form onSubmit={handleSubmit}>
-        <TextField onChange={handleOnChange} onKeyDown={handleEnter} value={comment} />
-      </Form>
-    </Wrapper>
+    <Styled.CommentFormWrapper>
+      <Styled.CommentForm onSubmit={handleSubmit}>
+        <Styled.CommentTextArea onChange={handleOnChange} onKeyDown={handleEnter} value={comment} />
+      </Styled.CommentForm>
+    </Styled.CommentFormWrapper>
   );
 };
-
-const Wrapper = styled.div`
-  display: flex;
-  width: 100%;
-`;
-
-const Form = styled.form`
-  width: 100%;
-`;
-
-const TextField = styled.textarea`
-  padding: 0.25rem;
-  border: 0.1rem solid #241722;
-  resize: none;
-  outline: none;
-  scrollbar-color: #241722 white;
-  scrollbar-width: thin;
-  border-radius: 0.15rem;
-  font-size: 1.6rem;
-  height: 6rem;
-  width: 98%;
-  border-radius: 0.5rem;
-  margin-left: 0.5rem;
-
-  &::-webkit-scrollbar-track {
-    -webkit-appearance: none;
-    border: 0.01rem solid transparent;
-    background-clip: content-box;
-  }
-  &::-webkit-scrollbar {
-    -webkit-appearance: none;
-    width: 0.4rem;
-    height: 0;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    -webkit-appearance: none;
-    border: 0.1rem solid #2c0852;
-    background: #2c0852;
-  }
-`;
 
 export default CreateComment;

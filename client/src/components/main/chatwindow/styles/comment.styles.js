@@ -1,5 +1,7 @@
 import styled from 'styled-components';
 
+/*styles for comment component*/
+
 const CommentContainer = styled.div`
   display: grid;
   grid-template-rows: auto 1fr;
@@ -7,6 +9,7 @@ const CommentContainer = styled.div`
   grid-column-gap: 1rem;
   width: 100%;
   flex-basis: 100%;
+  margin-bottom: 1rem;
 `;
 
 const CommentAvatar = styled.div`
@@ -41,43 +44,46 @@ const CommentTime = styled.div`
   font-size: 1.2rem;
 `;
 
-const CommentText = styled.div`
+const CommentTextWrapper = styled.div`
   grid-area: 2/2/3/4;
   font-size: 1.5rem;
   font-weight: 400;
   color: #1c1d1c;
   margin-top: 0.5rem;
-  overflow: auto;
-  max-height: 10rem;
+`;
 
-  & > span:first-child {
-    padding-top: 1rem;
-    padding-right: 1rem;
-    display: inline-block;
-  }
-
-  &::-webkit-scrollbar-track {
-    -webkit-appearance: none;
-    border: 0.01rem solid transparent;
-    background-clip: content-box;
-  }
-  &::-webkit-scrollbar {
-    -webkit-appearance: none;
-    width: 0.7rem;
-    height: 0;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    -webkit-appearance: none;
-    border: 0.1rem solid #919191;
-    background: #919191;
-    border-radius: 1rem;
-  }
+const CommentText = styled.span`
+  padding-top: 1rem;
+  padding-right: 1rem;
+  display: inline-block;
 `;
 
 const CommentEdited = styled.span`
   display: ${props => (props.isEdited ? 'inline' : 'none')};
   font-size: 1rem;
+`;
+
+const CommentMenu = styled.div`
+  grid-area: 1/3/2/4;
+  display: ${props => (props.show ? 'flex' : 'none')};
+  cursor: pointer;
+  align-items: center;
+  justify-content: flex-start;
+  font-size: 2.5rem;
+`;
+
+const CommentDropdown = styled.div`
+  display: flex;
+  flex-flow: column wrap;
+  border: 0.1rem solid black;
+  grid-area: 2/3/2/4;
+  position: relative;
+  height: 10rem;
+  background-color: #f1f1f1;
+
+  box-shadow: 0px 0.1rem 1.2rem 0px rgba(0, 0, 0, 0.2);
+  justify-content: space-around;
+  border-radius: 0.4rem;
 `;
 
 const Button = styled.button`
@@ -126,18 +132,67 @@ const MenuDeleteButton = styled(Button)`
   color: #e01e5a;
 `;
 
+/*styles for components that create or edit comments*/
+
+const CommentFormWrapper = styled.div`
+  display: flex;
+  width: 100%;
+`;
+
+const CommentForm = styled.form`
+  width: 100%;
+`;
+
+const CommentTextArea = styled.textarea`
+  padding: 0.25rem;
+  border: 0.1rem solid #241722;
+  resize: none;
+  outline: none;
+  scrollbar-color: #241722 white;
+  scrollbar-width: thin;
+  border-radius: 0.15rem;
+  font-size: 1.6rem;
+  height: 6rem;
+  width: 98%;
+  border-radius: 0.5rem;
+  margin-left: 0.5rem;
+
+  &::-webkit-scrollbar-track {
+    -webkit-appearance: none;
+    border: 0.01rem solid transparent;
+    background-clip: content-box;
+  }
+  &::-webkit-scrollbar {
+    -webkit-appearance: none;
+    width: 0.4rem;
+    height: 0;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    -webkit-appearance: none;
+    border: 0.1rem solid #2c0852;
+    background: #2c0852;
+  }
+`;
+
 const Styled = {
   CommentContainer,
   CommentAvatar,
   CommentNameDateWrapper,
   CommentName,
   CommentTime,
+  CommentTextWrapper,
   CommentText,
+  CommentMenu,
+  CommentDropdown,
   CommentEdited,
   Button,
   DeleteButton,
   MenuButton,
-  MenuDeleteButton
+  MenuDeleteButton,
+  CommentFormWrapper,
+  CommentForm,
+  CommentTextArea,
 };
 
 export default Styled;

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
-import Styled from './styles/styles'
+import Styled from './styles/comment.styles';
 import EditComment from './EditComment';
 import DeleteComment from './DeleteComment';
 
@@ -46,19 +46,31 @@ const useHideDropdown = ref => {
   return [isHidden, setIsHidden];
 };
 
+//custom hook to display avatar
+
+const useAvatar = (user_id, userImage, id) => {
+  useEffect(() => {
+    const script = document.createElement('script');
+
+    const defaultUserImg = `jdenticon.toSvg('${user_id}', 200)`;
+    const userSetImage = `"<img src='${userImage}' >"`;
+
+    script.innerHTML = `var placeholder = document.getElementById("${id}"); placeholder.innerHTML = ${
+      !userImage ? defaultUserImg : userSetImage
+    }`;
+
+    document.body.appendChild(script);
+  });
+};
+
 // Comment Component
 
 const Comment = props => {
   const { id, name, date, text, user_id, userImage, isEdited } = props;
   const dropdown = useRef(null);
-  const [toggleMenu, setMenu] = useState(false);
-  const [editComment, setEditComment] = useState(false);
   const [isHidden, setIsHidden] = useHideDropdown(dropdown);
+  const [editComment, setEditComment] = useState(false);
   const [deleteComment, setDeleteComment] = useState(false);
-
-  const handleHover = e => {
-    if (user_id == localStorage.userId) setMenu(!toggleMenu);
-  };
 
   const handleMenu = e => {
     setIsHidden(!isHidden);
@@ -74,46 +86,37 @@ const Comment = props => {
     setIsHidden(!isHidden);
   };
 
-  useEffect(() => {
-    const script = document.createElement('script');
-
-    const defaultUserImg = `jdenticon.toSvg('${user_id}', 200)`;
-    const userSetImage = `"<img src='${userImage}' >"`;
-
-    script.innerHTML = `var placeholder = document.getElementById("${id}"); placeholder.innerHTML = ${
-      !userImage ? defaultUserImg : userSetImage
-    }`;
-
-    document.body.appendChild(script);
-  });
+  useAvatar(user_id, userImage, id);
 
   return (
-    <Wrapper onMouseEnter={handleHover} onMouseLeave={handleHover}>
-      <Avatar id={id} />
+    <Styled.CommentContainer>
+      <Styled.CommentAvatar id={id} />
 
-      <UserDateWrapper>
-        <Name>{name}</Name>
-        <Time>{formatDate(date)}</Time>
-      </UserDateWrapper>
+      <Styled.CommentNameDateWrapper>
+        <Styled.CommentName>{name}</Styled.CommentName>
+        <Styled.CommentTime>{formatDate(date)}</Styled.CommentTime>
+      </Styled.CommentNameDateWrapper>
       {editComment ? (
         <StyledEditComment _id={id} setEditComment={setEditComment}>
           {text}
         </StyledEditComment>
       ) : (
-        <Text>
-          <span>{text}</span>
-          <Edited isEdited={isEdited}>(edited)</Edited>
-        </Text>
+        <Styled.CommentTextWrapper>
+          <Styled.CommentText>{text}</Styled.CommentText>
+          <Styled.CommentEdited isEdited={isEdited}>(edited)</Styled.CommentEdited>
+        </Styled.CommentTextWrapper>
       )}
 
-      <Menu show={toggleMenu} onClick={handleMenu}>
+      <Styled.CommentMenu show={user_id === localStorage.userId} onClick={handleMenu}>
         ...
-      </Menu>
+      </Styled.CommentMenu>
       {!isHidden && (
-        <List ref={dropdown}>
+        <Styled.CommentDropdown ref={dropdown}>
           <Styled.MenuButton onClick={handleEditComment}>Edit Comment</Styled.MenuButton>
-          <Styled.MenuDeleteButton onClick={handleDeleteComment}>Delete Comment</Styled.MenuDeleteButton>
-        </List>
+          <Styled.MenuDeleteButton onClick={handleDeleteComment}>
+            Delete Comment
+          </Styled.MenuDeleteButton>
+        </Styled.CommentDropdown>
       )}
       {deleteComment && (
         <DeleteComment
@@ -126,114 +129,15 @@ const Comment = props => {
           isEdited={isEdited}
           deleteComment={deleteComment}
           setDeleteComment={setDeleteComment}
+          useAvatar={useAvatar}
         ></DeleteComment>
       )}
-    </Wrapper>
+    </Styled.CommentContainer>
   );
 };
 
-const Wrapper = styled.div`
-  display: grid;
-  grid-template-rows: auto 1fr;
-  grid-template-columns: auto 1fr auto;
-  grid-column-gap: 1rem;
-  width: 100%;
-  flex-basis: 100%;
-  margin-bottom: 1rem;
-`;
-
-const Avatar = styled.div`
-  grid-area: 1/1/3/2;
-  border-radius: 50%;
-  width: 3.6rem;
-  height: 3.6rem;
-  align-self: flex-start;
-  margin-right: 0.25rem;
-
-  & > svg,
-  img {
-    height: 3.6rem;
-    width: 3.6rem;
-  }
-`;
-
-const UserDateWrapper = styled.div`
-  grid-area: 1/2/2/3;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-`;
-const Name = styled.div`
-  font-size: 1.6rem;
-  margin-right: 0.5rem;
-  font-weight: 600;
-`;
-
-const Time = styled.div`
-  font-size: 1.2rem;
-`;
-
-const Text = styled.div`
-  grid-area: 2/2/3/4;
-  font-size: 1.5rem;
-  font-weight: 400;
-  color: #1c1d1c;
-  margin-top: 0.5rem;
-
-  & > span:first-child {
-    padding-top: 1rem;
-    padding-right: 1rem;
-    display: inline-block;
-  }
-`;
-
-const Edited = styled.span`
-  display: ${props => (props.isEdited ? 'inline' : 'none')};
-  font-size: 1rem;
-`;
-
 const StyledEditComment = styled(EditComment)`
   grid-area: 2/2/3/3;
-`;
-
-const Menu = styled.div`
-  grid-area: 1/3/2/4;
-  display: ${props => (props.show ? 'flex' : 'none')};
-  cursor: pointer;
-  align-items: center;
-  justify-content: flex-start;
-  font-size: 2rem;
-`;
-
-const Button = styled.button`
-  user-select: none;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  min-height: 2.8rem;
-  overflow-x: hidden;
-  padding: 0 2.4rem;
-  text-overflow: ellipsis;
-  width: 100%;
-  font-size: 1.5rem;
-`;
-
-const List = styled.div`
-  display: flex;
-  flex-flow: column wrap;
-  border: 0.1rem solid black;
-  grid-area: 2/3/2/4;
-  position: relative;
-  height: 10rem;
-  background-color: #f1f1f1;
-
-  box-shadow: 0px 0.1rem 1.2rem 0px rgba(0, 0, 0, 0.2);
-  justify-content: space-around;
-  border-radius: 0.4rem;
 `;
 
 export default Comment;

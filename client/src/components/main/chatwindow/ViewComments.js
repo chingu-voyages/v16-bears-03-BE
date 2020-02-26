@@ -22,8 +22,6 @@ const ViewComments = props => {
 
   const { chatState } = useContext(ChatContext);
 
- 
-
   //triggers when ChatWindow state changes
   useEffect(() => {
     const getComments = async () => {
@@ -63,7 +61,7 @@ const ViewComments = props => {
               name={comment.user}
               date={comment.date}
               text={comment.text}
-              isEdited = {comment.isEdited}
+              isEdited={comment.isEdited}
               user_id={comment.user_id}
             ></Comment>
           );
