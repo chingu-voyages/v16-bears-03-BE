@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import EditComment from './EditComment';
+import DeleteComment from './DeleteComment';
 
 //Receives UTC date and returns time and date in local twelve-hour time
 
@@ -53,6 +54,8 @@ const Comment = props => {
   const [editComment, setEditComment] = useState(false);
   const [isHidden, setIsHidden] = useHideDropdown(dropdown);
   const [deleteComment, setDeleteComment] = useState(false)
+
+
 
   const handleHover = e => {
     setMenu(!toggleMenu)
@@ -109,6 +112,8 @@ const Comment = props => {
           <Button onClick = {()=> setDeleteComment(true)}>Delete Comment</Button>
         </List>
       )}
+            {deleteComment && (<DeleteComment id ={id} name ={name} date ={formatDate(date)} text ={text} user_id ={user_id} userImage = {userImage} isEdited ={isEdited} setDeleteComment ={setDeleteComment}></DeleteComment>)}
+
     </Wrapper>
   );
 };
