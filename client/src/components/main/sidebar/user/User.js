@@ -3,23 +3,7 @@ import createJdention from './createJdenticon';
 import UserName from './UserName';
 import Image from './Image';
 import styled from 'styled-components';
-import { Hr } from '../../../../theme/theme';
-
-//change inside the sidebar.js theme.js->input
-
-const Div = styled.div`
-  z-index: 1;
-  background: white;
-  position: absolute;
-  height: 350px;
-  width: 280px;
-  top: 1.5rem;
-  left: 1.5rem;
-  border: 1px solid gray;
-  border-bottom: 5rem solid gray;
-  color: black;
-  padding: 2rem;
-`;
+import { Hr, Div } from '../../../../theme/theme';
 
 const Profile = styled.div`
   display: flex;
@@ -80,7 +64,7 @@ function User(props) {
   const container = React.createRef();
 
   useEffect(() => {
-    createJdention(initialState.imageurl, initialState.userid);
+    createJdention(initialState.imageurl, initialState.userid, 'smallimage');
   }, [initialState.imageurl, initialState.userid]);
 
   function handleClickOutside(e) {
@@ -96,7 +80,8 @@ function User(props) {
   return (
     <Div ref={container}>
       <Profile>
-        <ProfileImage id={initialState.userid}></ProfileImage>
+        <ProfileImage id="smallimage"></ProfileImage>
+
         <Name>
           <b>
             {!changeUserName ? (
@@ -112,13 +97,17 @@ function User(props) {
         </Name>
       </Profile>
       <Hr />
+
       <div>
         <Ol onClick={() => SetChangeUserName(true)}>Change Username</Ol>
         <Ol onClick={() => SetOpenImageWindow(true)}>Update Profile Image</Ol>
         <Ol>Delete Account</Ol>
         <Ol>Logout</Ol>
       </div>
-      {openImageWindow && <Image />}
+
+      {openImageWindow && (
+        <Image dispatch={dispatch} image={initialState.imageurl} id={initialState.userid} />
+      )}
     </Div>
   );
 }

@@ -16,9 +16,11 @@ function UserName(props) {
   return (
     <form onSubmit={changeUsername}>
       <Input
-        id="username"
+        id="userinput"
         type="text"
         defaultValue={name}
+        pattern=".{6,15}"
+        title="6 to 15 characters is required."
         onChange={e => setName(e.target.value)}
         onKeyDown={e => (e.keyCode === 13 ? changeUsername : null)}
         autoFocus

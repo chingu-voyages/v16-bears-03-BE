@@ -20,6 +20,23 @@ const Button = styled.button`
   }};
 `;
 
+const SmallButton = styled.button`
+  background: rgb(44, 8, 82);
+  width: 45%;
+  height: 25px;
+  font-size: 15px;
+  cursor: pointer;
+  color: white;
+  ${props => {
+    if (props.background === 'white') {
+      return `background:white;
+            color:black;
+            border:1px solid rgb(44, 8, 82);
+            `;
+    }
+  }}
+`;
+
 const Form = styled.form`
   background: white;
   color: black;
@@ -46,11 +63,16 @@ const Input = styled.input`
   height: 25px;
   margin: 3px auto 12px auto;
   ${props => {
-    if (props.id === 'username') {
+    if (props.id === 'userinput') {
       return `height:35px;
             width:120px;
-            border:2px solid lightblue;
-            font-size:1.5rem;`;
+            font-size:1.5rem;
+            border:2px solid lightblue;`;
+    }
+    if (props.id === 'urlinput') {
+      return `height:30px;
+              width:210px;
+              border:2px solid lightblue;`;
     }
   }}
 `;
@@ -64,4 +86,28 @@ const Hr = styled.hr`
   margin: 0.5rem;
   margin: 0px;
 `;
-export { Button, Form, Input, Label, Hr };
+
+const Div = styled.div`
+  z-index: 1;
+  background: white;
+  position: absolute;
+  height: 350px;
+  width: 280px;
+  top: 10px;
+  left: 10px;
+  border: 1px solid gray;
+  border-bottom: 5rem solid gray;
+  color: black;
+  padding: 2rem;
+  ${props => {
+    if (props.type === 'image') {
+      return `border-bottom: 1px solid gray;
+              top:349px;   
+              left:-1px; 
+              height:380px          
+              `;
+    }
+  }}
+`;
+
+export { Button, SmallButton, Form, Input, Label, Hr, Div };
