@@ -7,6 +7,7 @@ const commentSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: User },
   text: { type: String, required: true },
   date: { type: Date, default: Date.now },
+  
   isEdited : {type: Boolean, default: false}
 });
 
