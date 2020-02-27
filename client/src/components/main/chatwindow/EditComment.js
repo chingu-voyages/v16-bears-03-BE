@@ -45,13 +45,18 @@ const EditComment = props => {
     setComment(event.target.value);
   };
 
+  const handleSave = event => {
+    event.preventDefault();
+    handleSubmit(comment);
+  };
+
   return (
     <Styled.CommentFormWrapper className={className}>
-      <Form onSubmit={handleSubmit}>
+      <Form>
         <TextArea onChange={handleOnChange} onKeyDown={handleEnter} value={comment}></TextArea>
 
         <Styled.Button onClick={() => setEditComment(false)}>Cancel</Styled.Button>
-        <Styled.DeleteButton onClick={() => handleSubmit(comment)}>Save</Styled.DeleteButton>
+        <Styled.DeleteButton onClick={handleSave}>Save</Styled.DeleteButton>
       </Form>
     </Styled.CommentFormWrapper>
   );
