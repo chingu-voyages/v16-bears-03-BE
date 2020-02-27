@@ -86,6 +86,7 @@ router.get('/', jwtAuth, async (req, res) => {
   }
 });
 
+
 router
   .route('/:userID')
   .all(jwtAuth, (req, res, next) => {
@@ -102,6 +103,16 @@ router
         next();
       })
       .catch(next);
+  })
+  .get((req, res) => {
+    const {userID } = req.params;
+    User.findById(userID, (err, user) => {
+      if (err) {
+        console.error(error.message);
+      }
+      const { name, userImage } = user;
+      res.status(200).json({ name, userImage });
+    });
   })
   .patch((req, res) => {
     const { name, userImage } = req.body;
@@ -136,5 +147,8 @@ router
       .then(user => res.status(204).end())
       .catch(err => res.status(500).json('Something went wrong'));
   });
+
+
+
 
 module.exports = router;
