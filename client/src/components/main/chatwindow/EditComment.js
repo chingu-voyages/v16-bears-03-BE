@@ -5,7 +5,7 @@ import axios from 'axios';
 import { ChatContext } from './ChatWindow';
 
 /*
-Posts new comment to database when enter key pressed and triggers re-render by updating ChatWindow state
+Updates comment in database when enter key pressed and triggers re-render by updating ChatWindow state
 */
 
 const EditComment = props => {
@@ -53,7 +53,7 @@ const EditComment = props => {
   return (
     <Styled.CommentFormWrapper className={className}>
       <Form>
-        <TextArea onChange={handleOnChange} onKeyDown={handleEnter} value={comment}></TextArea>
+        <TextArea onChange={handleOnChange} onKeyDown={handleEnter} value={comment}/>
 
         <Styled.Button onClick={() => setEditComment(false)}>Cancel</Styled.Button>
         <Styled.DeleteButton onClick={handleSave}>Save</Styled.DeleteButton>

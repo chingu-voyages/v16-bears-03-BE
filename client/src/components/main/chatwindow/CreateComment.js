@@ -44,7 +44,7 @@ const CreateComment = props => {
 
   return (
     <Styled.CommentFormWrapper>
-      <Styled.CommentForm >
+      <Styled.CommentForm>
         <Styled.CommentTextArea onChange={handleOnChange} onKeyDown={handleEnter} value={comment} />
       </Styled.CommentForm>
     </Styled.CommentFormWrapper>

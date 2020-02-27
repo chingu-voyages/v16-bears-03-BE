@@ -96,6 +96,7 @@ const Comment = props => {
         <Styled.CommentName>{name}</Styled.CommentName>
         <Styled.CommentTime>{formatDate(date)}</Styled.CommentTime>
       </Styled.CommentNameDateWrapper>
+
       {editComment ? (
         <StyledEditComment _id={id} setEditComment={setEditComment}>
           {text}
@@ -110,6 +111,7 @@ const Comment = props => {
       <Styled.CommentMenu show={user_id === localStorage.userId} onClick={handleMenu}>
         ...
       </Styled.CommentMenu>
+
       {!isHidden && (
         <Styled.CommentDropdown ref={dropdown}>
           <Styled.MenuButton onClick={handleEditComment}>Edit Comment</Styled.MenuButton>
@@ -118,6 +120,7 @@ const Comment = props => {
           </Styled.MenuDeleteButton>
         </Styled.CommentDropdown>
       )}
+
       {deleteComment && (
         <DeleteComment
           id={id}

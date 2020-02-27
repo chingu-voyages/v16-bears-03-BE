@@ -110,7 +110,6 @@ Find and delete comment in db using findByIdAndDelete()
 Return confirmation message on success
 */
 router.delete('/:commentID', (req, res) => {
-
   Comment.findById(req.params.commentID)
     .then(comment => {
       if (!comment) {
@@ -120,7 +119,7 @@ router.delete('/:commentID', (req, res) => {
       if (req.user._id !== comment.user.toString()) {
         return res.status(403).json({ message: "This isn't your comment" });
       }
-     
+
       comment.remove().then(() => res.status(204).end());
     })
     .catch(err => res.status(500).json('Something went wrong'));
@@ -142,8 +141,7 @@ router.patch('/:commentID', (req, res) => {
         return res.status(404).json({ Error: 'Comment not found' });
       }
 
-      if (req.user._id !== comment.user.toString()){
-        
+      if (req.user._id !== comment.user.toString()) {
         return res.status(403).json({ message: "This isn't your comment" });
       }
 
