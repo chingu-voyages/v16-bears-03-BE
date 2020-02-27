@@ -122,7 +122,9 @@ function Sidebar() {
         <P></P>
         <p>{logedinUser}</p>
       </UserLink>
-      {userWindow && <User logedinUser={logedinUser} imageUrl={imageUrl} />}
+      {userWindow && (
+        <User logedinUser={logedinUser} imageUrl={imageUrl} setUserWindow={setUserWindow} />
+      )}
       <Hr />
       {isLoading && <div>Loading...</div>}
       {isError ? (

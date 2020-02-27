@@ -6,6 +6,9 @@ function UserName(props) {
 
   function changeUsername(e) {
     e.preventDefault();
+    {
+      /*Todo: axios to update the username*/
+    }
     props.dispatch({ type: 'CHANGE_USERNAME', name });
     props.SetChangeUserName(false);
   }

@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState, useRef } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 import createJdention from './createJdenticon';
 import UserName from './UserName';
 import Image from './Image';
@@ -12,7 +12,7 @@ const Div = styled.div`
   background: white;
   position: absolute;
   height: 350px;
-  width: 300px;
+  width: 280px;
   top: 1.5rem;
   left: 1.5rem;
   border: 1px solid gray;
@@ -77,13 +77,24 @@ function User(props) {
   const [userstate, dispatch] = useReducer(reducer, initialState);
   const [changeUserName, SetChangeUserName] = useState(false);
   const [openImageWindow, SetOpenImageWindow] = useState(false);
+  const container = React.createRef();
 
   useEffect(() => {
     createJdention(initialState.imageurl, initialState.userid);
   }, [initialState.imageurl, initialState.userid]);
 
+  function handleClickOutside(e) {
+    if (container.current && !container.current.contains(e.target)) {
+      props.setUserWindow(false);
+    }
+  }
+
+  useEffect(() => {
+    document.addEventListener('mousedown', handleClickOutside);
+  });
+
   return (
-    <Div>
+    <Div ref={container}>
       <Profile>
         <ProfileImage id={initialState.userid}></ProfileImage>
         <Name>
