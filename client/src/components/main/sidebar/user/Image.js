@@ -33,7 +33,7 @@ function Image(props) {
 
   return (
     <Div type="image">
-      <CloseButton>X</CloseButton>
+      <CloseButton onClick={() => props.SetOpenImageWindow(false)}>X</CloseButton>
       <BigProfileImage id="bigimage"></BigProfileImage>
 
       <form>

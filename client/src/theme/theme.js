@@ -47,7 +47,12 @@ const CloseButton = styled.button`
   color: darkgray;
   border: none;
   float: right;
+  cursor: pointer;
+  &:hover {
+    color: red;
+  }
 `;
+
 const Form = styled.form`
   background: white;
   color: black;

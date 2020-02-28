@@ -106,7 +106,12 @@ function User(props) {
       </div>
 
       {openImageWindow && (
-        <Image dispatch={dispatch} image={initialState.imageurl} id={initialState.userid} />
+        <Image
+          dispatch={dispatch}
+          SetOpenImageWindow={SetOpenImageWindow}
+          image={initialState.imageurl}
+          id={initialState.userid}
+        />
       )}
     </Div>
   );
