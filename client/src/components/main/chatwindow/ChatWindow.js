@@ -11,22 +11,23 @@ State is an object that changes when comment is posted to db
 
 const initialState = {
   previousComment: '',
+  newComment: true,
 };
 
 const reducer = (state, action) => {
   switch (action.type) {
     case 'POST_TO_DB':
-      return { ...state, previousComment: action.text };
+      return { ...state, newComment: true, previousComment: action.text };
     case 'PATCH_TO_DB':
-      return { ...state, previousComment: action.text };
+      return { ...state, newComment: false, previousComment: action.text };
     case 'DELETE_FROM_DB':
-      return { ...state, previousComment: action.text };
+      return { ...state, newComment: false, previousComment: action.text };
     default:
       return initialState;
   }
 };
 
-const ChatWindow = props => {
+const ChatWindow = () => {
   const [chatState, dispatch] = useReducer(reducer, initialState);
 
   return (
@@ -48,6 +49,7 @@ const Container = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
+  position: relative;
 `;
 
 export default ChatWindow;

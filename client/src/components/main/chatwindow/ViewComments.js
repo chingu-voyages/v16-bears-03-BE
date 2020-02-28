@@ -43,7 +43,9 @@ const ViewComments = props => {
   }, [chatState]);
 
   useEffect(() => {
-    scrollToBottom(refContainer);
+    if (chatState.newComment) {
+      scrollToBottom(refContainer);
+    }
   });
 
   return (
@@ -63,6 +65,7 @@ const ViewComments = props => {
               text={comment.text}
               isEdited={comment.isEdited}
               user_id={comment.user_id}
+              refContainer={refContainer}
             ></Comment>
           );
         })

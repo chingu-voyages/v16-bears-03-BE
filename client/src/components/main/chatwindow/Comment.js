@@ -66,11 +66,17 @@ const useAvatar = (user_id, userImage, id) => {
 // Comment Component
 
 const Comment = props => {
-  const { id, name, date, text, user_id, userImage, isEdited } = props;
+  const { id, name, date, text, user_id, userImage, isEdited, refContainer } = props;
   const dropdown = useRef(null);
+  const menu = useRef(null);
   const [isHidden, setIsHidden] = useHideDropdown(dropdown);
   const [editComment, setEditComment] = useState(false);
   const [deleteComment, setDeleteComment] = useState(false);
+
+  //returns the distance in px between top of ChatWindow container and top of menu element, adjusting for scroll.
+  const getMenuPos = ref => {
+    return ref.current.offsetTop - refContainer.current.scrollTop;
+  };
 
   const handleMenu = e => {
     setIsHidden(!isHidden);
@@ -108,12 +114,12 @@ const Comment = props => {
         </Styled.CommentTextWrapper>
       )}
 
-      <Styled.CommentMenu show={user_id === localStorage.userId} onClick={handleMenu}>
+      <Styled.CommentMenu show={user_id === localStorage.userId} onClick={handleMenu} ref={menu}>
         ...
       </Styled.CommentMenu>
 
       {!isHidden && (
-        <Styled.CommentDropdown ref={dropdown}>
+        <Styled.CommentDropdown ref={dropdown} pos={() => getMenuPos(menu)}>
           <Styled.MenuButton onClick={handleEditComment}>Edit Comment</Styled.MenuButton>
           <Styled.MenuDeleteButton onClick={handleDeleteComment}>
             Delete Comment

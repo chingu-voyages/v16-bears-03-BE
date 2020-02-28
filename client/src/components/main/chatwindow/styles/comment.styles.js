@@ -10,6 +10,12 @@ const CommentContainer = styled.div`
   width: 100%;
   flex-basis: 100%;
   margin-bottom: 1rem;
+
+  &:hover{
+    & > div:nth-child(4){
+      visibility: visible;
+    }
+  }
 `;
 
 const CommentAvatar = styled.div`
@@ -70,6 +76,13 @@ const CommentMenu = styled.div`
   align-items: center;
   justify-content: flex-start;
   font-size: 2.5rem;
+  visibility: hidden;
+
+  &:hover {
+    transform: translateY(0.1rem);
+    font-size: 2.75rem;
+    transition-duration: 0.1s;
+  }
 `;
 
 const CommentDropdown = styled.div`
@@ -77,13 +90,14 @@ const CommentDropdown = styled.div`
   flex-flow: column wrap;
   border: 0.1rem solid black;
   grid-area: 2/3/2/4;
-  position: relative;
   height: 10rem;
   background-color: #f1f1f1;
-
   box-shadow: 0px 0.1rem 1.2rem 0px rgba(0, 0, 0, 0.2);
   justify-content: space-around;
   border-radius: 0.4rem;
+  position: absolute;
+  top: ${props => props.pos}px;
+  right: 1rem;
 `;
 
 const Button = styled.button`
