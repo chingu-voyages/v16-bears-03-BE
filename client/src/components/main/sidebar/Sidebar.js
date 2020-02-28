@@ -2,12 +2,80 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 
+function Sidebar() {
+  const [allUsers, setAllUsers] = useState();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [sidebar, setToggleSidebar] = useState(false);
+
+  useEffect(() => {
+    const getUsers = async () => {
+      setIsLoading(true);
+
+      try {
+        // Get all users
+        const result = await axios('/api/users', {
+          headers: { authorization: `bearer ${localStorage.authToken}` },
+        });
+
+        setAllUsers(result.data);
+        setIsLoading(false);
+      } catch (error) {
+        setIsLoading(false);
+        console.error('Unable to get users. ', error);
+        setIsError(true);
+      }
+    };
+    getUsers();
+  }, []);
+
+  const toggleSidebar = () => {
+    if (sidebar) {
+      setToggleSidebar(false);
+    } else {
+      setToggleSidebar(true);
+    }
+  };
+
+  return (
+    <Aside>
+      <SidebarButton onClick={toggleSidebar} className={sidebar ? 'show' : ''}>
+        <i>&nbsp;</i>
+      </SidebarButton>
+      <UsersList className={sidebar ? 'show' : ''}>
+        {isLoading && <div>Loading...</div>}
+        {isError ? (
+          <div>Something went wrong.</div>
+        ) : (
+          <ul>
+            {allUsers &&
+              allUsers.map(user => {
+                // TODO: Set isActive to true is the user is online
+                return (
+                  <li key={user.id}>
+                    <Active isActive={false}></Active>
+                    {user.name}
+                  </li>
+                );
+              })}
+          </ul>
+        )}
+      </UsersList>
+    </Aside>
+  );
+}
+
 const Aside = styled.aside`
-  width: 22rem;
   height: 100vh;
   background: rgb(44, 8, 82);
+`;
+
+const UsersList = styled.section`
+  width: 22rem;
+  height: 100vh;
   color: white;
   font-size: 1.5rem;
+  overflow-y: hidden;
 
   ul {
     margin-top: 20rem;
@@ -40,6 +108,19 @@ const Aside = styled.aside`
       text-overflow: ellipsis;
     }
   }
+
+  @media screen and (max-width: 600px) {
+    display: none;
+    width: 18rem;
+
+    ul {
+      padding-left: 2rem;
+    }
+
+    &.show {
+      display: block;
+    }
+  }
 `;
 
 /**
@@ -55,53 +136,71 @@ const Active = styled.i`
   margin-right: 0.5rem;
 `;
 
-function Sidebar() {
-  const [allUsers, setAllUsers] = useState();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
+const SidebarButton = styled.span`
+  display: none;
+  position: fixed;
+  top: 1.3rem;
+  right: 1.3rem;
+  background-color: #2c0852;
+  height: 3.5rem;
+  width: 3.5rem;
+  border-radius: 50%;
+  z-index: 2000;
+  box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: background-color 2s;
 
-  useEffect(() => {
-    const getUsers = async () => {
-      setIsLoading(true);
+  i {
+    position: relative;
+    margin-top: 1.67rem;
+    &,
+    &::before,
+    &::after {
+      width: 1.5rem;
+      height: 2px;
+      background-color: white;
+      display: inline-block;
+    }
 
-      try {
-        // Get all users
-        const result = await axios('/api/users', {
-          headers: { authorization: `bearer ${localStorage.authToken}` },
-        });
+    &::before,
+    &::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      transition: all 0.5s;
+    }
 
-        setAllUsers(result.data);
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-        console.error('Unable to get users. ', error);
-        setIsError(true);
-      }
-    };
-    getUsers();
-  }, []);
+    &::before {
+      top: -0.5rem;
+    }
+    &::after {
+      top: 0.5rem;
+    }
+  }
 
-  return (
-    <Aside>
-      {isLoading && <div>Loading...</div>}
-      {isError ? (
-        <div>Something went wrong.</div>
-      ) : (
-        <ul>
-          {allUsers &&
-            allUsers.map(user => {
-              // TODO: Set isActive to true is the user is online
-              return (
-                <li key={user.id}>
-                  <Active isActive={false}></Active>
-                  {user.name}
-                </li>
-              );
-            })}
-        </ul>
-      )}
-    </Aside>
-  );
-}
+  &.show {
+    i {
+      background-color: transparent;
+    }
+
+    i::before {
+      transform: translateY(0.5rem) rotate(-135deg);
+    }
+
+    i::after {
+      transform: translateY(-0.5rem) rotate(135deg);
+    }
+  }
+
+  &:hover,
+  &:active {
+    background-color: rgba(44, 8, 82, 0.6);
+    cursor: pointer;
+  }
+
+  @media screen and (max-width: 600px) {
+    display: initial;
+  }
+`;
 
 export default Sidebar;
