@@ -22,11 +22,16 @@ const Button = styled.button`
 
 const SmallButton = styled.button`
   background: rgb(44, 8, 82);
-  width: 45%;
-  height: 25px;
-  font-size: 15px;
+  width: 40%;
+  height: 20px;
+  font-size: 12px;
   cursor: pointer;
   color: white;
+  margin-top: 1.5rem;
+  border: 1px solid gray;
+  &:hover {
+    border: gray;
+  }
   ${props => {
     if (props.background === 'white') {
       return `background:white;
@@ -37,6 +42,12 @@ const SmallButton = styled.button`
   }}
 `;
 
+const CloseButton = styled.button`
+  font-size: 20px;
+  color: darkgray;
+  border: none;
+  float: right;
+`;
 const Form = styled.form`
   background: white;
   color: black;
@@ -104,10 +115,10 @@ const Div = styled.div`
       return `border-bottom: 1px solid gray;
               top:349px;   
               left:-1px; 
-              height:380px          
+              height:400px          
               `;
     }
   }}
 `;
 
-export { Button, SmallButton, Form, Input, Label, Hr, Div };
+export { Button, SmallButton, CloseButton, Form, Input, Label, Hr, Div };

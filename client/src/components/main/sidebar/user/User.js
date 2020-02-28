@@ -3,7 +3,7 @@ import createJdention from './createJdenticon';
 import UserName from './UserName';
 import Image from './Image';
 import styled from 'styled-components';
-import { Hr, Div } from '../../../../theme/theme';
+import { Div } from '../../../../theme/theme';
 
 const Profile = styled.div`
   display: flex;
@@ -96,7 +96,7 @@ function User(props) {
           </b>
         </Name>
       </Profile>
-      <Hr />
+      <hr />
 
       <div>
         <Ol onClick={() => SetChangeUserName(true)}>Change Username</Ol>
