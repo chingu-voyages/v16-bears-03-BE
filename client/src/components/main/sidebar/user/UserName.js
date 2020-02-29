@@ -1,16 +1,27 @@
 import React, { useState } from 'react';
 import { Input } from '../../../../theme/theme';
+import axios from 'axios';
 
 function UserName(props) {
   const [name, setName] = useState(props.username);
 
   function changeUsername(e) {
     e.preventDefault();
-    {
-      /*Todo: axios to update the username*/
-    }
-    props.dispatch({ type: 'CHANGE_USERNAME', name });
-    props.SetChangeUserName(false);
+
+    axios
+      .patch(
+        `/api/users/${localStorage.userId}`,
+        { name },
+        {
+          headers: { authorization: `bearer ${localStorage.authToken}` },
+        },
+      )
+      .then(res => {
+        props.dispatch({ type: 'CHANGE_USERNAME', name });
+        props.SetChangeUserName(false);
+        props.setLogedinUser(name);
+      })
+      .catch(err => console.log(err.response.data));
   }
 
   return (

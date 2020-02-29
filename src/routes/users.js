@@ -148,7 +148,4 @@ router
       .catch(err => res.status(500).json('Something went wrong'));
   });
 
-
-
-
 module.exports = router;

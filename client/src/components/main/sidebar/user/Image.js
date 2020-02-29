@@ -37,22 +37,36 @@ function Image(props) {
     setUrl('');
   }
 
-  //Todo:
-  function deleteImage() {
-    //axios.patch()
-    console.log('delete image');
-  }
-
-  //Todo
   function updateImage(e) {
     e.preventDefault();
-    //axios.patch()
-
     axios
-      .patch(`/api/user/:id`, { userImage: url })
+      .patch(
+        `/api/users/${props.id}`,
+        { userImage: url },
+        {
+          headers: { authorization: `bearer ${localStorage.authToken}` },
+        },
+      )
       .then(res => {
-        console.log(res.data);
+        props.setImageUrl(url);
         props.dispatch({ type: 'CHANGE_IMAGEURL', imageurl: url });
+      })
+      .catch(err => console.log(err.response.data));
+    setUrl('');
+  }
+
+  function deleteImage() {
+    axios
+      .patch(
+        `/api/users/${props.id}`,
+        { userImage: 'null' },
+        {
+          headers: { authorization: `bearer ${localStorage.authToken}` },
+        },
+      )
+      .then(res => {
+        props.setImageUrl(null);
+        props.dispatch({ type: 'CHANGE_IMAGEURL', imageurl: null });
       })
       .catch(err => console.log(err.response.data));
   }
@@ -81,11 +95,15 @@ function Image(props) {
         </Label>
 
         <ButtonDiv>
-          <SmallButton type="button" onClick={previewImage}>
+          <SmallButton
+            type="button"
+            onClick={previewImage}
+            disabled={url.length > 11 ? false : true}
+          >
             Preview
           </SmallButton>
 
-          <SmallButton type="button" onClick={resetImage}>
+          <SmallButton type="button" onClick={resetImage} disabled={url.length >= 1 ? false : true}>
             Reset
           </SmallButton>
 
@@ -93,7 +111,12 @@ function Image(props) {
             Update
           </SmallButton>
 
-          <SmallButton type="button" background="white" onClick={deleteImage}>
+          <SmallButton
+            type="button"
+            background="white"
+            onClick={deleteImage}
+            disabled={props.imageurl === null ? true : false}
+          >
             Delete
           </SmallButton>
         </ButtonDiv>

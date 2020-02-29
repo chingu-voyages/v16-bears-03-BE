@@ -1,4 +1,5 @@
 import React, { useEffect, useReducer, useState } from 'react';
+import axios from 'axios';
 import createJdention from './createJdenticon';
 import UserName from './UserName';
 import Image from './Image';
@@ -44,7 +45,6 @@ function User(props) {
     username: props.logedinUser,
     jwt: localStorage.authToken,
     imageurl: props.imageUrl,
-    //updated: false,
   };
 
   function reducer(state, action) {
@@ -77,14 +77,19 @@ function User(props) {
     document.addEventListener('mousedown', handleClickOutside);
   });
 
-  //Todo:delete a account
   function deleteAccount() {
     const confirm = window.confirm('Do you really want to delete your account?');
+
     if (confirm === true) {
-      //todo:axios.delete
-      console.log('deleteAccount');
-      localStorage.clear();
-      window.location.href = '/';
+      axios
+        .delete(`/api/users/${userstate.userid}`, {
+          headers: { authorization: `bearer ${localStorage.authToken}` },
+        })
+        .then(res => {
+          localStorage.clear();
+          window.location.href = '/';
+        })
+        .catch(err => console.log(err.response.data));
     }
   }
 
@@ -102,6 +107,7 @@ function User(props) {
                 username={userstate.username}
                 dispatch={dispatch}
                 SetChangeUserName={SetChangeUserName}
+                setLogedinUser={props.setLogedinUser}
               />
             )}
           </b>
@@ -127,8 +133,10 @@ function User(props) {
         <Image
           dispatch={dispatch}
           SetOpenImageWindow={SetOpenImageWindow}
-          image={initialState.imageurl}
-          id={initialState.userid}
+          image={userstate.imageurl}
+          id={userstate.userid}
+          setImageUrl={props.setImageUrl}
+          imageurl={userstate.imageurl}
         />
       )}
     </Div>

@@ -93,7 +93,7 @@ function Sidebar() {
         setImageUrl(res.data.userImage);
       })
       .catch(err => console.error('Unable to get the user'));
-  }, []);
+  }, [logedinUser, imageUrl]);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -123,9 +123,16 @@ function Sidebar() {
         <p>{logedinUser}</p>
       </UserLink>
       {userWindow && (
-        <User logedinUser={logedinUser} imageUrl={imageUrl} setUserWindow={setUserWindow} />
+        <User
+          logedinUser={logedinUser}
+          imageUrl={imageUrl}
+          setLogedinUser={setLogedinUser}
+          setImageUrl={setImageUrl}
+          setUserWindow={setUserWindow}
+        />
       )}
       <Hr />
+
       {isLoading && <div>Loading...</div>}
       {isError ? (
         <div>Something went wrong.</div>

@@ -32,6 +32,12 @@ const SmallButton = styled.button`
   &:hover {
     border: gray;
   }
+  &:disabled {
+    background: gray;
+    border: 1px solid #999999;
+    cursor: default;
+    color: lightgray;
+  }
   ${props => {
     if (props.background === 'white') {
       return `background:white;
