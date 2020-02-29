@@ -1,5 +1,8 @@
-import React, { useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import styled from 'styled-components';
+import Styled from './styles/comment.styles';
+import EditComment from './EditComment';
+import DeleteComment from './DeleteComment';
 
 //Receives UTC date and returns time and date in local twelve-hour time
 
@@ -20,11 +23,32 @@ const formatDate = date => {
   }
 };
 
-// Comment Component
+//custom hook that hides comment menu when document body is clicked
 
-const Comment = props => {
-  const { id, name, date, text, user_id, userImage } = props;
+const useHideDropdown = ref => {
+  const [isHidden, setIsHidden] = useState(true);
 
+  const handleClickOutside = event => {
+    if (ref.current && !ref.current.contains(event.target)) {
+      setIsHidden(!isHidden);
+    }
+  };
+
+  useEffect(() => {
+    // Bind the event listener
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      // Unbind the event listener on clean up
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  });
+
+  return [isHidden, setIsHidden];
+};
+
+//custom hook to display avatar
+
+const useAvatar = (user_id, userImage, id) => {
   useEffect(() => {
     const script = document.createElement('script');
 
@@ -37,69 +61,92 @@ const Comment = props => {
 
     document.body.appendChild(script);
   });
+};
+
+// Comment Component
+
+const Comment = props => {
+  const { id, name, date, text, user_id, userImage, isEdited, refContainer } = props;
+  const dropdown = useRef(null);
+  const menu = useRef(null);
+  const [isHidden, setIsHidden] = useHideDropdown(dropdown);
+  const [editComment, setEditComment] = useState(false);
+  const [deleteComment, setDeleteComment] = useState(false);
+
+  //returns the distance in px between top of ChatWindow container and top of menu element, adjusting for scroll.
+  const getMenuPos = ref => {
+    return ref.current.offsetTop - refContainer.current.scrollTop;
+  };
+
+  const handleMenu = e => {
+    setIsHidden(!isHidden);
+  };
+
+  const handleEditComment = e => {
+    setEditComment(!editComment);
+    setIsHidden(!isHidden);
+  };
+
+  const handleDeleteComment = e => {
+    setDeleteComment(!deleteComment);
+    setIsHidden(!isHidden);
+  };
+
+  useAvatar(user_id, userImage, id);
 
   return (
-    <Wrapper>
-      <Avatar id={id} />
+    <Styled.CommentContainer>
+      <Styled.CommentAvatar id={id} />
 
-      <UserDateWrapper>
-        <Name>{name}</Name>
-        <Time>{formatDate(date)}</Time>
-      </UserDateWrapper>
+      <Styled.CommentNameDateWrapper>
+        <Styled.CommentName>{name}</Styled.CommentName>
+        <Styled.CommentTime>{formatDate(date)}</Styled.CommentTime>
+      </Styled.CommentNameDateWrapper>
 
-      <Text>{text}</Text>
-    </Wrapper>
+      {editComment ? (
+        <StyledEditComment _id={id} setEditComment={setEditComment}>
+          {text}
+        </StyledEditComment>
+      ) : (
+        <Styled.CommentTextWrapper>
+          <Styled.CommentText>{text}</Styled.CommentText>
+          <Styled.CommentEdited isEdited={isEdited}>(edited)</Styled.CommentEdited>
+        </Styled.CommentTextWrapper>
+      )}
+
+      <Styled.CommentMenu show={user_id === localStorage.userId} onClick={handleMenu} ref={menu}>
+        ...
+      </Styled.CommentMenu>
+
+      {!isHidden && (
+        <Styled.CommentDropdown ref={dropdown} pos={() => getMenuPos(menu)}>
+          <Styled.MenuButton onClick={handleEditComment}>Edit Comment</Styled.MenuButton>
+          <Styled.MenuDeleteButton onClick={handleDeleteComment}>
+            Delete Comment
+          </Styled.MenuDeleteButton>
+        </Styled.CommentDropdown>
+      )}
+
+      {deleteComment && (
+        <DeleteComment
+          id={id}
+          name={name}
+          date={formatDate(date)}
+          text={text}
+          user_id={user_id}
+          userImage={userImage}
+          isEdited={isEdited}
+          deleteComment={deleteComment}
+          setDeleteComment={setDeleteComment}
+          useAvatar={useAvatar}
+        ></DeleteComment>
+      )}
+    </Styled.CommentContainer>
   );
 };
 
-const Wrapper = styled.div`
-  display: grid;
-  grid-template-rows: auto 1fr;
-  grid-template-columns: auto 1fr;
-  grid-column-gap: 1rem;
-  width: 100%;
-  flex-basis: 100%;
-  margin-bottom: 1rem;
-`;
-
-const Avatar = styled.div`
-  grid-area: 1/1/3/2;
-  border-radius: 50%;
-  width: 3.6rem;
-  height: 3.6rem;
-  align-self: flex-start;
-  margin-right: 0.25rem;
-
-  & > svg,
-  img {
-    height: 3.6rem;
-    width: 3.6rem;
-  }
-`;
-
-const UserDateWrapper = styled.div`
-  grid-area: 1/2/2/4;
-  font-size: 1.2rem;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-`;
-const Name = styled.div`
-  font-size: 1.6rem;
-  margin-right: 0.5rem;
-  font-weight: 600;
-`;
-
-const Time = styled.div`
-  font-size: 1.2rem;
-`;
-
-const Text = styled.div`
+const StyledEditComment = styled(EditComment)`
   grid-area: 2/2/3/3;
-  font-size: 1.5rem;
-  font-weight: 400;
-  color: #1c1d1c;
-  margin-top: 0.5rem;
 `;
 
 export default Comment;

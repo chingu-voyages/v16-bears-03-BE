@@ -19,6 +19,7 @@ const ViewComments = props => {
   const [allComments, setAllComments] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+
   const { chatState } = useContext(ChatContext);
 
   //triggers when ChatWindow state changes
@@ -42,7 +43,9 @@ const ViewComments = props => {
   }, [chatState]);
 
   useEffect(() => {
-    scrollToBottom(refContainer);
+    if (chatState.newComment) {
+      scrollToBottom(refContainer);
+    }
   });
 
   return (
@@ -60,7 +63,9 @@ const ViewComments = props => {
               name={comment.user}
               date={comment.date}
               text={comment.text}
+              isEdited={comment.isEdited}
               user_id={comment.user_id}
+              refContainer={refContainer}
             ></Comment>
           );
         })
