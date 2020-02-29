@@ -29,7 +29,7 @@ router.post(
       return res.status(400).json({ errors: errors.array() });
     }
 
-    let { name, email, password, userImage } = req.body;
+    let { name, email, password } = req.body;
 
     try {
       // See if user exists
@@ -49,7 +49,6 @@ router.post(
         name,
         email,
         password,
-        userImage,
       });
 
       res.status(201).json(user.serialize());
@@ -86,5 +85,56 @@ router.get('/', jwtAuth, async (req, res) => {
     return res.status(500).send('Server error');
   }
 });
+
+router
+  .route('/:userID')
+  .all(jwtAuth, (req, res, next) => {
+    User.findById(req.params.userID)
+      .then(user => {
+        if (!user) {
+          return res.status(404).json({ Error: 'User not found' });
+        }
+
+        if (req.user._id !== user._id.toString()) {
+          return res.status(403).json({ message: "This isn't your profile" });
+        }
+        res.user = user;
+        next();
+      })
+      .catch(next);
+  })
+  .patch((req, res) => {
+    const { name, userImage } = req.body;
+    const fieldsToUpdate = { name, userImage };
+
+    User.findById(req.params.userID)
+      .then(user => {
+        for (let field in fieldsToUpdate) {
+          if (fieldsToUpdate[field]) {
+            if (fieldsToUpdate[field] === 'null') {
+              user[field] = null;
+            } else {
+              user[field] = fieldsToUpdate[field];
+            }
+          }
+        }
+
+        user.save().then(user => {
+          const { id, email, name, userImage } = user;
+          res.status(201).json({
+            id,
+            email,
+            name,
+            userImage,
+          });
+        });
+      })
+      .catch(err => res.status(500).json('Something went wrong'));
+  })
+  .delete((req, res) => {
+    User.findByIdAndRemove(req.params.userID)
+      .then(user => res.status(204).end())
+      .catch(err => res.status(500).json('Something went wrong'));
+  });
 
 module.exports = router;
