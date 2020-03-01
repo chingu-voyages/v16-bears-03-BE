@@ -105,8 +105,14 @@ router
       .catch(next);
   })
   .get((req, res) => {
+<<<<<<< HEAD
     const {userID } = req.params;
     User.findById(userID, (err, user) => {
+=======
+    const { userID } = req.params;
+    User.findById(userID, (err, user) => {
+      console.log(user);
+>>>>>>> added get a user route
       if (err) {
         console.error(error.message);
       }
