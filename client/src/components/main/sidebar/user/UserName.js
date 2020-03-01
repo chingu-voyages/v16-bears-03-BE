@@ -29,9 +29,10 @@ function UserName(props) {
       <Input
         id="userinput"
         type="text"
-        defaultValue={name}
+        value={name}
         pattern=".{6,15}"
         title="6 to 15 characters is required."
+        onBlur={e => props.SetChangeUserName(false)}
         onChange={e => setName(e.target.value)}
         onKeyDown={e => (e.keyCode === 13 ? changeUsername : null)}
         autoFocus
