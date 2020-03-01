@@ -68,6 +68,11 @@ function Sidebar() {
 const Aside = styled.aside`
   height: 100vh;
   background: rgb(44, 8, 82);
+
+  @media screen and (max-width: 600px) {
+    position: absolute;
+    z-index: 100;
+  }
 `;
 
 const UsersList = styled.section`
@@ -140,7 +145,7 @@ const SidebarButton = styled.span`
   display: none;
   position: fixed;
   top: 1.3rem;
-  right: 1.3rem;
+  left: 1.3rem;
   background-color: #2c0852;
   height: 3.5rem;
   width: 3.5rem;
@@ -179,6 +184,7 @@ const SidebarButton = styled.span`
   }
 
   &.show {
+    left: 19.3rem;
     i {
       background-color: transparent;
     }
