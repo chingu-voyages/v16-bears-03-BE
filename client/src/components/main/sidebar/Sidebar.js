@@ -12,7 +12,6 @@ const Aside = styled.aside`
   font-size: 1.5rem;
 
   ul {
-    margin-top: 20rem;
     height: 75%;
     width: 100%;
     overflow-y: scroll;
@@ -44,7 +43,6 @@ const Aside = styled.aside`
   }
 `;
 
-
 /**
  * Set the active dot to green if user is online
  */
@@ -56,7 +54,7 @@ const Active = styled.i`
   background-color: ${props => (props.isActive ? '#2BAC76' : 'grey')};
   border-radius: 50%;
   margin-right: 0.5rem;
-  `
+`;
 
 const UserLink = styled.div`
   display: flex;
