@@ -91,6 +91,7 @@ function Image(props) {
               setUrl(e.target.value);
             }}
             autoFocus
+            required
           />
         </Label>
 
