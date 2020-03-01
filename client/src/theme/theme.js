@@ -123,12 +123,20 @@ const Div = styled.div`
   border-bottom: 5rem solid gray;
   color: black;
   padding: 2rem;
+  @media (max-width: 480px) {
+    top: 0px;
+    left: 0px;
+  }
   ${props => {
     if (props.type === 'image') {
       return `border-bottom: 1px solid gray;
               top:349px;   
               left:-1px; 
-              height:420px          
+              height:420px ;
+              @media (max-width:480px){
+                 top:349px;
+                 left:-1px;
+                }         
               `;
     }
   }}

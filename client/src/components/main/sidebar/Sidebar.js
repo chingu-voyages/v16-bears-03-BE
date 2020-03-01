@@ -70,7 +70,7 @@ const P = styled.p`
   height: 1rem;
   border-radius: 50%;
   background: rgb(16, 92, 44);
-  margin: auto 1rem auto 2rem;
+  margin: auto 0.5rem auto 4rem;
 `;
 
 function Sidebar() {

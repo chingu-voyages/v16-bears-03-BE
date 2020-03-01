@@ -131,12 +131,7 @@ router
 
         user.save().then(user => {
           const { id, email, name, userImage } = user;
-          res.status(201).json({
-            id,
-            email,
-            name,
-            userImage,
-          });
+          res.status(201).send('success');
         });
       })
       .catch(err => res.status(500).json('Something went wrong'));
