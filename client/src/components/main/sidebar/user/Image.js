@@ -56,19 +56,22 @@ function Image(props) {
   }
 
   function deleteImage() {
-    axios
-      .patch(
-        `/api/users/${props.id}`,
-        { userImage: 'null' },
-        {
-          headers: { authorization: `bearer ${localStorage.authToken}` },
-        },
-      )
-      .then(res => {
-        props.setImageUrl(null);
-        props.dispatch({ type: 'CHANGE_IMAGEURL', imageurl: null });
-      })
-      .catch(err => console.log(err.response.data));
+    const confirm = window.confirm('Are you sure you want to delete the current image?');
+    if (confirm === true) {
+      axios
+        .patch(
+          `/api/users/${props.id}`,
+          { userImage: 'null' },
+          {
+            headers: { authorization: `bearer ${localStorage.authToken}` },
+          },
+        )
+        .then(res => {
+          props.setImageUrl(null);
+          props.dispatch({ type: 'CHANGE_IMAGEURL', imageurl: null });
+        })
+        .catch(err => console.log(err.response.data));
+    }
   }
 
   return (
