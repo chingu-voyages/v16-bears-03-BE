@@ -33,6 +33,10 @@ const ChatWindow = () => {
   return (
     <ChatContext.Provider value={{ chatState, dispatch }}>
       <Container>
+
+        {/*hardcoded channel header */}
+        <Header>#Slack Clone</Header>
+
         <ViewComments />
         <CreateComment />
       </Container>
@@ -42,7 +46,7 @@ const ChatWindow = () => {
 
 const Container = styled.div`
   width: 100%;
-  height: 80%;
+  height: 100%;
   grid-area: 1/2/3/3;
   align-self: flex-end;
   margin-bottom: 1rem;
@@ -50,6 +54,18 @@ const Container = styled.div`
   flex-direction: column;
   justify-content: flex-end;
   position: relative;
+  color: rgb(29, 28, 29);
+`;
+
+const Header = styled.section`
+  display: flex;
+  margin-left: 0.5rem;
+  font-size: 2rem;
+  align-items: flex-end;
+  font-weight: 600;
+  flex: 0 0 5%;
+  padding: 0.5rem 0.5rem;
+  font-size: 1.8rem;
 `;
 
 export default ChatWindow;

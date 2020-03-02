@@ -118,7 +118,6 @@ const CommentText = styled(Styled.CommentTextWrapper)`
     -webkit-appearance: none;
     border: 0.4rem solid #919191;
     background: #919191;
- 
   }
 `;
 

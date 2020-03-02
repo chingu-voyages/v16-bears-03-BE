@@ -9,12 +9,15 @@ const CommentContainer = styled.div`
   grid-column-gap: 1rem;
   width: 100%;
   flex-basis: 100%;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  margin-left: 0.5rem;
+  padding: 0.5rem 0.5rem;
 
   &:hover {
     & > div:nth-child(4) {
       visibility: visible;
     }
+    background-color: rgb(29,28,29, .03);
   }
 `;
 
@@ -53,13 +56,13 @@ const CommentTime = styled.div`
 const CommentTextWrapper = styled.div`
   grid-area: 2/2/3/4;
   font-size: 1.5rem;
+  line-height: 1.46;
   font-weight: 400;
-  color: #1c1d1c;
   margin-top: 0.5rem;
 `;
 
 const CommentText = styled.span`
-  padding-top: 1rem;
+  padding-top: 0.3rem;
   padding-right: 1rem;
   display: inline-block;
 `;
@@ -80,7 +83,7 @@ const CommentMenu = styled.div`
   transition: all 80ms linear;
 
   &:hover {
-    background-color: #e9e9e9;
+    background-color: rgb(29, 28, 29, .05);
   }
 `;
 
@@ -89,15 +92,15 @@ const CommentKebab = styled.figure`
   height: 0.5rem;
   border-radius: 0.5rem;
   margin: 0.2rem 0;
-  background-color: #181818;
+  background-color: rgb(29, 28, 29);
 `;
 
 const CommentDropdown = styled.div`
   display: flex;
   flex-flow: column wrap;
-  border: 0.1rem solid #181818;
+  border: 0.1rem solid rgb(29, 28, 29);
   grid-area: 2/3/2/4;
-  height: 6.5rem;
+  height: 7.5rem;
   width: 12rem;
   background-color: #f1f1f1;
   box-shadow: 0px 0.1rem 1.2rem 0px rgba(0, 0, 0, 0.2);
@@ -156,6 +159,7 @@ const MenuButton = styled(Button)`
   padding-left: 0.5rem;
   justify-content: flex-start;
   width: 100%;
+  flex: 0 0 40%;
 
   &:hover {
     transform: translateY(0.1rem);
@@ -186,7 +190,7 @@ const CommentForm = styled.form`
 
 const CommentTextArea = styled.textarea`
   padding: 0.25rem;
-  border: 0.1rem solid #241722;
+  border: 0.1rem solid rgb(29, 28, 29, 0.5);
   resize: none;
   outline: none;
   scrollbar-color: #919191;
