@@ -103,6 +103,16 @@ router
       })
       .catch(next);
   })
+  .get((req, res) => {
+    const { userID } = req.params;
+    User.findById(userID, (err, user) => {
+      if (err) {
+        console.error(error.message);
+      }
+      const { name, userImage } = user;
+      res.status(200).json({ name, userImage });
+    });
+  })
   .patch((req, res) => {
     const { name, userImage } = req.body;
     const fieldsToUpdate = { name, userImage };
@@ -121,12 +131,7 @@ router
 
         user.save().then(user => {
           const { id, email, name, userImage } = user;
-          res.status(201).json({
-            id,
-            email,
-            name,
-            userImage,
-          });
+          res.status(201).send('success');
         });
       })
       .catch(err => res.status(500).json('Something went wrong'));

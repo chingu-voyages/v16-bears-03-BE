@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
+import User from './user/User';
+import { Hr } from '../../../theme/theme.js';
 
 const Aside = styled.aside`
   width: 22rem;
@@ -10,7 +12,6 @@ const Aside = styled.aside`
   font-size: 1.5rem;
 
   ul {
-    margin-top: 20rem;
     height: 75%;
     width: 100%;
     overflow-y: scroll;
@@ -55,10 +56,42 @@ const Active = styled.i`
   margin-right: 0.5rem;
 `;
 
+const UserLink = styled.div`
+  display: flex;
+  justify-content: start;
+  &:hover {
+    background: rgb(56, 9, 105);
+    cursor: pointer;
+    color: gray;
+  }
+`;
+const P = styled.p`
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: rgb(16, 92, 44);
+  margin: auto 0.5rem auto 4rem;
+`;
+
 function Sidebar() {
   const [allUsers, setAllUsers] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [userWindow, setUserWindow] = useState(false);
+  const [logedinUser, setLogedinUser] = useState('');
+  const [imageUrl, setImageUrl] = useState(null);
+
+  useEffect(() => {
+    axios
+      .get(`/api/users/${localStorage.userId}`, {
+        headers: { authorization: `bearer ${localStorage.authToken}` },
+      })
+      .then(res => {
+        setLogedinUser(res.data.name);
+        setImageUrl(res.data.userImage);
+      })
+      .catch(err => console.error('Unable to get the user'));
+  }, [logedinUser, imageUrl]);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -83,6 +116,21 @@ function Sidebar() {
 
   return (
     <Aside>
+      <UserLink onClick={() => setUserWindow(true)}>
+        <P></P>
+        <p>{logedinUser}</p>
+      </UserLink>
+      {userWindow && (
+        <User
+          logedinUser={logedinUser}
+          imageUrl={imageUrl}
+          setLogedinUser={setLogedinUser}
+          setImageUrl={setImageUrl}
+          setUserWindow={setUserWindow}
+        />
+      )}
+      <Hr />
+
       {isLoading && <div>Loading...</div>}
       {isError ? (
         <div>Something went wrong.</div>
