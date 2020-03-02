@@ -81,7 +81,8 @@ const Wrapper = styled.div`
   overflow: auto;
   border-top: 0.1rem solid black;
   padding: 1rem 0.5rem;
-
+  scrollbar-color: #919191;
+  scrollbar-width: thin;
   &::-webkit-scrollbar-track {
     -webkit-appearance: none;
     border: 0.01rem solid transparent;
@@ -97,7 +98,6 @@ const Wrapper = styled.div`
     -webkit-appearance: none;
     border: 0.1rem solid #919191;
     background: #919191;
-    border-radius: 1rem;
   }
 `;
 

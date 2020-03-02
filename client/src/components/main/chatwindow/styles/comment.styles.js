@@ -11,8 +11,8 @@ const CommentContainer = styled.div`
   flex-basis: 100%;
   margin-bottom: 1rem;
 
-  &:hover{
-    & > div:nth-child(4){
+  &:hover {
+    & > div:nth-child(4) {
       visibility: visible;
     }
   }
@@ -70,34 +70,42 @@ const CommentEdited = styled.span`
 `;
 
 const CommentMenu = styled.div`
-  grid-area: 1/3/2/4;
   display: ${props => (props.show ? 'flex' : 'none')};
   cursor: pointer;
   align-items: center;
   justify-content: flex-start;
-  font-size: 2.5rem;
   visibility: hidden;
+  flex-direction: column;
+  width: 3rem;
+  transition: all 80ms linear;
 
   &:hover {
-    transform: translateY(0.1rem);
-    font-size: 2.75rem;
-    transition-duration: 0.1s;
+    background-color: #e9e9e9;
   }
+`;
+
+const CommentKebab = styled.figure`
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 0.5rem;
+  margin: 0.2rem 0;
+  background-color: #181818;
 `;
 
 const CommentDropdown = styled.div`
   display: flex;
   flex-flow: column wrap;
-  border: 0.1rem solid black;
+  border: 0.1rem solid #181818;
   grid-area: 2/3/2/4;
-  height: 10rem;
+  height: 6.5rem;
+  width: 12rem;
   background-color: #f1f1f1;
   box-shadow: 0px 0.1rem 1.2rem 0px rgba(0, 0, 0, 0.2);
   justify-content: space-around;
   border-radius: 0.4rem;
   position: absolute;
   top: ${props => props.pos}px;
-  right: 1rem;
+  right: 3.5rem;
 `;
 
 const Button = styled.button`
@@ -120,30 +128,49 @@ const Button = styled.button`
   min-width: 8rem;
   padding: 0 1.2rem 0.1rem;
   flex: 0 0 7.5%;
+  transition: all 80ms linear;
 
   &:hover {
     transform: translateY(0.1rem);
     font-size: 1.75rem;
-    transition-duration: 0.1s;
   }
 `;
 
+const SaveButton = styled(Button)`
+  background-color: #007a5a;
+  color: #fff;
+  box-shadow: none;
+`;
+
 const DeleteButton = styled(Button)`
-  transition: all 80ms linear;
   background: #e01e5a;
   color: #fff;
   box-shadow: none;
 `;
 
 const MenuButton = styled(Button)`
-  font-weight: 400;
-  font-size: 1.7rem;
+  font-weight: 500;
+  font-size: 1.4rem;
+  background: none;
+  border-radius: 0;
+  padding-left: 0.5rem;
+  justify-content: flex-start;
+  width: 100%;
+
+  &:hover {
+    transform: translateY(0.1rem);
+    font-size: 1.45rem;
+    background-color: #7a7efa;
+  }
 `;
 
-const MenuDeleteButton = styled(Button)`
-  font-weight: 400;
-  font-size: 1.7rem;
+const MenuDeleteButton = styled(MenuButton)`
   color: #e01e5a;
+
+  &:hover {
+    background-color: #e01e5a;
+    color: #fff;
+  }
 `;
 
 /*styles for components that create or edit comments*/
@@ -162,7 +189,7 @@ const CommentTextArea = styled.textarea`
   border: 0.1rem solid #241722;
   resize: none;
   outline: none;
-  scrollbar-color: #241722 white;
+  scrollbar-color: #919191;
   scrollbar-width: thin;
   border-radius: 0.15rem;
   font-size: 1.6rem;
@@ -184,8 +211,8 @@ const CommentTextArea = styled.textarea`
 
   &::-webkit-scrollbar-thumb {
     -webkit-appearance: none;
-    border: 0.1rem solid #2c0852;
-    background: #2c0852;
+    border: 0.1rem solid #919191;
+    background: #919191;
   }
 `;
 
@@ -198,9 +225,11 @@ const Styled = {
   CommentTextWrapper,
   CommentText,
   CommentMenu,
+  CommentKebab,
   CommentDropdown,
   CommentEdited,
   Button,
+  SaveButton,
   DeleteButton,
   MenuButton,
   MenuDeleteButton,

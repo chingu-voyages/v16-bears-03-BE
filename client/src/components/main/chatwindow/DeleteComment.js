@@ -100,6 +100,8 @@ const CommentContainer = styled(Styled.CommentContainer)`
 const CommentText = styled(Styled.CommentTextWrapper)`
   overflow: auto;
   max-height: 10rem;
+  scrollbar-color: #919191;
+  scrollbar-width: thin;
 
   &::-webkit-scrollbar-track {
     -webkit-appearance: none;
@@ -114,9 +116,9 @@ const CommentText = styled(Styled.CommentTextWrapper)`
 
   &::-webkit-scrollbar-thumb {
     -webkit-appearance: none;
-    border: 0.1rem solid #919191;
+    border: 0.4rem solid #919191;
     background: #919191;
-    border-radius: 1rem;
+ 
   }
 `;
 

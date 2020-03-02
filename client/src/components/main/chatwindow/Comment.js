@@ -115,7 +115,9 @@ const Comment = props => {
       )}
 
       <Styled.CommentMenu show={user_id === localStorage.userId} onClick={handleMenu} ref={menu}>
-        ...
+        <Styled.CommentKebab></Styled.CommentKebab>
+        <Styled.CommentKebab></Styled.CommentKebab>
+        <Styled.CommentKebab></Styled.CommentKebab>
       </Styled.CommentMenu>
 
       {!isHidden && (
