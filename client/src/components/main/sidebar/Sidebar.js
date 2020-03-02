@@ -114,7 +114,7 @@ const UsersList = styled.section`
   overflow-y: hidden;
 
   ul {
-    margin-top: 10rem;
+    margin-top: 2rem;
     height: 75%;
     width: 100%;
     overflow-y: scroll;
