@@ -55,7 +55,7 @@ const EditComment = props => {
       <Form>
         <TextArea onChange={handleOnChange} onKeyDown={handleEnter} value={comment} />
         <Styled.Button onClick={() => setEditComment(false)}>Cancel</Styled.Button>
-        <Styled.DeleteButton onClick={handleSave}>Save</Styled.DeleteButton>
+        <Styled.SaveButton onClick={handleSave}>Save</Styled.SaveButton>
       </Form>
     </Styled.CommentFormWrapper>
   );
