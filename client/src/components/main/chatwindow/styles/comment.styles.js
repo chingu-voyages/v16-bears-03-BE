@@ -17,7 +17,7 @@ const CommentContainer = styled.div`
     & > div:nth-child(4) {
       visibility: visible;
     }
-    background-color: rgb(29,28,29, .03);
+    background-color: rgb(29, 28, 29, 0.03);
   }
 `;
 
@@ -77,13 +77,12 @@ const CommentMenu = styled.div`
   cursor: pointer;
   align-items: center;
   justify-content: flex-start;
-  visibility: hidden;
   flex-direction: column;
   width: 3rem;
   transition: all 80ms linear;
 
   &:hover {
-    background-color: rgb(29, 28, 29, .05);
+    background-color: rgb(29, 28, 29, 0.05);
   }
 `;
 
