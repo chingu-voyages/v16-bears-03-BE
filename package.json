@@ -1,29 +1,56 @@
 {
-  "name": "express-boilerplate",
+  "name": "slack-clone",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "mocha --require test/setup.js",
-    "dev": "nodemon src/server.js",
+    "server": "nodemon src/server.js",
+    "client": "cd client && npm start",
     "start": "node src/server.js",
     "predeploy": "npm audit",
-    "deploy": "git push heroku master"
+    "dev": "concurrently \"npm run server\" \"npm run client\" ",
+    "format": "prettier --write \"**/*\"",
+    "format:md": "prettier --write \"**/*.md\"",
+    "lint:js": "eslint . --ext .js,.jsx",
+    "lint:js:fix": "npm run eslint . --ext .js,.jsx --fix",
+    "lint-staged": "lint-staged"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "git fetch && git rebase origin/dev && lerna run test"
+    }
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "concurrently": "^5.1.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
+    "express-validator": "^6.4.0",
     "helmet": "^3.21.1",
-    "morgan": "^1.9.1"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.8.12",
+    "morgan": "^1.9.1",
+    "passport": "^0.3.2",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
+    "husky": "^4.2.3",
+    "lerna": "^3.20.2",
+    "lint-staged": "^10.0.7",
     "mocha": "^6.2.2",
     "nodemon": "^1.19.4",
+    "prettier": "1.19.1",
     "supertest": "^4.0.2"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": "prettier --write"
   }
 }
