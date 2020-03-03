@@ -9,15 +9,12 @@ const CommentContainer = styled.div`
   grid-column-gap: 1rem;
   width: 100%;
   flex-basis: 100%;
-  margin-bottom: 0.5rem;
-  margin-left: 0.5rem;
-  padding: 0.5rem 0.5rem;
-
+  margin-bottom: 1rem;
+  position: relative;
   &:hover {
     & > div:nth-child(4) {
       visibility: visible;
     }
-    background-color: rgb(29, 28, 29, 0.03);
   }
 `;
 
@@ -90,7 +87,7 @@ const CommentKebab = styled.figure`
   width: 0.5rem;
   height: 0.5rem;
   border-radius: 0.5rem;
-  margin: 0.2rem 0;
+  margin: 0.1rem 0;
   background-color: rgb(29, 28, 29);
 `;
 
@@ -99,15 +96,15 @@ const CommentDropdown = styled.div`
   flex-flow: column wrap;
   border: 0.1rem solid rgb(29, 28, 29);
   grid-area: 2/3/2/4;
-  height: 7.5rem;
+  height: 4rem;
   width: 12rem;
   background-color: #f1f1f1;
   box-shadow: 0px 0.1rem 1.2rem 0px rgba(0, 0, 0, 0.2);
   justify-content: space-around;
   border-radius: 0.4rem;
   position: absolute;
-  top: ${props => props.pos}px;
-  right: 3.5rem;
+  top: ${props => props.pos - 1}px;
+  right: 5rem;
 `;
 
 const Button = styled.button`
