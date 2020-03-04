@@ -3,6 +3,9 @@ import styled from 'styled-components';
 import Styled from './styles/comment.styles';
 import EditComment from './EditComment';
 import DeleteComment from './DeleteComment';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCommentDots } from '@fortawesome/free-solid-svg-icons';
+import { Tooltip } from '../../../theme/theme';
 
 //Receives UTC date and returns time and date in local twelve-hour time
 
@@ -114,11 +117,19 @@ const Comment = props => {
         </Styled.CommentTextWrapper>
       )}
 
-      <Styled.CommentMenu show={user_id === localStorage.userId} onClick={handleMenu} ref={menu}>
-        <Styled.CommentKebab></Styled.CommentKebab>
-        <Styled.CommentKebab></Styled.CommentKebab>
-        <Styled.CommentKebab></Styled.CommentKebab>
-      </Styled.CommentMenu>
+      <GroupButton>
+        <Span onClick={e => props.setThreadWindow(true)}>
+          <Tooltip>Start a Thread</Tooltip>
+          <FontAwesomeIcon icon={faCommentDots} style={{ color: 'rgb(29, 28, 29)' }} size="2x" />
+        </Span>
+
+        <Styled.CommentMenu show={user_id === localStorage.userId} onClick={handleMenu} ref={menu}>
+          <Tooltip>Edit/Delete</Tooltip>
+          <Styled.CommentKebab></Styled.CommentKebab>
+          <Styled.CommentKebab></Styled.CommentKebab>
+          <Styled.CommentKebab></Styled.CommentKebab>
+        </Styled.CommentMenu>
+      </GroupButton>
 
       {!isHidden && (
         <Styled.CommentDropdown ref={dropdown} pos={() => getMenuPos(menu)}>
@@ -149,6 +160,26 @@ const Comment = props => {
 
 const StyledEditComment = styled(EditComment)`
   grid-area: 2/2/3/3;
+`;
+
+const GroupButton = styled.div`
+  visibility: hidden;
+  padding: 0.5rem;
+  border: 0.5px solid lightgray;
+  position: absolute;
+  top: -1.5rem;
+  right: 3rem;
+  border-radius: 10%;
+  background: rgb(224, 224, 224);
+`;
+const Span = styled.span`
+  cursor: pointer;
+  float: right;
+  &:hover {
+    & > div {
+      visibility: visible;
+    }
+  }
 `;
 
 export default Comment;

@@ -55,8 +55,11 @@ const ViewComments = props => {
       <ChannelSection>
         <Name>#Slack Clone</Name>
         <Description>
-          <ChannelLink href ="https://github.com/chingu-voyages/v16-bears-03-BE"  target="_blank">Bears-Team-03</ChannelLink> created this channel on February 8th. This is the very beginning of the
-          #Slack Clone channel.
+          <ChannelLink href="https://github.com/chingu-voyages/v16-bears-03-BE" target="_blank">
+            Bears-Team-03
+          </ChannelLink>{' '}
+          created this channel on February 8th. This is the very beginning of the #Slack Clone
+          channel.
         </Description>
       </ChannelSection>
 
@@ -76,6 +79,7 @@ const ViewComments = props => {
               isEdited={comment.isEdited}
               user_id={comment.user_id}
               refContainer={refContainer}
+              setThreadWindow={props.setThreadWindow}
             ></Comment>
           );
         })
@@ -89,7 +93,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-flow: row wrap;
   overflow: auto;
-  border-top: 0.1rem solid rgb(29, 28, 29, .3);
+  border-top: 0.1rem solid rgb(29, 28, 29, 0.3);
   padding: 1rem 0rem;
   scrollbar-color: #919191;
   scrollbar-width: thin;
@@ -123,16 +127,18 @@ const Description = styled.p`
 `;
 
 const ChannelSection = styled.section`
-  border-bottom: 0.1rem solid rgb(29, 28, 29, .3);
+  border-bottom: 0.1rem solid rgb(29, 28, 29, 0.3);
   width: 100%;
   display: flex;
   flex-direction: column;
+  margin-bottom: 1rem;
 `;
 
 const ChannelLink = styled.a`
-background-color: rgb(29, 155, 209, .1);
-color: rgb(18, 100, 163, 1);
-border: 0;
-border-radius: .3rem;`;
+  background-color: rgb(29, 155, 209, 0.1);
+  color: rgb(18, 100, 163, 1);
+  border: 0;
+  border-radius: 0.3rem;
+`;
 
 export default ViewComments;
