@@ -124,6 +124,7 @@ const Comment = props => {
         </Span>
 
         <Styled.CommentMenu show={user_id === localStorage.userId} onClick={handleMenu} ref={menu}>
+          <Tooltip>Edit/Delete</Tooltip>
           <Styled.CommentKebab></Styled.CommentKebab>
           <Styled.CommentKebab></Styled.CommentKebab>
           <Styled.CommentKebab></Styled.CommentKebab>
@@ -163,7 +164,6 @@ const StyledEditComment = styled(EditComment)`
 
 const GroupButton = styled.div`
   visibility: hidden;
-  width: 80px;
   padding: 0.5rem;
   border: 0.5px solid lightgray;
   position: absolute;

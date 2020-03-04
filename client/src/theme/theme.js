@@ -144,7 +144,7 @@ const Div = styled.div`
 
 const Tooltip = styled.div`
   visibility: hidden;
-  width: 100px;
+  width: 90px;
   background: #555;
   color: #fff;
   text-align: center;
@@ -154,7 +154,7 @@ const Tooltip = styled.div`
   position: absolute;
   left: 50%;
   bottom: 125%;
-  margin-left: -30px;
+  margin-left: -45px;
   &::after {
     content: '';
     position: absolute;

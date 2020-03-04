@@ -80,6 +80,9 @@ const CommentMenu = styled.div`
   transition: all 80ms linear;
 
   &:hover {
+    & > div {
+      visibility: visible;
+    }
     background-color: rgb(29, 28, 29, 0.05);
   }
 `;
