@@ -56,7 +56,7 @@ const CloseButton = styled.button`
   cursor: pointer;
   margin-bottom: 1.5rem;
   &:hover {
-    color: lightgray;
+    color: black;
   }
 `;
 
@@ -142,4 +142,31 @@ const Div = styled.div`
   }}
 `;
 
-export { Button, SmallButton, CloseButton, Form, Input, Label, Hr, Div };
+const Tooltip = styled.div`
+  visibility: hidden;
+  width: 100px;
+  background: #555;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  z-index: 1;
+  padding: 5px 0;
+  position: absolute;
+  left: 50%;
+  bottom: 125%;
+  margin-left: -30px;
+  &::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #555 transparent transparent transparent;
+    &:hover {
+      visibility: visible;
+    }
+  }
+`;
+export { Button, SmallButton, CloseButton, Tooltip, Form, Input, Label, Hr, Div };

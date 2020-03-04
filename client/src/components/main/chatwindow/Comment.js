@@ -3,9 +3,9 @@ import styled from 'styled-components';
 import Styled from './styles/comment.styles';
 import EditComment from './EditComment';
 import DeleteComment from './DeleteComment';
-//import ThreadWindow from '../thread/ThreadWindow';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCommentDots } from '@fortawesome/free-solid-svg-icons';
+import { Tooltip } from '../../../theme/theme';
 
 //Receives UTC date and returns time and date in local twelve-hour time
 
@@ -119,8 +119,10 @@ const Comment = props => {
 
       <GroupButton>
         <Span onClick={e => props.setThreadWindow(true)}>
+          <Tooltip>Start a Thread</Tooltip>
           <FontAwesomeIcon icon={faCommentDots} style={{ color: 'rgb(29, 28, 29)' }} size="2x" />
         </Span>
+
         <Styled.CommentMenu show={user_id === localStorage.userId} onClick={handleMenu} ref={menu}>
           <Styled.CommentKebab></Styled.CommentKebab>
           <Styled.CommentKebab></Styled.CommentKebab>
@@ -173,6 +175,11 @@ const GroupButton = styled.div`
 const Span = styled.span`
   cursor: pointer;
   float: right;
+  &:hover {
+    & > div {
+      visibility: visible;
+    }
+  }
 `;
 
 export default Comment;
