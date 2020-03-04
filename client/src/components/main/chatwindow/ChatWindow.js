@@ -1,8 +1,10 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import styled from 'styled-components';
 import CreateComment from './CreateComment';
 import ViewComments from './ViewComments';
 export const ChatContext = React.createContext(null);
+const io = require('socket.io-client');
+const socket = io.connect('http://localhost:8000', { resource: 'node_modules/socket.io' });
 
 /*
 Parent component
@@ -27,8 +29,32 @@ const reducer = (state, action) => {
   }
 };
 
+
+
+
+
+
+
 const ChatWindow = () => {
   const [chatState, dispatch] = useReducer(reducer, initialState);
+
+  useEffect(()=>{
+
+    socket.on('connect', () => {
+      socket.emit('message', ' hello world');
+      return;
+    });
+    socket.on('disconnect', () => {
+      socket.emit('bye', ' goodbye, world');
+      return
+    });
+    
+    socket.on('post', (msg)=>{
+      socket.emit('post', [msg.user, msg.text, msg.date])
+      dispatch({ type: 'POST_TO_DB'})
+    })
+
+  }, [])
 
   return (
     <ChatContext.Provider value={{ chatState, dispatch }}>
