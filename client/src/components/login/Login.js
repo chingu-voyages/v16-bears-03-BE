@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import { Form, Label, Input, Button } from './../../theme/theme.js';
 import axios from 'axios';
+import Message from '../message/Message';
+import { MessageContext } from '../../App';
 
 const H2 = styled.h2`
   text-align: center;
@@ -26,6 +28,7 @@ const FormWrap = styled.div`
 function Login(props) {
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  let errorMessage = useContext(MessageContext);
 
   function submitLoginForm(e) {
     e.preventDefault();
@@ -39,7 +42,7 @@ function Login(props) {
         localStorage.setItem('loggedIn', true);
         props.onChange(Math.random());
       })
-      .catch(err => props.set_message([{ msg: 'Incorrect email or password' }]));
+      .catch(err => errorMessage.set_message([{ msg: 'Incorrect email or password' }], true));
   }
 
   return (
@@ -72,7 +75,7 @@ function Login(props) {
           />
           <br />
         </Label>
-
+        <Message message={errorMessage.message} />
         <Button background="purple" type="submit">
           Sign In
         </Button>
