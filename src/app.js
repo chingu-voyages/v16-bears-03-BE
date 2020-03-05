@@ -5,6 +5,7 @@ const cors = require('cors');
 const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
 const passport = require('passport');
+const path = require('path');
 
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 const userRouter = require('./routes/users');
