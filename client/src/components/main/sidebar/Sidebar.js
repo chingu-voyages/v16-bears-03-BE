@@ -1,8 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import User from './user/User';
 import { Hr } from '../../../theme/theme.js';
+import Message from '../../message/Message';
+import { MessageContext } from '../../../App';
 
 function Sidebar() {
   const [allUsers, setAllUsers] = useState();
@@ -12,6 +14,7 @@ function Sidebar() {
   const [logedinUser, setLogedinUser] = useState('');
   const [imageUrl, setImageUrl] = useState(null);
   const [sidebar, setToggleSidebar] = useState(false);
+  let errorMessage = useContext(MessageContext);
 
   useEffect(() => {
     axios
@@ -22,7 +25,10 @@ function Sidebar() {
         setLogedinUser(res.data.name);
         setImageUrl(res.data.userImage);
       })
-      .catch(err => console.error('Unable to get the user'));
+      .catch(err => {
+        setIsError(true);
+        errorMessage.set_message([{ msg: 'Unable to get the user.' }]);
+      });
   }, [logedinUser, imageUrl]);
 
   useEffect(() => {
@@ -39,7 +45,7 @@ function Sidebar() {
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
-        console.error('Unable to get users. ', error);
+        errorMessage.set_message([{ msg: 'Unable to get users.' }]);
         setIsError(true);
       }
     };
@@ -76,7 +82,7 @@ function Sidebar() {
         <Hr />
         {isLoading && <div>Loading...</div>}
         {isError ? (
-          <div>Something went wrong.</div>
+          <Message message={errorMessage.message} />
         ) : (
           <ul>
             {allUsers &&
