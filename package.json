@@ -18,8 +18,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "git fetch && git rebase origin/dev && lerna run test"
+      "pre-commit": "lint-staged"
     }
   },
   "keywords": [],
