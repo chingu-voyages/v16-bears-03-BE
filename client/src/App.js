@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import styled, { createGlobalStyle } from 'styled-components';
 import Login from './components/login/Login';
 import Register from './components/register/Register';
-import Message from './components/message/Message';
 import axios from 'axios';
 
 import AppContainer from './components/main/AppContainer';
+export const MessageContext = React.createContext();
 
 const GlobalStyles = createGlobalStyle`
   html {
@@ -70,13 +70,19 @@ function App() {
     setNewUser(value);
   }
 
-  function set_message(msg) {
+  /**
+   * @param {array} msg Array of message objects
+   * @param {boolean} setTimeout Fires setTimeout func
+   */
+  function set_message(msg, setTime) {
     setMessage(msg);
 
-    //message will be disappeared after 7 seconds
-    setTimeout(() => {
-      setMessage([]);
-    }, 7000);
+    if (setTime) {
+      //message will be disappeared after 7 seconds
+      setTimeout(() => {
+        setMessage([]);
+      }, 7000);
+    }
   }
 
   useEffect(() => {
@@ -86,33 +92,24 @@ function App() {
   }, [triggerRerender]);
 
   return (
-    <div>
+    <MessageContext.Provider value={{ message, setMessage, set_message }}>
       <GlobalStyles />
       {!localStorage.loggedIn ? (
         <AppWrap>
           <H1>Slack Clone</H1>
-          <Message message={message} />
           <GlobalStyles />
           <FormWrapper>
             {!newUser ? (
-              <Login
-                set_new_user={set_new_user}
-                set_message={set_message}
-                onChange={setTriggerRerender}
-              />
+              <Login set_new_user={set_new_user} onChange={setTriggerRerender} />
             ) : (
-              <Register
-                set_new_user={set_new_user}
-                set_message={set_message}
-                onChange={setTriggerRerender}
-              />
+              <Register set_new_user={set_new_user} onChange={setTriggerRerender} />
             )}
           </FormWrapper>
         </AppWrap>
       ) : (
         <AppContainer />
       )}
-    </div>
+    </MessageContext.Provider>
   );
 }
 
