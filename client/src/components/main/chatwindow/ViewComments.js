@@ -4,8 +4,17 @@ import styled from 'styled-components';
 import Comment from './Comment';
 import { ChatContext } from './ChatWindow';
 
+//establish socket connection on client side
+const io = require('socket.io-client');
+const socket = io.connect('http://localhost:8000', { resource: 'node_modules/socket.io' });
+
+socket.on('connect', () => {
+  socket.emit('message', `${socket.id} connected`);
+  return;
+});
+
 /*
-Requests all comments from database and renders to screen when component first loads and ChatWindow state changes
+Requests all comments from database and handles  socket events  
 */
 
 //keeps overflow scroll at the bottom of container
@@ -22,7 +31,7 @@ const ViewComments = props => {
 
   const { chatState } = useContext(ChatContext);
 
-  //triggers when ChatWindow state changes
+  //Requests all comments using http on first render. Socket connection will then handle all comment events.
   useEffect(() => {
     const getComments = async () => {
       setIsLoading(true);
@@ -40,7 +49,33 @@ const ViewComments = props => {
     };
 
     getComments();
-  }, [chatState]);
+  }, []);
+
+  //Initialize client socket event listeners. Handles all post, edit and delete comment events.
+
+  useEffect(() => {
+    socket.on('post', comment => {
+      setAllComments(prev => prev.concat([comment]));
+    });
+
+    socket.on('edit', editedComment => {
+      setAllComments(prev => {
+        return prev.map(comment => {
+          if (comment._id === editedComment._id) {
+            return editedComment;
+          } else {
+            return comment;
+          }
+        });
+      });
+    });
+
+    socket.on('delete', id => {
+      setAllComments(prev => {
+        return prev.filter(comment => comment._id !== id);
+      });
+    });
+  }, []);
 
   useEffect(() => {
     if (chatState.newComment) {
@@ -55,8 +90,11 @@ const ViewComments = props => {
       <ChannelSection>
         <Name>#Slack Clone</Name>
         <Description>
-          <ChannelLink href ="https://github.com/chingu-voyages/v16-bears-03-BE"  target="_blank">Bears-Team-03</ChannelLink> created this channel on February 8th. This is the very beginning of the
-          #Slack Clone channel.
+          <ChannelLink href="https://github.com/chingu-voyages/v16-bears-03-BE" target="_blank">
+            Bears-Team-03
+          </ChannelLink>{' '}
+          created this channel on February 8th. This is the very beginning of the #Slack Clone
+          channel.
         </Description>
       </ChannelSection>
 
@@ -89,7 +127,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-flow: row wrap;
   overflow: auto;
-  border-top: 0.1rem solid rgb(29, 28, 29, .3);
+  border-top: 0.1rem solid rgb(29, 28, 29, 0.3);
   padding: 1rem 0rem;
   scrollbar-color: #919191;
   scrollbar-width: thin;
@@ -123,16 +161,17 @@ const Description = styled.p`
 `;
 
 const ChannelSection = styled.section`
-  border-bottom: 0.1rem solid rgb(29, 28, 29, .3);
+  border-bottom: 0.1rem solid rgb(29, 28, 29, 0.3);
   width: 100%;
   display: flex;
   flex-direction: column;
 `;
 
 const ChannelLink = styled.a`
-background-color: rgb(29, 155, 209, .1);
-color: rgb(18, 100, 163, 1);
-border: 0;
-border-radius: .3rem;`;
+  background-color: rgb(29, 155, 209, 0.1);
+  color: rgb(18, 100, 163, 1);
+  border: 0;
+  border-radius: 0.3rem;
+`;
 
 export default ViewComments;
