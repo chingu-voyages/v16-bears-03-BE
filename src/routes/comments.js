@@ -4,13 +4,33 @@ const { body, validationResult } = require('express-validator');
 const Comment = require('../models/Comment');
 const User = require('../models/User');
 
+
+
+//wrap routes in function that takes Socket.IO server as an arg
+
+const commentRouter = io => {
+  
+  //function that emits comment events to client
+  const sendCommentToClient = (comment, event) => {
+    const { date, _id, text, isEdited } = comment;
+  
+    io.sockets.emit(event, {
+      _id,
+      text,
+      date,
+      isEdited,
+      ...(comment.user ? { user: comment.user.name } : { user: 'Deleted User' }),
+      ...(comment.user ? { user_id: comment.user._id } : { user_id: null }),
+      ...(comment.user ? { userImage: comment.user.userImage } : { userImage: null }),
+    });
+  };
+
 /*
 Route GET requests at root 
 Populate comment document with user document referenced in "user" field
 return response containing array of all comments in JSON on success
 */
 
-const commentRouter = io => {
   router.get('/', (req, res) => {
     Comment.find()
       .populate('user')
@@ -81,23 +101,19 @@ Return response containing new comment in JSON
             })
               .then(comment => {
                 const { date, _id, text } = comment;
-                const data = {
+                res.status(201).json({
                   date,
                   _id,
                   text,
                   user: user.name,
-                };
-
-                res.status(201).json(data);
-
-                return data;
-              })
-              .then(res => {
-                io.sockets.emit('post', {
-                  user: [res.user, user.name],
-                  text: res.text,
-                  date: res.date,
                 });
+                return comment;
+              })
+              .then(comment => {
+                return Comment.populate(comment, { path: 'user' });
+              })
+              .then(comment => {
+                sendCommentToClient(comment, 'post')
               })
               .catch(err => {
                 console.log(err);
@@ -133,7 +149,13 @@ Return confirmation message on success
           return res.status(403).json({ message: "This isn't your comment" });
         }
 
-        comment.remove().then(() => res.status(204).end());
+        comment
+          .remove()
+          .then(() => res.status(204).end())
+          .then(
+            //emit delete event to all connected sockets
+            io.emit('delete', req.params.commentID),
+          );
       })
       .catch(err => res.status(500).json('Something went wrong'));
   });
@@ -161,14 +183,24 @@ Return response containing updated comment in JSON on succes
         comment.text = textToUpdate;
         comment.isEdited = true;
 
-        comment.save().then(comment => {
-          const { text, date } = comment;
-          res.status(201).json({
-            text,
-            date,
-            user: name,
+        comment
+          .save()
+          .then(comment => {
+            const { text, date } = comment;
+            res.status(201).json({
+              text,
+              date,
+              user: name,
+            });
+
+            return comment;
+          })
+          .then(comment => {
+            return Comment.populate(comment, { path: 'user' });
+          })
+          .then(comment => {
+            sendCommentToClient(comment, 'edit')
           });
-        });
       })
       .catch(err => res.status(500).json('Something went wrong'));
   });
