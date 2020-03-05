@@ -31,6 +31,18 @@ const reducer = (state, action) => {
 const ChatWindow = () => {
   const [chatState, dispatch] = useReducer(reducer, initialState);
   const [threadWindow, setThreadWindow] = useState(false);
+  const [threadinfo, setThreadInfo] = useState({});
+
+  function getThreadInfo(id, name, date, text, user_id, userImage) {
+    setThreadInfo({
+      id,
+      name,
+      date,
+      text,
+      user_id,
+      userImage,
+    });
+  }
 
   return (
     <ChatContext.Provider value={{ chatState, dispatch }}>
@@ -38,9 +50,9 @@ const ChatWindow = () => {
         {/*hardcoded channel header */}
         <Header>#Slack Clone</Header>
 
-        <ViewComments setThreadWindow={setThreadWindow} />
+        <ViewComments setThreadWindow={setThreadWindow} getThreadInfo={getThreadInfo} />
         <CreateComment />
-        {threadWindow && <ThreadWindow setThreadWindow={setThreadWindow} />}
+        {threadWindow && <ThreadWindow threadinfo={threadinfo} setThreadWindow={setThreadWindow} />}
       </Container>
     </ChatContext.Provider>
   );

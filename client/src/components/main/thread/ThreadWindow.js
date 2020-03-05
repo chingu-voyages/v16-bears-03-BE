@@ -1,6 +1,8 @@
 import React from 'react';
 import { ThreadContainer, Header } from './thread.style.js';
 import { CloseButton } from '../../../theme/theme';
+import ThreadTitle from './ThreadTitle';
+import ThreadBody from './ThreadBody';
 
 function ThreadWindow(props) {
   return (
@@ -14,6 +16,8 @@ function ThreadWindow(props) {
         </div>
         <CloseButton onClick={() => props.setThreadWindow(false)}>X</CloseButton>
       </Header>
+      <ThreadTitle threadinfo={props.threadinfo} />
+      <ThreadBody />
     </ThreadContainer>
   );
 }

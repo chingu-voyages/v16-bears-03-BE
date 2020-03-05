@@ -9,7 +9,7 @@ import { Tooltip } from '../../../theme/theme';
 
 //Receives UTC date and returns time and date in local twelve-hour time
 
-const formatDate = date => {
+export const formatDate = date => {
   const dateInLocalTime = new Date(date);
 
   const hours =
@@ -97,6 +97,11 @@ const Comment = props => {
 
   useAvatar(user_id, userImage, id);
 
+  const OpenThreadWindow = e => {
+    props.setThreadWindow(true);
+    props.getThreadInfo(id, name, date, text, user_id, userImage);
+  };
+
   return (
     <Styled.CommentContainer>
       <Styled.CommentAvatar id={id} />
@@ -118,7 +123,7 @@ const Comment = props => {
       )}
 
       <GroupButton>
-        <Span onClick={e => props.setThreadWindow(true)}>
+        <Span onClick={OpenThreadWindow}>
           <Tooltip>Start a Thread</Tooltip>
           <FontAwesomeIcon icon={faCommentDots} style={{ color: 'rgb(29, 28, 29)' }} size="2x" />
         </Span>
