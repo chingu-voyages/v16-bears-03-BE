@@ -1,7 +1,8 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState } from 'react';
 import styled from 'styled-components';
 import CreateComment from './CreateComment';
 import ViewComments from './ViewComments';
+import ThreadWindow from '../thread/ThreadWindow';
 export const ChatContext = React.createContext(null);
 
 
@@ -30,16 +31,17 @@ const reducer = (state, action) => {
 
 const ChatWindow = () => {
   const [chatState, dispatch] = useReducer(reducer, initialState);
+  const [threadWindow, setThreadWindow] = useState(false);
 
   return (
     <ChatContext.Provider value={{ chatState, dispatch }}>
       <Container>
-
         {/*hardcoded channel header */}
         <Header>#Slack Clone</Header>
 
-        <ViewComments />
+        <ViewComments setThreadWindow={setThreadWindow} />
         <CreateComment />
+        {threadWindow && <ThreadWindow setThreadWindow={setThreadWindow} />}
       </Container>
     </ChatContext.Provider>
   );

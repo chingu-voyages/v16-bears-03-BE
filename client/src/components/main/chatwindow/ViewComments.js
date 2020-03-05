@@ -114,6 +114,7 @@ const ViewComments = props => {
               isEdited={comment.isEdited}
               user_id={comment.user_id}
               refContainer={refContainer}
+              setThreadWindow={props.setThreadWindow}
             ></Comment>
           );
         })
@@ -165,6 +166,7 @@ const ChannelSection = styled.section`
   width: 100%;
   display: flex;
   flex-direction: column;
+  margin-bottom: 1rem;
 `;
 
 const ChannelLink = styled.a`
