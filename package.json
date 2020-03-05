@@ -10,6 +10,7 @@
     "start": "node src/server.js",
     "predeploy": "npm audit",
     "dev": "concurrently \"npm run server\" \"npm run client\" ",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix client && npm run build --prefix client",
     "format": "prettier --write \"**/*\"",
     "format:md": "prettier --write \"**/*.md\"",
     "lint:js": "eslint . --ext .js,.jsx",
@@ -18,8 +19,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "git fetch && git rebase origin/dev && lerna run test"
+      "pre-commit": "lint-staged"
     }
   },
   "keywords": [],
