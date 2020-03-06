@@ -6,7 +6,14 @@ import { ChatContext } from './ChatWindow';
 
 //establish socket connection on client side
 const io = require('socket.io-client');
-const socket = io.connect('http://localhost:8000', { resource: 'node_modules/socket.io' });
+
+let socket;
+
+if (process.env.NODE_ENV === 'development') {
+  socket = io('http://localhost:8000');
+} else {
+  socket = io();
+}
 
 socket.on('connect', () => {
   socket.emit('message', `${socket.id} connected`);

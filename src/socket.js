@@ -1,5 +1,5 @@
 //import mounted Socket.io server
-const io = require('./app').io;
+const { io } = require('./app');
 
 // listener fired upon socket connection with client
 const socketListener = io.on('connect', socket => {

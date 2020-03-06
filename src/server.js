@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const server = require('./app').server;
+const { server } = require('./app')
 const socketListener = require('./socket');
 
 const { PORT, DATABASE_URL } = require('./config');
@@ -17,7 +17,7 @@ function runServer(databaseUrl, port = PORT) {
       }
 
       server
-        .listen((port = PORT), () => {
+        .listen((port), () => {
           console.log(`Your server is listening at http://localhost:${PORT}`);
           resolve();
         })
