@@ -41,8 +41,7 @@ const ThreadAvatar = styled.div`
   }
 `;
 
-const ThreadsContainer = styled.div`
-  padding: 1rem;
+const AllThreads = styled.div`
   overflow-y: auto;
   scrollbar-color: #919191;
   scrollbar-width: thin;
@@ -83,4 +82,4 @@ const Textarea = styled.textarea`
   resize: none;
 `;
 
-export { ThreadInfo, ThreadContainer, ThreadsContainer, Textarea, Title, ThreadAvatar, Header };
+export { ThreadInfo, ThreadContainer, AllThreads, Textarea, Title, ThreadAvatar, Header };
