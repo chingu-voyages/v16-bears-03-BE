@@ -48,7 +48,7 @@ app.use('/api/users', userRouter);
 app.use('/api/comments', jwtAuth, commentRouter);
 
 // Channel route
-app.use('/api/channels', channelRouter);
+app.use('/api/channels', jwtAuth, channelRouter);
 
 app.use(function errorHandler(error, req, res, next) {
   let response;

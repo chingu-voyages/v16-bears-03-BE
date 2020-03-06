@@ -1,8 +1,6 @@
 const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
-const passport = require('passport');
-const jwtAuth = passport.authenticate('jwt', { session: false });
 const Channel = require('../models/Channel');
 
 /**
@@ -56,7 +54,7 @@ router.post(
  * @access Public
  * @desc Get all channels
  */
-router.get('/', jwtAuth, async (req, res) => {
+router.get('/', async (req, res) => {
   try {
     let allChannels = await Channel.find();
 
