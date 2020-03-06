@@ -5,6 +5,7 @@ import ViewComments from './ViewComments';
 import ThreadWindow from '../thread/ThreadWindow';
 export const ChatContext = React.createContext(null);
 
+
 /*
 Parent component
 State is an object that changes when comment is posted to db

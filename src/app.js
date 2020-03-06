@@ -6,11 +6,19 @@ const helmet = require('helmet');
 const { NODE_ENV } = require('./config');
 const passport = require('passport');
 
+const app = express();
+
+//create http server
+const server = require('http').Server(app);
+
+//mount Socket.io server to http server
+const io = require('socket.io')(server);
+
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 const userRouter = require('./routes/users');
-const commentRouter = require('./routes/comments');
 
-const app = express();
+//pass mounted Socket.io server to comments router
+const commentRouter = require('./routes/comments')(io);
 
 const morganOption = NODE_ENV === 'production' ? 'tiny' : 'common';
 
@@ -49,4 +57,4 @@ app.use(function errorHandler(error, req, res, next) {
   res.status(500).json(response);
 });
 
-module.exports = app;
+module.exports = { server, io };

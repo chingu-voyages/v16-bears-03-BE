@@ -4,8 +4,24 @@ import styled from 'styled-components';
 import Comment from './Comment';
 import { ChatContext } from './ChatWindow';
 
+//establish socket connection on client side
+const io = require('socket.io-client');
+
+let socket;
+
+if (process.env.NODE_ENV === 'development') {
+  socket = io('http://localhost:8000');
+} else {
+  socket = io();
+}
+
+socket.on('connect', () => {
+  socket.emit('message', `${socket.id} connected`);
+  return;
+});
+
 /*
-Requests all comments from database and renders to screen when component first loads and ChatWindow state changes
+Requests all comments from database and handles  socket events  
 */
 
 //keeps overflow scroll at the bottom of container
@@ -22,7 +38,7 @@ const ViewComments = props => {
 
   const { chatState } = useContext(ChatContext);
 
-  //triggers when ChatWindow state changes
+  //Requests all comments using http on first render. Socket connection will then handle all comment events.
   useEffect(() => {
     const getComments = async () => {
       setIsLoading(true);
@@ -40,7 +56,33 @@ const ViewComments = props => {
     };
 
     getComments();
-  }, [chatState]);
+  }, []);
+
+  //Initialize client socket event listeners. Handles all post, edit and delete comment events.
+
+  useEffect(() => {
+    socket.on('post', comment => {
+      setAllComments(prev => prev.concat([comment]));
+    });
+
+    socket.on('edit', editedComment => {
+      setAllComments(prev => {
+        return prev.map(comment => {
+          if (comment._id === editedComment._id) {
+            return editedComment;
+          } else {
+            return comment;
+          }
+        });
+      });
+    });
+
+    socket.on('delete', id => {
+      setAllComments(prev => {
+        return prev.filter(comment => comment._id !== id);
+      });
+    });
+  }, []);
 
   useEffect(() => {
     if (chatState.newComment) {
