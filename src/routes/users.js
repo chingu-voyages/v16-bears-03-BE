@@ -10,6 +10,7 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
  * @access Public
  * @desc Register users
  */
+const userRouter = io => {
 router.post(
   '/register',
   [
@@ -132,7 +133,10 @@ router
         user.save().then(user => {
           const { id, email, name, userImage } = user;
           res.status(201).send('success');
-        });
+          return {id, name, userImage}
+        }).then(res =>{
+            io.emit("updateUser", res)
+        })
       })
       .catch(err => res.status(500).json('Something went wrong'));
   })
@@ -142,4 +146,8 @@ router
       .catch(err => res.status(500).json('Something went wrong'));
   });
 
-module.exports = router;
+  return router
+
+}
+
+module.exports = userRouter;

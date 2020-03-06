@@ -82,6 +82,24 @@ const ViewComments = props => {
         return prev.filter(comment => comment._id !== id);
       });
     });
+
+    socket.on('updateUser', ({ id, name, userImage }) => {
+      setAllComments(prev => {
+        return prev.map(comment => {
+          if (comment.user_id === id) {
+            if (name) {
+              comment.user = name;
+            }
+
+            if (userImage) {
+              comment.userImage = userImage;
+            }
+            return comment;
+          }
+          return comment;
+        });
+      });
+    });
   }, []);
 
   useEffect(() => {
