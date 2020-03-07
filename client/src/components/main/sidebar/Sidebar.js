@@ -5,15 +5,18 @@ import User from './user/User';
 import { Hr } from '../../../theme/theme.js';
 import Message from '../../message/Message';
 import { MessageContext } from '../../../App';
+import { AppContext } from '../AppContainer';
 
 function Sidebar() {
-  const [allUsers, setAllUsers] = useState();
+  const [allUsers, setAllUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [userWindow, setUserWindow] = useState(false);
   const [logedinUser, setLogedinUser] = useState('');
   const [imageUrl, setImageUrl] = useState(null);
   const [sidebar, setToggleSidebar] = useState(false);
+  const socket = useContext(AppContext);
+  const [activeUsers, setActiveUsers] = useState([]);
   let errorMessage = useContext(MessageContext);
 
   useEffect(() => {
@@ -52,6 +55,17 @@ function Sidebar() {
     getUsers();
   }, []);
 
+  useEffect(() => {
+    socket.on('updateActiveUsers', active => {
+      console.log(active);
+      setActiveUsers(
+        active.map(({ id }) => {
+          return id;
+        }),
+      );
+    });
+  }, [socket]);
+
   const toggleSidebar = () => {
     if (sidebar) {
       setToggleSidebar(false);
@@ -88,9 +102,14 @@ function Sidebar() {
             {allUsers &&
               allUsers.map(user => {
                 // TODO: Set isActive to true is the user is online
+                console.log(activeUsers);
                 return (
                   <li key={user.id}>
-                    <Active isActive={false}></Active>
+                    {activeUsers.indexOf(user.id) !== -1 ? (
+                      <Active isActive={true}></Active>
+                    ) : (
+                      <Active isActive={false}></Active>
+                    )}
                     {user.name}
                   </li>
                 );
