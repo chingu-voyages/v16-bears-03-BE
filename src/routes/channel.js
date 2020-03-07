@@ -76,4 +76,36 @@ router.get('/', async (req, res) => {
   }
 });
 
+/**
+ * @route POST api/channels
+ * @access Public
+ * @desc Add the new user to the General channel
+ */
+router.post(
+  '/general',
+  [
+    check('users', 'User id is required')
+      .not()
+      .isEmpty(),
+  ],
+  (req, res) => {
+    Channel.find({ name: 'General' })
+      .then(generalChannel => {
+        console.log('generalChannel: ', generalChannel);
+        Channel.findById(generalChannel[0]._id).then(channel => {
+          console.log('channel: ', channel);
+          channel.users.push(req.body.users);
+
+          channel.save().then(channel => {
+            return res.status(200).send(`channel: ${channel}`);
+          });
+        });
+      })
+      .catch(error => {
+        console.log(error);
+        res.status(500).json({ message: 'Something went wrong' });
+      });
+  },
+);
+
 module.exports = router;

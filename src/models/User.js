@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const Channel = require('./Channel');
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -19,6 +20,12 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: null,
   },
+  channels: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: Channel,
+    },
+  ],
 });
 
 // Serialize the user in the router so the password isn't passed through

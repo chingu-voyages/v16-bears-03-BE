@@ -1,10 +1,11 @@
 //Requires Mongoose
 const mongoose = require('mongoose');
+const User = require('./User');
 
 //Creates comment schema
 
 const commentSchema = new mongoose.Schema({
-  user: { type: mongoose.Schema.Types.ObjectId, ref: User },
+  // user: { type: mongoose.Schema.Types.ObjectId, ref: User },
   text: { type: String, required: true },
   date: { type: Date, default: Date.now },
   isEdited: { type: Boolean, default: false },

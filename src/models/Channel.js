@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const User = require('./User');
 const Comment = require('./Comment');
 
 const ChannelSchema = new mongoose.Schema({

@@ -35,6 +35,18 @@ function Register(props) {
     e.preventDefault();
     const newUser = { name, password, email };
 
+    function pushUserToGeneralChannel(userId, authToken) {
+      axios.post(
+        '/api/channels/general',
+        {
+          users: userId,
+        },
+        {
+          headers: { authorization: `bearer ${authToken}` },
+        },
+      );
+    }
+
     axios
       .post('/api/users/register', newUser)
       .then(res => {
@@ -47,10 +59,23 @@ function Register(props) {
             localStorage.setItem('loggedIn', true);
             props.onChange(Math.random());
           })
-          .catch(err => errorMessage.set_message(err.response.data.errors, true));
+          .then(res => {
+            console.log('res: ', res);
+            console.log('localStorage: ', localStorage);
+            console.log('localStorage.getItem("authToken"): ', localStorage.getItem('authToken'));
+            pushUserToGeneralChannel(
+              localStorage.getItem('userId'),
+              localStorage.getItem('authToken'),
+            );
+          })
+          .catch(err => {
+            console.log(err);
+            // errorMessage.set_message(err, true);
+          });
       })
       .catch(err => {
-        errorMessage.set_message(err.response.data.errors, true);
+        console.log(err);
+        // errorMessage.set_message(err, true);
       });
   }
 
