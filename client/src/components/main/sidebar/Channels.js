@@ -31,22 +31,26 @@ function Channels() {
   }, []);
 
   return (
-    <div>
+    <>
       {isLoading && <div>Loading...</div>}
       {isError ? (
         <Message message={errorMessage.message} />
       ) : (
-        <>
+        <div>
           <h3>Channels</h3>
           <ul>
             {allChannels &&
               allChannels.map(channel => {
-                return <li key={channel.id}># {channel.name}</li>;
+                return (
+                  <li key={channel.id} title={channel.name}>
+                    # {channel.name}
+                  </li>
+                );
               })}
           </ul>
-        </>
+        </div>
       )}
-    </div>
+    </>
   );
 }
 
