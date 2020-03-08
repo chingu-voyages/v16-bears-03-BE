@@ -5,6 +5,7 @@ const { io } = require('./app');
 
 //stores all users connected to the server AND whose status is set to active
 let activeUsers = [];
+let awayUsers = [];
 
 const socketListener = io.on('connect', socket => {
   socket.on('message', message => {
@@ -13,30 +14,68 @@ const socketListener = io.on('connect', socket => {
 
   //add connected user to activeUsers array
   socket.on('activeUser', activeUser => {
-    console.log(activeUser)
-    if(activeUser.userId && activeUser.clientSocket){
-    activeUsers.push(activeUser);
-    }
+    
+    
+    if(awayUsers.indexOf(activeUser.userId) === -1){
 
-    io.emit('updateActiveUsers', activeUsers);
+    if(activeUser.userId!== undefined && activeUser.clientSocket){
+    activeUsers.push(activeUser);
+ 
+  };
+
+}
+  io.emit('updateUserActivity', activeUsers);
+
+  console.log(activeUsers)
+  })
+
+
+  socket.on('setActiveUser', activeUser => {
+    
+    
+    awayUsers = awayUsers.filter(userId => {
+      return userId!== activeUser.userId
+    })
+
+    if(awayUsers.indexOf(activeUser.userId) === -1){
+
+      if(activeUser.userId && activeUser.clientSocket){
+      activeUsers.push(activeUser);
+     
+    };
+  }
+    io.emit('updateUserActivity', activeUsers);
+
+      
   });
+  
+
+
 
   //remove connected user from activeUsers array
   socket.on('awayUser', awayUser => {
     activeUsers = activeUsers.filter(({ userId }) => {
       return userId !== awayUser;
     });
-    io.emit('updateActiveUsers', activeUsers);
+    if(awayUsers.indexOf(awayUser) === -1){
+    awayUsers.push(awayUser)
+    }
+  
+    io.emit('updateUserActivity', activeUsers);
+
   });
 
   //handle disconnect: remove disconnected user from activeUsers array
   socket.on('disconnect', reason => {
-    console.log(`${reason}: ${socket.id}`);
+  
     activeUsers = activeUsers.filter(({ clientSocket }) => {
       return clientSocket != socket.id;
     });
 
-    io.emit('updateActiveUsers', activeUsers);
+    console.log(activeUsers)
+  
+   io.emit('updateUserActivity', activeUsers)
+    
 
     if (reason === 'io server disconnect') {
       // the disconnection was initiated by the server, reconnect manually

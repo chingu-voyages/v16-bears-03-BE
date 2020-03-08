@@ -132,7 +132,7 @@ function User(props) {
         ) : (
           <Ol
             onClick={() => {
-              socket.emit('activeUser', { userId: localStorage.userId, clientSocket: socket.id });
+              socket.emit('setActiveUser', { userId: localStorage.userId, clientSocket: socket.id });
             }}
           >
             Set Yourself To Active

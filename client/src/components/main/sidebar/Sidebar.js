@@ -60,14 +60,15 @@ function Sidebar() {
   }, [errorMessage, socket]);
 
   useEffect(() => {
-    console.log("active" + socket.id )
+  
     socket.emit('activeUser', { userId: localStorage.userId, clientSocket: socket.id });
     
 
-    socket.on('updateActiveUsers', active => {
-      console.log(active)
+    socket.on('updateUserActivity', (activeUsers) => {
+      
       setActiveUsers(
-        active.map(({ userId }) => {
+        activeUsers.map(({ userId }) => {
+          console.log(userId)
           return userId;
         }),
       );
