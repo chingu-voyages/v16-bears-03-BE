@@ -62,7 +62,7 @@ router.post(
 
 /**
  * @route GET api/users
- * @access Public
+ * @access Private
  * @desc Get all users
  */
 router.get('/', jwtAuth, async (req, res) => {

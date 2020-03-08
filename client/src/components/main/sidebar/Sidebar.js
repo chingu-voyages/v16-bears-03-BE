@@ -6,6 +6,7 @@ import { Hr } from '../../../theme/theme.js';
 import Message from '../../message/Message';
 import { MessageContext } from '../../../App';
 import { AppContext } from '../AppContainer';
+import Channels from './Channels';
 
 function Sidebar() {
   const [allUsers, setAllUsers] = useState([]);
@@ -32,7 +33,7 @@ function Sidebar() {
         setIsError(true);
         errorMessage.set_message([{ msg: 'Unable to get the user.' }]);
       });
-  }, [logedinUser, imageUrl]);
+  }, [logedinUser, imageUrl, errorMessage]);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -55,7 +56,7 @@ function Sidebar() {
       }
     };
     getUsers();
-  }, []);
+  }, [errorMessage]);
 
   useEffect(() => {
     socket.on('updateActiveUsers', active => {
@@ -117,6 +118,7 @@ function Sidebar() {
           />
         )}
         <Hr />
+        <Channels />
         {isLoading && <div>Loading...</div>}
         {isError ? (
           <Message message={errorMessage.message} />
