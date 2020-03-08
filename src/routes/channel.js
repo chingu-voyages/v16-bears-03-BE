@@ -56,15 +56,34 @@ router.post(
  */
 router.get('/', async (req, res) => {
   try {
-    let allChannels = await Channel.find();
+    let allChannels = await Channel.find().populate([
+      {
+        path: 'comments',
+        populate: ['user', 'threadedComments', { path: 'threadedComments', populate: 'user' }],
+      },
+    ]);
 
     if (allChannels) {
       const channels = allChannels.map(channel => {
+        const serializeComment = eachComment => ({
+          _id: eachComment._id,
+          text: eachComment.text,
+          date: eachComment.date,
+          isEdited: eachComment.isEdited,
+          ...(eachComment.user ? { user: eachComment.user.name } : { user: 'Deleted User' }),
+          ...(eachComment.user ? { user_id: eachComment.user._id } : { user_id: null }),
+          ...(eachComment.user ? { userImage: eachComment.user.userImage } : { userImage: null }),
+          ...(eachComment.threadedComments.length > 0
+            ? { thread: eachComment.threadedComments.map(serializeComment) }
+            : null),
+        });
+
         return {
           name: channel.name,
           description: channel.description,
           dateCreated: channel.date,
           id: channel._id,
+          comments: channel.comments.map(serializeComment),
         };
       });
 
