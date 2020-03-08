@@ -60,9 +60,6 @@ function Register(props) {
             props.onChange(Math.random());
           })
           .then(res => {
-            console.log('res: ', res);
-            console.log('localStorage: ', localStorage);
-            console.log('localStorage.getItem("authToken"): ', localStorage.getItem('authToken'));
             pushUserToGeneralChannel(
               localStorage.getItem('userId'),
               localStorage.getItem('authToken'),

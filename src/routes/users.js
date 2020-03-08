@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const User = require('../models/User');
+const Channel = require('../models/Channel');
 const passport = require('passport');
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
@@ -41,6 +42,10 @@ router.post(
         });
       }
 
+      let generalChannelId = await Channel.find({ name: 'General' }).then(generalChannel => {
+        return generalChannel[0]._id;
+      });
+
       // this hashes the password
       password = await User.hashPassword(password);
 
@@ -49,6 +54,7 @@ router.post(
         name,
         email,
         password,
+        channels: [generalChannelId],
       });
 
       res.status(201).json(user.serialize());
@@ -58,33 +64,6 @@ router.post(
     }
   },
 );
-
-/**
- * @route GET api/users
- * @access Private
- * @desc Get all users
- */
-router.get('/', jwtAuth, async (req, res) => {
-  try {
-    const allUsers = await User.find();
-    let users;
-
-    if (allUsers) {
-      users = allUsers.map(user => {
-        return {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-        };
-      });
-
-      return res.status(200).send(users);
-    }
-  } catch (error) {
-    console.error(error.message);
-    return res.status(500).send('Server error');
-  }
-});
 
 router
   .route('/:userID')

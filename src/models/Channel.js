@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const User = require('./User');
 const Comment = require('./Comment');
 
 const ChannelSchema = new mongoose.Schema({
@@ -11,7 +10,7 @@ const ChannelSchema = new mongoose.Schema({
   users: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: User,
+      ref: 'user',
     },
   ],
   comments: [

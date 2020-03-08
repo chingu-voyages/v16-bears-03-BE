@@ -1,39 +1,39 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import User from './user/User';
 import { Hr } from '../../../theme/theme.js';
 import Message from '../../message/Message';
 import { MessageContext } from '../../../App';
 import Channels from './Channels';
 import AllUsers from './AllUsers';
+import CurrentUser from './CurrentUser';
 
 function Sidebar() {
+  const [sidebar, setToggleSidebar] = useState(false);
+  const [allChannels, setAllChannels] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [userWindow, setUserWindow] = useState(false);
-  const [logedinUser, setLogedinUser] = useState('');
-  const [imageUrl, setImageUrl] = useState(null);
-  const [sidebar, setToggleSidebar] = useState(false);
   let errorMessage = useContext(MessageContext);
 
   useEffect(() => {
-    setIsLoading(true);
-    axios
-      .get(`/api/users/${localStorage.userId}`, {
-        headers: { authorization: `bearer ${localStorage.authToken}` },
-      })
-      .then(res => {
+    const getChannels = async () => {
+      setIsLoading(true);
+
+      try {
+        // Get all channels
+        const result = await axios('/api/channels', {
+          headers: { authorization: `bearer ${localStorage.authToken}` },
+        });
+        setAllChannels(result.data);
         setIsLoading(false);
-        setLogedinUser(res.data.name);
-        setImageUrl(res.data.userImage);
-      })
-      .catch(err => {
+      } catch (error) {
         setIsLoading(false);
+        errorMessage.set_message([{ msg: 'Unable to get channels.' }]);
         setIsError(true);
-        errorMessage.set_message([{ msg: 'Unable to get the user.' }]);
-      });
-  }, [logedinUser, imageUrl]);
+      }
+    };
+    getChannels();
+  }, []);
 
   const toggleSidebar = () => {
     if (sidebar) {
@@ -49,29 +49,18 @@ function Sidebar() {
         <i>&nbsp;</i>
       </SidebarButton>
       <SidebarContainer className={sidebar ? 'show' : ''}>
+        <CurrentUser />
+        <Hr />
         {isLoading && <div>Loading...</div>}
         {isError ? (
           <Message message={errorMessage.message} />
         ) : (
-          logedinUser && (
-            <UserLink onClick={() => setUserWindow(true)}>
-              <P></P>
-              <p>{logedinUser}</p>
-            </UserLink>
-          )
+          <>
+            <Channels allChannels={allChannels} />
+            {/* TODO: Choose selected channel / Harcoded General Channel */}
+            <AllUsers allUsersInChannel={allChannels && allChannels[0].users} />
+          </>
         )}
-        {userWindow && (
-          <User
-            logedinUser={logedinUser}
-            imageUrl={imageUrl}
-            setLogedinUser={setLogedinUser}
-            setImageUrl={setImageUrl}
-            setUserWindow={setUserWindow}
-          />
-        )}
-        <Hr />
-        <Channels />
-        <AllUsers />
       </SidebarContainer>
     </Aside>
   );
@@ -98,7 +87,7 @@ const SidebarContainer = styled.section`
     margin-left: 2rem;
   }
 
-  div > ul {
+  ul.channels {
     height: 20vh;
     margin-bottom: 2rem;
   }
@@ -146,33 +135,6 @@ const SidebarContainer = styled.section`
     &.show {
       display: block;
     }
-  }
-`;
-
-const UserLink = styled.div`
-  display: flex;
-  justify-content: start;
-  &:hover {
-    background: rgb(56, 9, 105);
-    cursor: pointer;
-    color: gray;
-  }
-
-  @media screen and (max-width: 600px) {
-    ul {
-      padding-left: 2rem;
-    }
-  }
-`;
-const P = styled.p`
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-  background: rgb(16, 92, 44);
-  margin: auto 0.5rem auto 4rem;
-
-  @media screen and (max-width: 600px) {
-    margin-left: 2rem;
   }
 `;
 

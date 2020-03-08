@@ -5,7 +5,7 @@ const Channel = require('../models/Channel');
 
 /**
  * @route POST api/channels
- * @access Public
+ * @access Private
  * @desc Create new channel
  */
 router.post(
@@ -51,25 +51,27 @@ router.post(
 
 /**
  * @route GET api/channels
- * @access Public
+ * @access Private
  * @desc Get all channels
  */
 router.get('/', async (req, res) => {
   try {
-    let allChannels = await Channel.find();
+    await Channel.find()
+      .populate('users')
+      .exec((err, channels) => {
+        channels.map(channel => {
+          return {
+            name: channel.name,
+            description: channel.description,
+            dateCreated: channel.date,
+            id: channel._id,
+            users: channel.users,
+            comments: channel.comments,
+          };
+        });
 
-    if (allChannels) {
-      const channels = allChannels.map(channel => {
-        return {
-          name: channel.name,
-          description: channel.description,
-          dateCreated: channel.date,
-          id: channel._id,
-        };
+        return res.status(200).send(channels);
       });
-
-      return res.status(200).send(channels);
-    }
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Something went wrong' });
@@ -78,7 +80,7 @@ router.get('/', async (req, res) => {
 
 /**
  * @route POST api/channels
- * @access Public
+ * @access Private
  * @desc Add the new user to the General channel
  */
 router.post(
@@ -91,9 +93,7 @@ router.post(
   (req, res) => {
     Channel.find({ name: 'General' })
       .then(generalChannel => {
-        console.log('generalChannel: ', generalChannel);
         Channel.findById(generalChannel[0]._id).then(channel => {
-          console.log('channel: ', channel);
           channel.users.push(req.body.users);
 
           channel.save().then(channel => {

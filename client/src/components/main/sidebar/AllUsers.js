@@ -1,58 +1,22 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
+import React from 'react';
 import styled from 'styled-components';
-import Message from '../../message/Message';
-import { MessageContext } from '../../../App';
 
-function AllUsers() {
-  const [allUsers, setAllUsers] = useState();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  let errorMessage = useContext(MessageContext);
-
-  useEffect(() => {
-    const getUsers = async () => {
-      setIsLoading(true);
-
-      try {
-        // Get all users
-        const result = await axios('/api/users', {
-          headers: { authorization: `bearer ${localStorage.authToken}` },
-        });
-
-        setAllUsers(result.data);
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-        errorMessage.set_message([{ msg: 'Unable to get users.' }]);
-        setIsError(true);
-      }
-    };
-    getUsers();
-  }, []);
-
+function AllUsers(props) {
   return (
     <>
-      {isLoading && <div>Loading...</div>}
-      {isError ? (
-        <Message message={errorMessage.message} />
-      ) : (
-        <>
-          <h3>Users</h3>
-          <ul>
-            {allUsers &&
-              allUsers.map(user => {
-                // TODO: Set isActive to true is the user is online
-                return (
-                  <li key={user.id} title={user.name}>
-                    <Active isActive={false}></Active>
-                    {user.name}
-                  </li>
-                );
-              })}
-          </ul>
-        </>
-      )}
+      <h3>Users</h3>
+      <ul>
+        {props.allUsersInChannel &&
+          props.allUsersInChannel.map(user => {
+            // TODO: Set isActive to true is the user is online
+            return (
+              <li key={user._id} title={user.name}>
+                <Active isActive={false}></Active>
+                {user.name}
+              </li>
+            );
+          })}
+      </ul>
     </>
   );
 }

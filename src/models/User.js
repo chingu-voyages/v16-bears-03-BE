@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const Channel = require('./Channel');
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -23,7 +22,7 @@ const UserSchema = new mongoose.Schema({
   channels: [
     {
       type: mongoose.Schema.Types.ObjectId,
-      ref: Channel,
+      ref: 'Channel',
     },
   ],
 });
