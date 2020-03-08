@@ -122,6 +122,7 @@ const ViewComments = props => {
               user_id={comment.user_id}
               refContainer={refContainer}
               setThreadWindow={props.setThreadWindow}
+              getThreadInfo={props.getThreadInfo}
             ></Comment>
           );
         })

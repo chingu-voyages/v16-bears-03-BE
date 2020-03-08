@@ -30,7 +30,7 @@ function Sidebar() {
         setIsError(true);
         errorMessage.set_message([{ msg: 'Unable to get the user.' }]);
       });
-  }, [logedinUser, imageUrl]);
+  }, [logedinUser, imageUrl, errorMessage]);
 
   useEffect(() => {
     const getUsers = async () => {
@@ -51,7 +51,7 @@ function Sidebar() {
       }
     };
     getUsers();
-  }, []);
+  }, [errorMessage]);
 
   const toggleSidebar = () => {
     if (sidebar) {
