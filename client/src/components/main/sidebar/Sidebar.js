@@ -36,7 +36,9 @@ function Sidebar() {
   }, [logedinUser, imageUrl, errorMessage]);
 
   useEffect(() => {
+    console.log("TEST")
     const getUsers = async () => {
+      
       setIsLoading(true);
 
       try {
@@ -46,8 +48,7 @@ function Sidebar() {
         });
 
         setAllUsers(result.data);
-        //fire activeUser event after request data becomes available
-        socket.emit('activeUser', { userId: localStorage.userId, clientSocket: socket.id });
+
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
@@ -59,6 +60,10 @@ function Sidebar() {
   }, [errorMessage, socket]);
 
   useEffect(() => {
+    console.log("active" + socket.id )
+    socket.emit('activeUser', { userId: localStorage.userId, clientSocket: socket.id });
+    
+
     socket.on('updateActiveUsers', active => {
       console.log(active)
       setActiveUsers(
@@ -67,13 +72,6 @@ function Sidebar() {
         }),
       );
     });
-
-    socket.on('updateAwayUsers', away =>{
-        away.map(({userId}) =>{
-          return userId;
-        })
-    })
-
 
     socket.on('updateUser', ({ id, name}) => {
       setAllUsers(prev => {

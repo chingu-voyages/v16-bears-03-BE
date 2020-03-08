@@ -13,7 +13,10 @@ const socketListener = io.on('connect', socket => {
 
   //add connected user to activeUsers array
   socket.on('activeUser', activeUser => {
+    console.log(activeUser)
+    if(activeUser.userId && activeUser.clientSocket){
     activeUsers.push(activeUser);
+    }
 
     io.emit('updateActiveUsers', activeUsers);
   });
