@@ -117,6 +117,14 @@ Return response containing new comment in JSON
                       text,
                       user: user.name,
                     });
+
+                    return comment;
+                  })
+                  .then(comment => {
+                    return Comment.populate(comment, { path: 'user' });
+                  })
+                  .then(comment => {
+                    sendCommentToClient(comment, 'post');
                   })
                   .catch(err => {
                     console.log(err);
@@ -137,7 +145,15 @@ Return response containing new comment in JSON
                     text,
                     user: user.name,
                   });
-                })
+
+                    return comment;
+                  })
+                  .then(comment => {
+                    return Comment.populate(comment, { path: 'user' });
+                  })
+                  .then(comment => {
+                    sendCommentToClient(comment, 'post');
+                  })
                 .catch(err => {
                   console.log(err);
                   res.status(500).json({ message: 'Something went wrong' });
