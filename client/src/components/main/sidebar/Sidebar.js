@@ -45,6 +45,8 @@ function Sidebar() {
         });
 
         setAllUsers(result.data);
+        //fire activeUser event after request data becomes available
+        socket.emit('activeUser', { userId: localStorage.userId, clientSocket: socket.id });
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
@@ -57,14 +59,34 @@ function Sidebar() {
 
   useEffect(() => {
     socket.on('updateActiveUsers', active => {
-      console.log(active);
+      console.log(active)
       setActiveUsers(
-        active.map(({ id }) => {
-          return id;
+        active.map(({ userId }) => {
+          return userId;
         }),
       );
     });
+
+    socket.on('updateAwayUsers', away =>{
+        away.map(({userId}) =>{
+          return userId;
+        })
+    })
+
+
+    socket.on('updateUser', ({ id, name}) => {
+      setAllUsers(prev => {
+        return prev.map(user => {
+          if (user.id === id) {
+            if (name) user.name = name;
+            return user;
+          }
+          return user;
+        });
+      });
+    });
   }, [socket]);
+
 
   const toggleSidebar = () => {
     if (sidebar) {
@@ -91,6 +113,7 @@ function Sidebar() {
             setLogedinUser={setLogedinUser}
             setImageUrl={setImageUrl}
             setUserWindow={setUserWindow}
+            activeUsers={activeUsers}
           />
         )}
         <Hr />
@@ -102,13 +125,14 @@ function Sidebar() {
             {allUsers &&
               allUsers.map(user => {
                 // TODO: Set isActive to true is the user is online
-                console.log(activeUsers);
+               
                 return (
                   <li key={user.id}>
-                    {activeUsers.indexOf(user.id) !== -1 ? (
-                      <Active isActive={true}></Active>
+                
+                    {(activeUsers.indexOf(user.id) !== -1)? (
+                      <Active isActive={true} title="Active"></Active>
                     ) : (
-                      <Active isActive={false}></Active>
+                      <Active isActive={false} title="Away"></Active>
                     )}
                     {user.name}
                   </li>

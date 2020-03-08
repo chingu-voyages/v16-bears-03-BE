@@ -1,10 +1,11 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState, useContext } from 'react';
 import axios from 'axios';
 import createJdention from './createJdenticon';
 import UserName from './UserName';
 import Image from './Image';
 import styled from 'styled-components';
 import { Div } from '../../../../theme/theme';
+import { AppContext } from '../../AppContainer';
 
 const Profile = styled.div`
   display: flex;
@@ -62,6 +63,7 @@ function User(props) {
   const [changeUserName, SetChangeUserName] = useState(false);
   const [openImageWindow, SetOpenImageWindow] = useState(false);
   const container = React.useRef();
+  const socket = useContext(AppContext);
 
   useEffect(() => {
     createJdention(userstate.imageurl, userstate.userid, 'smallimage');
@@ -118,6 +120,25 @@ function User(props) {
       <div>
         <Ol onClick={() => SetChangeUserName(true)}>Change Username</Ol>
         <Ol onClick={() => SetOpenImageWindow(true)}>Update Profile Image</Ol>
+
+        {props.activeUsers.indexOf(localStorage.userId) !== -1 ? (
+          <Ol
+            onClick={() => {
+              socket.emit('awayUser', localStorage.userId);
+            }}
+          >
+            Set Yourself To Away
+          </Ol>
+        ) : (
+          <Ol
+            onClick={() => {
+              socket.emit('activeUser', { userId: localStorage.userId, clientSocket: socket.id });
+            }}
+          >
+            Set Yourself To Active
+          </Ol>
+        )}
+        
         <Ol onClick={deleteAccount}>Delete Account</Ol>
         <Ol
           onClick={() => {

@@ -3,30 +3,35 @@ const { io } = require('./app');
 
 // listener fired upon socket connection with client
 
+//stores all users connected to the server AND whose status is set to active
 let activeUsers = [];
+
 const socketListener = io.on('connect', socket => {
   socket.on('message', message => {
     console.log(message);
   });
 
+  //add connected user to activeUsers array
   socket.on('activeUser', activeUser => {
-    console.log(activeUser);
     activeUsers.push(activeUser);
-    console.log(activeUsers);
+
     io.emit('updateActiveUsers', activeUsers);
   });
 
-  socket.on('isConnected', (id, callback) => {
-    callback(io.sockets.connected[id] && io.sockets.connected[id].connected);
+  //remove connected user from activeUsers array
+  socket.on('awayUser', awayUser => {
+    activeUsers = activeUsers.filter(({ userId }) => {
+      return userId !== awayUser;
+    });
+    io.emit('updateActiveUsers', activeUsers);
   });
 
+  //handle disconnect: remove disconnected user from activeUsers array
   socket.on('disconnect', reason => {
     console.log(`${reason}: ${socket.id}`);
     activeUsers = activeUsers.filter(({ clientSocket }) => {
       return clientSocket != socket.id;
     });
-    console.log(socket.id);
-    console.log(activeUsers);
 
     io.emit('updateActiveUsers', activeUsers);
 

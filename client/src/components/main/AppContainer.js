@@ -17,8 +17,6 @@ if (process.env.NODE_ENV === 'development') {
 
 socket.on('connect', () => {
   socket.send(`${socket.id} connected`);
-
-  socket.emit('activeUser', { id: localStorage.userId, clientSocket: socket.id });
 });
 
 function AppContainer() {
