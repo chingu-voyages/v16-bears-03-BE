@@ -57,6 +57,7 @@ router.post(
 router.get('/', async (req, res) => {
   try {
     let allChannels = await Channel.find().populate([
+      'users',
       {
         path: 'comments',
         populate: ['user', 'threadedComments', { path: 'threadedComments', populate: 'user' }],
@@ -83,6 +84,11 @@ router.get('/', async (req, res) => {
           description: channel.description,
           dateCreated: channel.date,
           id: channel._id,
+          users: channel.users.map(user => ({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+          })),
           comments: channel.comments.map(serializeComment),
         };
       });
