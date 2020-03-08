@@ -56,7 +56,7 @@ function Sidebar() {
       }
     };
     getUsers();
-  }, [errorMessage]);
+  }, [errorMessage, socket]);
 
   useEffect(() => {
     socket.on('updateActiveUsers', active => {
