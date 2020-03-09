@@ -124,7 +124,7 @@ function User(props) {
         {props.activeUsers.indexOf(localStorage.userId) !== -1 ? (
           <Ol
             onClick={() => {
-              socket.emit('awayUser', localStorage.userId);
+              socket.emit('setAwayUser', { userId: localStorage.userId, clientSocket: socket.id });
             }}
           >
             Set Yourself To Away

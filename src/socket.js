@@ -5,6 +5,8 @@ const { io } = require('./app');
 
 //stores all users connected to the server AND whose status is set to active
 let activeUsers = [];
+
+//stores users connected to the server AND whose status is set to away
 let awayUsers = [];
 
 const socketListener = io.on('connect', socket => {
@@ -12,70 +14,76 @@ const socketListener = io.on('connect', socket => {
     console.log(message);
   });
 
-  //add connected user to activeUsers array
+  //If connected userId is found in away array, add to away array, else, add to active array. This keeps user status persistent across multiple logins.
   socket.on('activeUser', activeUser => {
-    
-    
-    if(awayUsers.indexOf(activeUser.userId) === -1){
+    if (activeUser.userId && activeUser.clientSocket) {
+      if (
+        awayUsers.some(({ userId }) => {
+          return userId === activeUser.userId;
+        })
+      ) {
+        awayUsers = awayUsers.concat(activeUser);
+      } else {
+        activeUsers = activeUsers.concat(activeUser);
+      }
+    }
+    io.emit('updateUserActivity', activeUsers);
 
-    if(activeUser.userId!== undefined && activeUser.clientSocket){
-    activeUsers.push(activeUser);
- 
-  };
-
-}
-  io.emit('updateUserActivity', activeUsers);
-
-  console.log(activeUsers)
-  })
-
+    console.log(activeUsers);
+  });
 
   socket.on('setActiveUser', activeUser => {
-    
-    
-    awayUsers = awayUsers.filter(userId => {
-      return userId!== activeUser.userId
-    })
 
-    if(awayUsers.indexOf(activeUser.userId) === -1){
+    if (activeUser.userId && activeUser.clientSocket) {
 
-      if(activeUser.userId && activeUser.clientSocket){
-      activeUsers.push(activeUser);
-     
-    };
-  }
-    io.emit('updateUserActivity', activeUsers);
+      //add all user's connections to activeUser array
+      activeUsers = activeUsers.concat(
+        awayUsers.filter(({ userId }) => {
+          return userId === activeUser.userId;
+        }),
+      );
 
-      
-  });
-  
-
-
-
-  //remove connected user from activeUsers array
-  socket.on('awayUser', awayUser => {
-    activeUsers = activeUsers.filter(({ userId }) => {
-      return userId !== awayUser;
-    });
-    if(awayUsers.indexOf(awayUser) === -1){
-    awayUsers.push(awayUser)
+      //remove all user's connection from awayUsers array
+      awayUsers = awayUsers.filter(({ userId }) => {
+        return userId !== activeUser.userId;
+      });
     }
-  
-    io.emit('updateUserActivity', activeUsers);
 
+    io.emit('updateUserActivity', activeUsers);
   });
 
-  //handle disconnect: remove disconnected user from activeUsers array
+  socket.on('setAwayUser', awayUser => {
+
+    if (awayUser.userId && awayUser.clientSocket) {
+
+      //add all user's connections to awayUsers array
+      awayUsers = awayUsers.concat(
+        activeUsers.filter(({ userId }) => {
+          return userId === awayUser.userId;
+        }),
+      );
+
+      //remove all user's connections from activeUsers array
+      activeUsers = activeUsers.filter(({ userId }) => {
+        return userId !== awayUser.userId;
+      });
+    }
+
+    io.emit('updateUserActivity', activeUsers);
+  });
+
+  //handle disconnect: remove disconnected user from either array
   socket.on('disconnect', reason => {
-  
     activeUsers = activeUsers.filter(({ clientSocket }) => {
       return clientSocket != socket.id;
     });
 
-    console.log(activeUsers)
-  
-   io.emit('updateUserActivity', activeUsers)
-    
+    awayUsers = awayUsers.filter(({ clientSocket }) => {
+      return clientSocket != socket.id;
+    });
+
+ 
+    io.emit('updateUserActivity', activeUsers);
 
     if (reason === 'io server disconnect') {
       // the disconnection was initiated by the server, reconnect manually
