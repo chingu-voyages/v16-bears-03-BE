@@ -36,7 +36,7 @@ function Sidebar() {
   }, [logedinUser, imageUrl, errorMessage]);
 
   useEffect(() => {
-    console.log("TEST")
+   
     const getUsers = async () => {
       
       setIsLoading(true);
@@ -68,13 +68,17 @@ function Sidebar() {
       
       setActiveUsers(
         activeUsers.map(({ userId }) => {
-          console.log(userId)
           return userId;
         }),
       );
     });
 
     socket.on('updateUser', ({ id, name}) => {
+    
+      if(localStorage.userId === id){
+        setLogedinUser(name)
+      }
+
       setAllUsers(prev => {
         return prev.map(user => {
           if (user.id === id) {
@@ -103,7 +107,11 @@ function Sidebar() {
       </SidebarButton>
       <UsersList className={sidebar ? 'show' : ''}>
         <UserLink onClick={() => setUserWindow(true)}>
-          <P></P>
+        {(activeUsers.indexOf(localStorage.userId) !== -1)? (
+                      <P isActive={true} title="Active"></P>
+                    ) : (
+                      <P isActive={false} title="Away"></P>
+                    )}
           <p>{logedinUser}</p>
         </UserLink>
         {userWindow && (
@@ -241,7 +249,7 @@ const P = styled.p`
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
-  background: rgb(16, 92, 44);
+  background-color: ${props => (props.isActive ? '#2BAC76' : 'grey')};
   margin: auto 0.5rem auto 4rem;
 
   @media screen and (max-width: 600px) {
