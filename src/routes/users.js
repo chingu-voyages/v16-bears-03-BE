@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const User = require('../models/User');
-const Channel = require('../models/Channel');
+const { createAuthToken } = require('../auth/router');
 const passport = require('passport');
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
@@ -57,7 +57,10 @@ router.post(
         channels: [generalChannelId],
       });
 
-      res.status(201).json(user.serialize());
+      user = user.serialize();
+      const authToken = createAuthToken({ _id: user.id, name: user.name });
+
+      res.status(201).json({ authToken, user });
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server error');
