@@ -5,7 +5,6 @@ import ViewComments from './ViewComments';
 import ThreadWindow from '../thread/ThreadWindow';
 export const ChatContext = React.createContext(null);
 
-
 /*
 Parent component
 State is an object that changes when comment is posted to db
@@ -34,7 +33,7 @@ const ChatWindow = () => {
   const [threadWindow, setThreadWindow] = useState(false);
   const [threadinfo, setThreadInfo] = useState({});
 
-  function getThreadInfo(id, name, date, text, user_id, userImage) {
+  function getThreadInfo(id, name, date, text, user_id, userImage, thread) {
     setThreadInfo({
       id,
       name,
@@ -42,6 +41,7 @@ const ChatWindow = () => {
       text,
       user_id,
       userImage,
+      thread,
     });
   }
 

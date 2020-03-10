@@ -116,7 +116,15 @@ Return response containing new comment in JSON
                       _id,
                       text,
                       user: user.name,
+                      userImage: user.userImage,
                     });
+                    return comment;
+                  })
+                  .then(comment => {
+                    return Comment.populate(comment, { path: 'user' });
+                  })
+                  .then(comment => {
+                    sendCommentToClient(comment, 'post_thread');
                   })
                   .catch(err => {
                     console.log(err);
@@ -137,6 +145,13 @@ Return response containing new comment in JSON
                     text,
                     user: user.name,
                   });
+                  return comment;
+                })
+                .then(comment => {
+                  return Comment.populate(comment, { path: 'user' });
+                })
+                .then(comment => {
+                  sendCommentToClient(comment, 'post');
                 })
                 .catch(err => {
                   console.log(err);
@@ -193,6 +208,7 @@ Return response containing updated comment in JSON on succes
   router.patch('/:commentID', (req, res) => {
     const { text: textToUpdate } = req.body;
     const { name } = req.user;
+    console.log(req.body);
 
     Comment.findById(req.params.commentID)
       .then(comment => {

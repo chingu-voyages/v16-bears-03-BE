@@ -7,7 +7,7 @@ import { ChatContext } from './ChatWindow';
 //establish socket connection on client side
 const io = require('socket.io-client');
 
-let socket;
+export let socket;
 
 if (process.env.NODE_ENV === 'development') {
   socket = io('http://localhost:8000');
@@ -120,6 +120,7 @@ const ViewComments = props => {
               text={comment.text}
               isEdited={comment.isEdited}
               user_id={comment.user_id}
+              thread={comment.thread}
               refContainer={refContainer}
               setThreadWindow={props.setThreadWindow}
               getThreadInfo={props.getThreadInfo}
