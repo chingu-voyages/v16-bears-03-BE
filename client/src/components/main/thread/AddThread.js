@@ -7,7 +7,7 @@ import { Tooltip } from '../../../theme/theme';
 import axios from 'axios';
 
 function AddThread({ dispatch, commentid }) {
-  const [reply, setReply] = useState('Reply...');
+  const [reply, setReply] = useState('');
 
   function SubmitReply(e) {
     e.preventDefault();
@@ -50,6 +50,7 @@ function AddThread({ dispatch, commentid }) {
         <Textarea
           type="text"
           rows="3"
+          placeholder="Reply..."
           value={reply}
           onKeyDown={enterReply}
           onChange={e => setReply(e.target.value)}
