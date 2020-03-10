@@ -208,7 +208,6 @@ Return response containing updated comment in JSON on succes
   router.patch('/:commentID', (req, res) => {
     const { text: textToUpdate } = req.body;
     const { name } = req.user;
-    console.log(req.body);
 
     Comment.findById(req.params.commentID)
       .then(comment => {
