@@ -35,18 +35,6 @@ function Register(props) {
     e.preventDefault();
     const newUser = { name, password, email };
 
-    function pushUserToGeneralChannel(userId, authToken) {
-      axios.post(
-        '/api/channels/general',
-        {
-          users: userId,
-        },
-        {
-          headers: { authorization: `bearer ${authToken}` },
-        },
-      );
-    }
-
     axios
       .post('/api/users/register', newUser)
       .then(res => {
@@ -58,12 +46,6 @@ function Register(props) {
             localStorage.setItem('userId', res.data.user.id);
             localStorage.setItem('loggedIn', true);
             props.onChange(Math.random());
-          })
-          .then(res => {
-            pushUserToGeneralChannel(
-              localStorage.getItem('userId'),
-              localStorage.getItem('authToken'),
-            );
           })
           .catch(err => {
             console.log(err);

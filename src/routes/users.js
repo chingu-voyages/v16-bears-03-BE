@@ -60,6 +60,12 @@ router.post(
       user = user.serialize();
       const authToken = createAuthToken({ _id: user.id, name: user.name });
 
+      // Add the new user to general channel
+      Channel.findById(generalChannelId).then(channel => {
+        channel.users.push(user.id);
+        channel.save();
+      });
+
       res.status(201).json({ authToken, user });
     } catch (error) {
       console.error(error.message);
