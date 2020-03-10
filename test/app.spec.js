@@ -1,4 +1,4 @@
-const { server: app } = require('../src/app');
+const { app } = require('../src/app');
 
 describe('App', () => {
   it('GET /api/protected responds with 401 containing "Unauthorized"', () => {

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const User = require('../models/User');
+const { createAuthToken } = require('../auth/router');
 const passport = require('passport');
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
@@ -51,7 +52,10 @@ router.post(
         password,
       });
 
-      res.status(201).json(user.serialize());
+      user = user.serialize();
+      const authToken = createAuthToken({ _id: user.id, name: user.name });
+
+      res.status(201).json({ authToken, user });
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server error');
@@ -61,7 +65,7 @@ router.post(
 
 /**
  * @route GET api/users
- * @access Public
+ * @access Private
  * @desc Get all users
  */
 router.get('/', jwtAuth, async (req, res) => {

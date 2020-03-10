@@ -5,6 +5,7 @@ import User from './user/User';
 import { Hr } from '../../../theme/theme.js';
 import Message from '../../message/Message';
 import { MessageContext } from '../../../App';
+import Channels from './Channels';
 
 function Sidebar() {
   const [allUsers, setAllUsers] = useState();
@@ -80,6 +81,7 @@ function Sidebar() {
           />
         )}
         <Hr />
+        <Channels />
         {isLoading && <div>Loading...</div>}
         {isError ? (
           <Message message={errorMessage.message} />
