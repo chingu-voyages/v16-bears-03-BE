@@ -23,4 +23,4 @@ router.post('/', localAuth, (req, res) => {
   res.json({ authToken, user });
 });
 
-module.exports = { router };
+module.exports = { router, createAuthToken };
