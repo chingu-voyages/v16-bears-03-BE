@@ -43,7 +43,7 @@ const Name = styled.div`
 function User(props) {
   const initialState = {
     userid: localStorage.userId,
-    username: props.logedinUser,
+    username: props.loggedinUser,
     jwt: localStorage.authToken,
     imageurl: props.imageUrl,
   };
@@ -109,7 +109,7 @@ function User(props) {
                 username={userstate.username}
                 dispatch={dispatch}
                 SetChangeUserName={SetChangeUserName}
-                setLogedinUser={props.setLogedinUser}
+                setLoggedinUser={props.setLoggedinUser}
               />
             )}
           </b>

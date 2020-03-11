@@ -68,6 +68,7 @@ router.post(
       });
 
       res.status(201).json({ authToken, user });
+      io.emit("addUserToChannel", {user, channelId: generalChannelId} )
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server error');
@@ -130,7 +131,9 @@ router
   })
   .delete((req, res) => {
     User.findByIdAndRemove(req.params.userID)
-      .then(user => res.status(204).end())
+      .then(user => res.status(204).end()).then(()=>{
+        io.emit("deleteUser", req.params.userID)
+      })
       .catch(err => res.status(500).json('Something went wrong'));
   });
 

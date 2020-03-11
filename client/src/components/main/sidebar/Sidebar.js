@@ -12,8 +12,10 @@ import CurrentUser from './CurrentUser';
 function Sidebar() {
   const [sidebar, setToggleSidebar] = useState(false);
   const [allChannels, setAllChannels] = useState();
+  const [activeUsers, setActiveUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const socket = useContext(AppContext);
   let errorMessage = useContext(MessageContext);
 
   useEffect(() => {
@@ -36,6 +38,58 @@ function Sidebar() {
     getChannels();
   }, []);
 
+  //socket listeners on Sidebar
+  useEffect(() => {
+    socket.emit('activeUser', { userId: localStorage.userId, clientSocket: socket.id });
+
+    socket.on('updateUserActivity', activeUsers => {
+      setActiveUsers(
+        activeUsers.map(({ userId }) => {
+          return userId;
+        }),
+      );
+    });
+
+    socket.on('updateUser', ({ id, name }) => {
+      setAllChannels(prev => {
+        return prev.map(channel => {
+          channel.users.forEach(user => {
+            if (user.id === id) {
+              if (name) {
+                user.name = name;
+              }
+            }
+          });
+          return channel;
+        });
+      });
+    });
+
+    socket.on('addUserToChannel', ({ user, channelId }) => {
+      setAllChannels(prev => {
+        return prev.map(channel => {
+          if (channel.id === channelId) {
+            channel.users.push(user);
+            return channel;
+          } else {
+            return channel;
+          }
+        });
+      });
+    });
+
+    socket.on('deleteUser', id => {
+      setAllChannels(prev => {
+        return prev.map(channel => {
+          channel.users = channel.users.filter(user => {
+            return user.id !== id;
+          });
+          return channel;
+        });
+      });
+    });
+  }, [socket]);
+
   const toggleSidebar = () => {
     if (sidebar) {
       setToggleSidebar(false);
@@ -50,7 +104,7 @@ function Sidebar() {
         <i>&nbsp;</i>
       </SidebarButton>
       <SidebarContainer className={sidebar ? 'show' : ''}>
-        <CurrentUser />
+        <CurrentUser activeUsers={activeUsers} />
         <Hr />
         {isLoading && <div>Loading...</div>}
         {isError ? (
@@ -59,7 +113,10 @@ function Sidebar() {
           <>
             <Channels allChannels={allChannels} />
             {/* TODO: Choose selected channel / Harcoded General Channel */}
-            <AllUsers allUsersInChannel={allChannels && allChannels[0].users} />
+            <AllUsers
+              allUsersInChannel={allChannels && allChannels[0].users}
+              activeUsers={activeUsers}
+            />
           </>
         )}
       </SidebarContainer>

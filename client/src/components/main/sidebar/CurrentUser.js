@@ -2,15 +2,17 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import User from './user/User';
+import { AppContext } from '../AppContainer';
 import Message from '../../message/Message';
 import { MessageContext } from '../../../App';
 
-function CurrentUser() {
+function CurrentUser(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [userWindow, setUserWindow] = useState(false);
-  const [logedinUser, setLogedinUser] = useState('');
+  const [loggedinUser, setLoggedinUser] = useState('');
   const [imageUrl, setImageUrl] = useState(null);
+  const socket = useContext(AppContext);
   let errorMessage = useContext(MessageContext);
 
   useEffect(() => {
@@ -21,7 +23,7 @@ function CurrentUser() {
       })
       .then(res => {
         setIsLoading(false);
-        setLogedinUser(res.data.name);
+        setLoggedinUser(res.data.name);
         setImageUrl(res.data.userImage);
       })
       .catch(err => {
@@ -29,7 +31,15 @@ function CurrentUser() {
         setIsError(true);
         errorMessage.set_message([{ msg: 'Unable to get the user.' }]);
       });
-  }, [logedinUser, imageUrl]);
+  }, [loggedinUser, imageUrl]);
+
+  useEffect(() => {
+    socket.on('updateUser', ({ id, name }) => {
+      if (localStorage.userId === id) {
+        setLoggedinUser(name);
+      }
+    });
+  }, [socket]);
 
   return (
     <>
@@ -37,25 +47,27 @@ function CurrentUser() {
       {isError ? (
         <Message message={errorMessage.message} />
       ) : (
-        logedinUser && (
-                 <UserLink onClick={() => setUserWindow(true)}>
-        {(activeUsers.indexOf(localStorage.userId) !== -1)? (
-                      <P isActive={true} title="Active"></P>
-                    ) : (
-                      <P isActive={false} title="Away"></P>
-                    )}
-          <p>{logedinUser}</p>
-        </UserLink>))}
-        {userWindow && (
-          <User
-            logedinUser={logedinUser}
-            imageUrl={imageUrl}
-            setLogedinUser={setLogedinUser}
-            setImageUrl={setImageUrl}
-            setUserWindow={setUserWindow}
-            activeUsers={activeUsers}
-          />
-        )}
+        loggedinUser && (
+          <UserLink onClick={() => setUserWindow(true)}>
+            {props.activeUsers.indexOf(localStorage.userId) !== -1 ? (
+              <P isActive={true} title="Active"></P>
+            ) : (
+              <P isActive={false} title="Away"></P>
+            )}
+            <p>{loggedinUser}</p>
+          </UserLink>
+        )
+      )}
+      {userWindow && (
+        <User
+          loggedinUser={loggedinUser}
+          imageUrl={imageUrl}
+          setLoggedinUser={setLoggedinUser}
+          setImageUrl={setImageUrl}
+          setUserWindow={setUserWindow}
+          activeUsers={props.activeUsers}
+        />
+      )}
     </>
   );
 }
