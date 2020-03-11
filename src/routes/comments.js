@@ -3,6 +3,7 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const Comment = require('../models/Comment');
 const User = require('../models/User');
+const Channel = require('../models/Channel');
 
 //wrap routes in function that takes Socket.IO server as an arg
 
@@ -86,7 +87,7 @@ Return response containing new comment in JSON
           .json({ message: "User ID in body and user ID associated with token don't match" });
       }
 
-      const { user, text, date, threadedComment, parentID } = req.body;
+      const { user, text, date, threadedComment, parentID, channelID } = req.body;
 
       User.findById(user)
         .then(user => {
@@ -132,26 +133,41 @@ Return response containing new comment in JSON
                   });
               });
             } else {
-              Comment.create({
-                user: user._id,
-                text,
-                date,
-              })
-                .then(comment => {
-                  const { date, _id, text } = comment;
-                  res.status(201).json({
-                    date,
-                    _id,
+              Channel.findById(channelID)
+                .then(channel => {
+                  if (!channel) {
+                    return res.status(404).json({ Error: 'Channel not found' });
+                  }
+
+                  Comment.create({
+                    user: user._id,
                     text,
-                    user: user.name,
-                  });
-                  return comment;
-                })
-                .then(comment => {
-                  return Comment.populate(comment, { path: 'user' });
-                })
-                .then(comment => {
-                  sendCommentToClient(comment, 'post');
+                    date,
+                  })
+                    .then(comment => {
+                      const { date, _id, text } = comment;
+
+                      channel.comments.push(_id);
+                      channel.save();
+                      res.status(201).json({
+                        date,
+                        _id,
+                        text,
+                        user: user.name,
+                      });
+
+                      return comment;
+                    })
+                    .then(comment => {
+                      return Comment.populate(comment, { path: 'user' });
+                    })
+                    .then(comment => {
+                      sendCommentToClient(comment, 'post');
+                    })
+                    .catch(err => {
+                      console.log(err);
+                      res.status(500).json({ message: 'Something went wrong' });
+                    });
                 })
                 .catch(err => {
                   console.log(err);
