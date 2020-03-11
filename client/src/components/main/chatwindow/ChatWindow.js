@@ -5,7 +5,6 @@ import ViewComments from './ViewComments';
 import ThreadWindow from '../thread/ThreadWindow';
 export const ChatContext = React.createContext(null);
 
-
 /*
 Parent component
 State is an object that changes when comment is posted to db
@@ -59,7 +58,7 @@ const ChatWindow = () => {
   );
 };
 
-const Container = styled.div`
+const Container = styled.main`
   width: 100%;
   height: 100%;
   grid-area: 1/2/3/3;
@@ -72,14 +71,14 @@ const Container = styled.div`
   color: rgb(29, 28, 29);
 `;
 
-const Header = styled.section`
+const Header = styled.header`
   display: flex;
-  margin-left: 0.5rem;
+  justify-content: center;
+  margin: 1.5rem 1.5rem 1.8rem 1.5rem;
   font-size: 2rem;
   align-items: flex-end;
   font-weight: 600;
   flex: 0 0 5%;
-  padding: 0.5rem 0.5rem;
   font-size: 1.8rem;
 `;
 

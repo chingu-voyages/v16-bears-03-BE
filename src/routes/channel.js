@@ -5,7 +5,7 @@ const Channel = require('../models/Channel');
 
 /**
  * @route POST api/channels
- * @access Public
+ * @access Private
  * @desc Create new channel
  */
 router.post(
@@ -51,7 +51,7 @@ router.post(
 
 /**
  * @route GET api/channels
- * @access Public
+ * @access Private
  * @desc Get all channels
  */
 router.get('/', async (req, res) => {
@@ -64,8 +64,10 @@ router.get('/', async (req, res) => {
       },
     ]);
 
+    let channels;
+
     if (allChannels) {
-      const channels = allChannels.map(channel => {
+      channels = allChannels.map(channel => {
         const serializeComment = eachComment => ({
           _id: eachComment._id,
           text: eachComment.text,
@@ -92,9 +94,9 @@ router.get('/', async (req, res) => {
           comments: channel.comments.map(serializeComment),
         };
       });
-
-      return res.status(200).send(channels);
     }
+
+    return res.status(200).send(channels);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Something went wrong' });

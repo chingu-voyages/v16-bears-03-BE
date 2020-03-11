@@ -38,13 +38,23 @@ function Register(props) {
     axios
       .post('/api/users/register', newUser)
       .then(res => {
-        localStorage.setItem('authToken', res.data.authToken);
-        localStorage.setItem('userId', res.data.user.id);
-        localStorage.setItem('loggedIn', true);
-        props.onChange(Math.random());
+        const user = { password, email };
+        axios
+          .post('/api/users/login', user)
+          .then(res => {
+            localStorage.setItem('authToken', res.data.authToken);
+            localStorage.setItem('userId', res.data.user.id);
+            localStorage.setItem('loggedIn', true);
+            props.onChange(Math.random());
+          })
+          .catch(err => {
+            console.log(err);
+            // errorMessage.set_message(err, true);
+          });
       })
       .catch(err => {
-        errorMessage.set_message(err.response.data.errors, true);
+        console.log(err);
+        // errorMessage.set_message(err, true);
       });
   }
 
