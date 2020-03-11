@@ -19,7 +19,7 @@ function UserName(props) {
       .then(res => {
         props.dispatch({ type: 'CHANGE_USERNAME', name });
         props.SetChangeUserName(false);
-        props.setLogedinUser(name);
+        props.setLoggedinUser(name);
       })
       .catch(err => console.log(err.response.data));
   }

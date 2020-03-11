@@ -3,22 +3,8 @@ import axios from 'axios';
 import styled from 'styled-components';
 import Comment from './Comment';
 import { ChatContext } from './ChatWindow';
+import { AppContext } from '../AppContainer'
 
-//establish socket connection on client side
-const io = require('socket.io-client');
-
-export let socket;
-
-if (process.env.NODE_ENV === 'development') {
-  socket = io('http://localhost:8000');
-} else {
-  socket = io();
-}
-
-socket.on('connect', () => {
-  socket.emit('message', `${socket.id} connected`);
-  return;
-});
 
 /*
 Requests all comments from database and handles  socket events  
@@ -36,7 +22,8 @@ const ViewComments = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const { chatState } = useContext(ChatContext);
+  const { chatState } = useContext(ChatContext);  
+  const socket = useContext(AppContext)
 
   //Requests all comments using http on first render. Socket connection will then handle all comment events.
   useEffect(() => {
@@ -82,7 +69,25 @@ const ViewComments = props => {
         return prev.filter(comment => comment._id !== id);
       });
     });
-  }, []);
+
+    socket.on('updateUser', ({ id, name, userImage }) => {
+      setAllComments(prev => {
+        return prev.map(comment => {
+          if (comment.user_id === id) {
+            if (name) {
+              comment.user = name;
+            }
+
+            if (userImage) {
+              comment.userImage = userImage;
+            }
+            return comment;
+          }
+          return comment;
+        });
+      });
+    });
+  }, [socket]);
 
   useEffect(() => {
     if (chatState.newComment) {

@@ -2,15 +2,17 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import User from './user/User';
+import { AppContext } from '../AppContainer';
 import Message from '../../message/Message';
 import { MessageContext } from '../../../App';
 
-function CurrentUser() {
+function CurrentUser(props) {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [userWindow, setUserWindow] = useState(false);
-  const [logedinUser, setLogedinUser] = useState('');
+  const [loggedinUser, setLoggedinUser] = useState('');
   const [imageUrl, setImageUrl] = useState(null);
+  const socket = useContext(AppContext);
   let errorMessage = useContext(MessageContext);
 
   useEffect(() => {
@@ -21,7 +23,7 @@ function CurrentUser() {
       })
       .then(res => {
         setIsLoading(false);
-        setLogedinUser(res.data.name);
+        setLoggedinUser(res.data.name);
         setImageUrl(res.data.userImage);
       })
       .catch(err => {
@@ -29,7 +31,15 @@ function CurrentUser() {
         setIsError(true);
         errorMessage.set_message([{ msg: 'Unable to get the user.' }]);
       });
-  }, [logedinUser, imageUrl]);
+  }, [loggedinUser, imageUrl]);
+
+  useEffect(() => {
+    socket.on('updateUser', ({ id, name }) => {
+      if (localStorage.userId === id) {
+        setLoggedinUser(name);
+      }
+    });
+  }, [socket]);
 
   return (
     <>
@@ -37,20 +47,25 @@ function CurrentUser() {
       {isError ? (
         <Message message={errorMessage.message} />
       ) : (
-        logedinUser && (
+        loggedinUser && (
           <UserLink onClick={() => setUserWindow(true)}>
-            <P></P>
-            <p>{logedinUser}</p>
+            {props.activeUsers.indexOf(localStorage.userId) !== -1 ? (
+              <P isActive={true} title="Active"></P>
+            ) : (
+              <P isActive={false} title="Away"></P>
+            )}
+            <p>{loggedinUser}</p>
           </UserLink>
         )
       )}
       {userWindow && (
         <User
-          logedinUser={logedinUser}
+          loggedinUser={loggedinUser}
           imageUrl={imageUrl}
-          setLogedinUser={setLogedinUser}
+          setLoggedinUser={setLoggedinUser}
           setImageUrl={setImageUrl}
           setUserWindow={setUserWindow}
+          activeUsers={props.activeUsers}
         />
       )}
     </>
@@ -77,7 +92,7 @@ const P = styled.p`
   width: 1rem;
   height: 1rem;
   border-radius: 50%;
-  background: rgb(16, 92, 44);
+  background-color: ${props => (props.isActive ? '#2BAC76' : 'grey')};
   margin: auto 0.5rem auto 4rem;
 
   @media screen and (max-width: 600px) {

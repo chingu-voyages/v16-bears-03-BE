@@ -10,8 +10,13 @@ function AllUsers(props) {
           props.allUsersInChannel.map(user => {
             // TODO: Set isActive to true is the user is online
             return (
-              <li key={user._id} title={user.name}>
-                <Active isActive={false}></Active>
+              <li key={user.id}>
+            
+                {(props.activeUsers.indexOf(user.id) !== -1)? (
+                  <Active isActive={true} title="Active"></Active>
+                ) : (
+                  <Active isActive={false} title="Away"></Active>
+                )}
                 {user.name}
               </li>
             );

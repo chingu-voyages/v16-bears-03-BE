@@ -1,10 +1,11 @@
-import React, { useEffect, useReducer, useState } from 'react';
+import React, { useEffect, useReducer, useState, useContext } from 'react';
 import axios from 'axios';
 import createJdention from './createJdenticon';
 import UserName from './UserName';
 import Image from './Image';
 import styled from 'styled-components';
 import { Div } from '../../../../theme/theme';
+import { AppContext } from '../../AppContainer';
 
 const Profile = styled.div`
   display: flex;
@@ -42,7 +43,7 @@ const Name = styled.div`
 function User(props) {
   const initialState = {
     userid: localStorage.userId,
-    username: props.logedinUser,
+    username: props.loggedinUser,
     jwt: localStorage.authToken,
     imageurl: props.imageUrl,
   };
@@ -62,6 +63,7 @@ function User(props) {
   const [changeUserName, SetChangeUserName] = useState(false);
   const [openImageWindow, SetOpenImageWindow] = useState(false);
   const container = React.useRef();
+  const socket = useContext(AppContext);
 
   useEffect(() => {
     createJdention(userstate.imageurl, userstate.userid, 'smallimage');
@@ -107,7 +109,7 @@ function User(props) {
                 username={userstate.username}
                 dispatch={dispatch}
                 SetChangeUserName={SetChangeUserName}
-                setLogedinUser={props.setLogedinUser}
+                setLoggedinUser={props.setLoggedinUser}
               />
             )}
           </b>
@@ -118,6 +120,25 @@ function User(props) {
       <div>
         <Ol onClick={() => SetChangeUserName(true)}>Change Username</Ol>
         <Ol onClick={() => SetOpenImageWindow(true)}>Update Profile Image</Ol>
+
+        {props.activeUsers.indexOf(localStorage.userId) !== -1 ? (
+          <Ol
+            onClick={() => {
+              socket.emit('setAwayUser', { userId: localStorage.userId, clientSocket: socket.id });
+            }}
+          >
+            Set Yourself To Away
+          </Ol>
+        ) : (
+          <Ol
+            onClick={() => {
+              socket.emit('setActiveUser', { userId: localStorage.userId, clientSocket: socket.id });
+            }}
+          >
+            Set Yourself To Active
+          </Ol>
+        )}
+        
         <Ol onClick={deleteAccount}>Delete Account</Ol>
         <Ol
           onClick={() => {
