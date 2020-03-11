@@ -1,96 +1,40 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
-import User from './user/User';
 import { Hr } from '../../../theme/theme.js';
 import Message from '../../message/Message';
 import { MessageContext } from '../../../App';
 import { AppContext } from '../AppContainer';
 import Channels from './Channels';
+import AllUsers from './AllUsers';
+import CurrentUser from './CurrentUser';
 
 function Sidebar() {
-  const [allUsers, setAllUsers] = useState([]);
+  const [sidebar, setToggleSidebar] = useState(false);
+  const [allChannels, setAllChannels] = useState();
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const [userWindow, setUserWindow] = useState(false);
-  const [logedinUser, setLogedinUser] = useState('');
-  const [imageUrl, setImageUrl] = useState(null);
-  const [sidebar, setToggleSidebar] = useState(false);
-  const socket = useContext(AppContext);
-  const [activeUsers, setActiveUsers] = useState([]);
   let errorMessage = useContext(MessageContext);
 
   useEffect(() => {
-    axios
-      .get(`/api/users/${localStorage.userId}`, {
-        headers: { authorization: `bearer ${localStorage.authToken}` },
-      })
-      .then(res => {
-        setLogedinUser(res.data.name);
-        setImageUrl(res.data.userImage);
-      })
-      .catch(err => {
-        setIsError(true);
-        errorMessage.set_message([{ msg: 'Unable to get the user.' }]);
-      });
-  }, [logedinUser, imageUrl, errorMessage]);
-
-  useEffect(() => {
-   
-    const getUsers = async () => {
-      
+    const getChannels = async () => {
       setIsLoading(true);
 
       try {
-        // Get all users
-        const result = await axios('/api/users', {
+        // Get all channels
+        const result = await axios('/api/channels', {
           headers: { authorization: `bearer ${localStorage.authToken}` },
         });
-
-        setAllUsers(result.data);
-
+        setAllChannels(result.data);
         setIsLoading(false);
       } catch (error) {
         setIsLoading(false);
-        errorMessage.set_message([{ msg: 'Unable to get users.' }]);
+        errorMessage.set_message([{ msg: 'Unable to get channels.' }]);
         setIsError(true);
       }
     };
-    getUsers();
-  }, [errorMessage, socket]);
-
-  useEffect(() => {
-  
-    socket.emit('activeUser', { userId: localStorage.userId, clientSocket: socket.id });
-    
-
-    socket.on('updateUserActivity', (activeUsers) => {
-      
-      setActiveUsers(
-        activeUsers.map(({ userId }) => {
-          return userId;
-        }),
-      );
-    });
-
-    socket.on('updateUser', ({ id, name}) => {
-    
-      if(localStorage.userId === id){
-        setLogedinUser(name)
-      }
-
-      setAllUsers(prev => {
-        return prev.map(user => {
-          if (user.id === id) {
-            if (name) user.name = name;
-            return user;
-          }
-          return user;
-        });
-      });
-    });
-  }, [socket]);
-
+    getChannels();
+  }, []);
 
   const toggleSidebar = () => {
     if (sidebar) {
@@ -105,51 +49,20 @@ function Sidebar() {
       <SidebarButton onClick={toggleSidebar} className={sidebar ? 'show' : ''}>
         <i>&nbsp;</i>
       </SidebarButton>
-      <UsersList className={sidebar ? 'show' : ''}>
-        <UserLink onClick={() => setUserWindow(true)}>
-        {(activeUsers.indexOf(localStorage.userId) !== -1)? (
-                      <P isActive={true} title="Active"></P>
-                    ) : (
-                      <P isActive={false} title="Away"></P>
-                    )}
-          <p>{logedinUser}</p>
-        </UserLink>
-        {userWindow && (
-          <User
-            logedinUser={logedinUser}
-            imageUrl={imageUrl}
-            setLogedinUser={setLogedinUser}
-            setImageUrl={setImageUrl}
-            setUserWindow={setUserWindow}
-            activeUsers={activeUsers}
-          />
-        )}
+      <SidebarContainer className={sidebar ? 'show' : ''}>
+        <CurrentUser />
         <Hr />
-        <Channels />
         {isLoading && <div>Loading...</div>}
         {isError ? (
           <Message message={errorMessage.message} />
         ) : (
-          <ul>
-            {allUsers &&
-              allUsers.map(user => {
-                // TODO: Set isActive to true is the user is online
-               
-                return (
-                  <li key={user.id}>
-                
-                    {(activeUsers.indexOf(user.id) !== -1)? (
-                      <Active isActive={true} title="Active"></Active>
-                    ) : (
-                      <Active isActive={false} title="Away"></Active>
-                    )}
-                    {user.name}
-                  </li>
-                );
-              })}
-          </ul>
+          <>
+            <Channels allChannels={allChannels} />
+            {/* TODO: Choose selected channel / Harcoded General Channel */}
+            <AllUsers allUsersInChannel={allChannels && allChannels[0].users} />
+          </>
         )}
-      </UsersList>
+      </SidebarContainer>
     </Aside>
   );
 }
@@ -164,16 +77,25 @@ const Aside = styled.aside`
   }
 `;
 
-const UsersList = styled.section`
+const SidebarContainer = styled.section`
   width: 22rem;
   height: 100vh;
   color: white;
   font-size: 1.5rem;
   overflow-y: hidden;
 
+  h3 {
+    margin-left: 2rem;
+  }
+
+  ul.channels {
+    height: 20vh;
+    margin-bottom: 2rem;
+  }
+
   ul {
     margin-top: 2rem;
-    height: 75%;
+    height: 50vh;
     width: 100%;
     overflow-y: scroll;
     scrollbar-color: white rgb(44, 8, 82);
@@ -214,46 +136,6 @@ const UsersList = styled.section`
     &.show {
       display: block;
     }
-  }
-`;
-
-/**
- * Set the active dot to green if user is online
- */
-const Active = styled.i`
-  position: relative;
-  display: inline-block;
-  width: 1rem;
-  height: 1rem;
-  background-color: ${props => (props.isActive ? '#2BAC76' : 'grey')};
-  border-radius: 50%;
-  margin-right: 0.5rem;
-`;
-
-const UserLink = styled.div`
-  display: flex;
-  justify-content: start;
-  &:hover {
-    background: rgb(56, 9, 105);
-    cursor: pointer;
-    color: gray;
-  }
-
-  @media screen and (max-width: 600px) {
-    ul {
-      padding-left: 2rem;
-    }
-  }
-`;
-const P = styled.p`
-  width: 1rem;
-  height: 1rem;
-  border-radius: 50%;
-  background-color: ${props => (props.isActive ? '#2BAC76' : 'grey')};
-  margin: auto 0.5rem auto 4rem;
-
-  @media screen and (max-width: 600px) {
-    margin-left: 2rem;
   }
 `;
 

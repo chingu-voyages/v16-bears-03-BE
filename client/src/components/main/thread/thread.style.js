@@ -5,6 +5,7 @@ const ThreadInfo = styled.div`
   grid-template-rows: 2rem auto;
   width: 100%;
 `;
+
 const ThreadContainer = styled.div`
   position: absolute;
   z-index: 10;
@@ -20,7 +21,7 @@ const ThreadContainer = styled.div`
     width: 100%;
   }
   @media (min-width: 480px) and (max-width: 900px) {
-    width: 70%;
+    width: 80%;
   }
 `;
 
@@ -28,7 +29,19 @@ const Title = styled.div`
   padding: 1.5rem;
   display: flex;
   border-bottom: 1px solid lightgray;
+  position: relative;
+  ${props => {
+    if (props.id === 'notatitle') {
+      return `border-bottom: none;
+      &:hover{
+       background:rgb(224,224,224);
+    }
+  }  
+ `;
+    }
+  }}
 `;
+
 const ThreadAvatar = styled.div`
   width: 3.6rem;
   height: 3.6rem;
@@ -41,8 +54,9 @@ const ThreadAvatar = styled.div`
   }
 `;
 
-const AllThreads = styled.div`
+const AllThreads = styled.section`
   overflow-y: auto;
+  height: 58vh;
   scrollbar-color: #919191;
   scrollbar-width: thin;
   &::-webkit-scrollbar-track {
@@ -82,4 +96,24 @@ const Textarea = styled.textarea`
   resize: none;
 `;
 
-export { ThreadInfo, ThreadContainer, AllThreads, Textarea, Title, ThreadAvatar, Header };
+const Menu = styled.div`
+  border: 1px solid #555;
+  background: white;
+  height: 4rem;
+  width: 8rem;
+  position: absolute;
+  right: 3rem;
+  top: 1rem;
+  font-size: 1.2rem;
+  & > div {
+    text-align: center;
+    list-style-type: none;
+    height: 2rem;
+    padding-top: 0.3rem;
+    &:hover {
+      background: gray;
+      color: white;
+    }
+  }
+`;
+export { ThreadInfo, ThreadContainer, AllThreads, Textarea, Title, ThreadAvatar, Header, Menu };

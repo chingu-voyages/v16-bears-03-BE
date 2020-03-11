@@ -1,52 +1,20 @@
-import React, { useState, useEffect, useContext } from 'react';
-import axios from 'axios';
-import { MessageContext } from '../../../App';
-import Message from '../../message/Message';
+import React from 'react';
 
-function Channels() {
-  const [allChannels, setAllChannels] = useState();
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
-  let errorMessage = useContext(MessageContext);
-
-  useEffect(() => {
-    const getChannels = async () => {
-      setIsLoading(true);
-
-      try {
-        // Get all channels
-        const result = await axios('/api/channels', {
-          headers: { authorization: `bearer ${localStorage.authToken}` },
-        });
-
-        setAllChannels(result.data);
-        setIsLoading(false);
-      } catch (error) {
-        setIsLoading(false);
-        errorMessage.set_message([{ msg: 'Unable to get channels.' }]);
-        setIsError(true);
-      }
-    };
-    getChannels();
-  }, []);
-
+function Channels(props) {
   return (
-    <div>
-      {isLoading && <div>Loading...</div>}
-      {isError ? (
-        <Message message={errorMessage.message} />
-      ) : (
-        <>
-          <h3>Channels</h3>
-          <ul>
-            {allChannels &&
-              allChannels.map(channel => {
-                return <li key={channel.id}># {channel.name}</li>;
-              })}
-          </ul>
-        </>
-      )}
-    </div>
+    <>
+      <h3>Channels</h3>
+      <ul className="channels">
+        {props.allChannels &&
+          props.allChannels.map(channel => {
+            return (
+              <li key={channel._id} title={channel.name}>
+                # {channel.name}
+              </li>
+            );
+          })}
+      </ul>
+    </>
   );
 }
 

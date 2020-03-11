@@ -125,6 +125,7 @@ const ViewComments = props => {
               text={comment.text}
               isEdited={comment.isEdited}
               user_id={comment.user_id}
+              thread={comment.thread}
               refContainer={refContainer}
               setThreadWindow={props.setThreadWindow}
               getThreadInfo={props.getThreadInfo}

@@ -5,7 +5,7 @@ const Channel = require('../models/Channel');
 
 /**
  * @route POST api/channels
- * @access Public
+ * @access Private
  * @desc Create new channel
  */
 router.post(
@@ -51,25 +51,52 @@ router.post(
 
 /**
  * @route GET api/channels
- * @access Public
+ * @access Private
  * @desc Get all channels
  */
 router.get('/', async (req, res) => {
   try {
-    let allChannels = await Channel.find();
+    let allChannels = await Channel.find().populate([
+      'users',
+      {
+        path: 'comments',
+        populate: ['user', 'threadedComments', { path: 'threadedComments', populate: 'user' }],
+      },
+    ]);
+
+    let channels;
 
     if (allChannels) {
-      const channels = allChannels.map(channel => {
+      channels = allChannels.map(channel => {
+        const serializeComment = eachComment => ({
+          _id: eachComment._id,
+          text: eachComment.text,
+          date: eachComment.date,
+          isEdited: eachComment.isEdited,
+          ...(eachComment.user ? { user: eachComment.user.name } : { user: 'Deleted User' }),
+          ...(eachComment.user ? { user_id: eachComment.user._id } : { user_id: null }),
+          ...(eachComment.user ? { userImage: eachComment.user.userImage } : { userImage: null }),
+          ...(eachComment.threadedComments.length > 0
+            ? { thread: eachComment.threadedComments.map(serializeComment) }
+            : null),
+        });
+
         return {
           name: channel.name,
           description: channel.description,
           dateCreated: channel.date,
           id: channel._id,
+          users: channel.users.map(user => ({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+          })),
+          comments: channel.comments.map(serializeComment),
         };
       });
-
-      return res.status(200).send(channels);
     }
+
+    return res.status(200).send(channels);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Something went wrong' });

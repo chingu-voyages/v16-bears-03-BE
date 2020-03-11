@@ -43,6 +43,10 @@ router.post(
         });
       }
 
+      let generalChannelId = await Channel.find({ name: 'General' }).then(generalChannel => {
+        return generalChannel[0]._id;
+      });
+
       // this hashes the password
       password = await User.hashPassword(password);
 
@@ -51,10 +55,17 @@ router.post(
         name,
         email,
         password,
+        channels: [generalChannelId],
       });
 
       user = user.serialize();
       const authToken = createAuthToken({ _id: user.id, name: user.name });
+
+      // Add the new user to general channel
+      Channel.findById(generalChannelId).then(channel => {
+        channel.users.push(user.id);
+        channel.save();
+      });
 
       res.status(201).json({ authToken, user });
     } catch (error) {
@@ -63,33 +74,6 @@ router.post(
     }
   },
 );
-
-/**
- * @route GET api/users
- * @access Private
- * @desc Get all users
- */
-router.get('/', jwtAuth, async (req, res) => {
-  try {
-    const allUsers = await User.find();
-    let users;
-
-    if (allUsers) {
-      users = allUsers.map(user => {
-        return {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-        };
-      });
-
-      return res.status(200).send(users);
-    }
-  } catch (error) {
-    console.error(error.message);
-    return res.status(500).send('Server error');
-  }
-});
 
 router
   .route('/:userID')
