@@ -56,22 +56,28 @@ router.post(
  */
 router.get('/', async (req, res) => {
   try {
-    await Channel.find()
-      .populate('users')
-      .exec((err, channels) => {
-        channels.map(channel => {
-          return {
-            name: channel.name,
-            description: channel.description,
-            dateCreated: channel.date,
-            id: channel._id,
-            users: channel.users,
-            comments: channel.comments,
-          };
-        });
+    let allChannels = await Channel.find().populate('users');
 
-        return res.status(200).send(channels);
+    let channels;
+
+    if (allChannels) {
+      channels = allChannels.map(channel => {
+        return {
+          name: channel.name,
+          description: channel.description,
+          dateCreated: channel.date,
+          id: channel._id,
+          users: channel.users.map(user => ({
+            id: user._id,
+            name: user.name,
+            email: user.email,
+          })),
+          comments: channel.comments,
+        };
       });
+    }
+
+    return res.status(200).send(channels);
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Something went wrong' });
