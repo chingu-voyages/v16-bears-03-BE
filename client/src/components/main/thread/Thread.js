@@ -82,12 +82,12 @@ function Thread({ threadinfo, dispatch }) {
             updateThread={updateThread}
           />
         ) : (
-          <div style={{ fontSize: '1.5rem', width: '350px', wordWrap: 'break-word' }}>
+          <Div>
             {threadinfo.text}
             <span style={{ fontSize: '0.8rem', color: 'gray' }}>
               {threadinfo.isEdited && '  (edited)'}
             </span>
-          </div>
+          </Div>
         )}
 
         {threadinfo.user_id === localStorage.userId && (
@@ -139,6 +139,21 @@ const Button = styled.span`
     `;
     }
   }}
+`;
+
+const Div = styled.div`
+  font-size: 1.5rem;
+  width: 340px;
+  word-wrap: break-word;
+  @media (min-width: 390px) and (max-width: 480px) {
+    width: 250px;
+  }
+  @media (min-width: 481px) and (max-width: 769px) {
+    width: 179px;
+  }
+  @media (max-width: 389px) {
+    width: 179px;
+  }
 `;
 
 export default Thread;

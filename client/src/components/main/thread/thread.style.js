@@ -21,7 +21,7 @@ const ThreadContainer = styled.div`
     width: 100%;
   }
   @media (min-width: 480px) and (max-width: 900px) {
-    width: 70%;
+    width: 80%;
   }
 `;
 
