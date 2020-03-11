@@ -117,15 +117,15 @@ Return response containing new comment in JSON
                       _id,
                       text,
                       user: user.name,
+                      userImage: user.userImage,
                     });
-
                     return comment;
                   })
                   .then(comment => {
                     return Comment.populate(comment, { path: 'user' });
                   })
                   .then(comment => {
-                    sendCommentToClient(comment, 'post');
+                    sendCommentToClient(comment, 'post_thread');
                   })
                   .catch(err => {
                     console.log(err);

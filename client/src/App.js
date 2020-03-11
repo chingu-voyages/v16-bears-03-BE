@@ -3,7 +3,7 @@ import styled, { createGlobalStyle } from 'styled-components';
 import Login from './components/login/Login';
 import Register from './components/register/Register';
 import axios from 'axios';
-
+import { ReactComponent as Logo } from './assets/logo.svg';
 import AppContainer from './components/main/AppContainer';
 export const MessageContext = React.createContext();
 
@@ -44,15 +44,18 @@ const AppWrap = styled.div`
   top: 0px;
   background: rgb(44, 8, 82);
   width: 100%;
-  height: 45%;
+  height: 45% !important;
 `;
 
 const H1 = styled.h1`
   color: white;
-  margin-top: 50px;
-  margin-left: 10%;
-  font-size: 3rem;
+  position: absolute;
+  margin-top: -5px;
+  margin-left: 60px;
+  font-size: 2.5rem;
+  padding: 20px 5px 10px 15px;
 `;
+
 const FormWrapper = styled.div`
   margin: 80px auto auto auto;
   width: 70%;
@@ -96,7 +99,12 @@ function App() {
       <GlobalStyles />
       {!localStorage.loggedIn ? (
         <AppWrap>
-          <H1>Slack Clone</H1>
+          <div style={{ display: 'flex', marginTop: '50px', marginLeft: '10%' }}>
+            <div>
+              <Logo />
+            </div>
+            <H1>Slack Clone</H1>
+          </div>
           <GlobalStyles />
           <FormWrapper>
             {!newUser ? (

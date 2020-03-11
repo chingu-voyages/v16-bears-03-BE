@@ -33,7 +33,7 @@ const ChatWindow = () => {
   const [threadWindow, setThreadWindow] = useState(false);
   const [threadinfo, setThreadInfo] = useState({});
 
-  function getThreadInfo(id, name, date, text, user_id, userImage) {
+  function getThreadInfo(id, name, date, text, user_id, userImage, thread) {
     setThreadInfo({
       id,
       name,
@@ -41,6 +41,7 @@ const ChatWindow = () => {
       text,
       user_id,
       userImage,
+      thread,
     });
   }
 
