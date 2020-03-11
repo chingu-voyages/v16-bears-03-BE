@@ -36,7 +36,7 @@ function Sidebar() {
       }
     };
     getChannels();
-  }, []);
+  }, [errorMessage]);
 
   //socket listeners on Sidebar
   useEffect(() => {

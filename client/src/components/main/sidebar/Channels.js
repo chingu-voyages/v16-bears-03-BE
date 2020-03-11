@@ -8,7 +8,7 @@ function Channels(props) {
         {props.allChannels &&
           props.allChannels.map(channel => {
             return (
-              <li key={channel._id} title={channel.name}>
+              <li key={channel.id} title={channel.name}>
                 # {channel.name}
               </li>
             );
