@@ -4,8 +4,6 @@ import styled from 'styled-components';
 function Channels(props) {
   const { allChannels, appState, appDispatch } = props;
 
-  useEffect(() => {}, []);
-
   const setChannel = id => {
     let [channel] = allChannels.filter(channel => {
       return channel.id === id;
