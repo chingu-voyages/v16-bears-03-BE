@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Comment from './Comment';
 import { ChatContext } from './ChatWindow';
 import { AppContext } from '../AppContainer';
+import { formatDate } from '../chatwindow/Comment';
 
 /*
 Requests all comments from database and handles  socket events  
@@ -91,13 +92,13 @@ const ViewComments = props => {
       {/*hardcoded channel section */}
 
       <ChannelSection>
-        <Name>#Slack Clone</Name>
+        <Name># {props.currentChannel.name}</Name>
         <Description>
           <ChannelLink href="https://github.com/chingu-voyages/v16-bears-03-BE" target="_blank">
             Bears-Team-03
           </ChannelLink>{' '}
-          created this channel on February 8th. This is the very beginning of the #Slack Clone
-          channel.
+          created this channel on {formatDate(props.currentChannel.dateCreated)}. This is the very
+          beginning of the {props.currentChannel.name} channel.
         </Description>
       </ChannelSection>
 
