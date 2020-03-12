@@ -1,16 +1,8 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 
 function Channels(props) {
-  const { allChannels, appState, appDispatch } = props;
-
-  const setChannel = id => {
-    let [channel] = allChannels.filter(channel => {
-      return channel.id === id;
-    });
-
-    appDispatch({ type: 'SET_CHANNEL', channel: channel });
-  };
+  const { allChannels, currentChannelID, setCurrentChannelID } = props;
 
   return (
     <>
@@ -23,8 +15,8 @@ function Channels(props) {
                 key={channel.id}
                 id={channel.id}
                 title={channel.name}
-                onClick={() => setChannel(channel.id)}
-                currentChannel={appState.channel.id}
+                onClick={() => setCurrentChannelID(channel.id)}
+                currentChannel={currentChannelID}
               >
                 # {channel.name}
               </ChannelInSideBar>

@@ -34,7 +34,6 @@ const socketListener = io.on('connect', socket => {
       }
     }
     io.emit('updateUserActivity', activeUserConnections);
-
   });
 
   //emitted from User component
@@ -81,6 +80,11 @@ const socketListener = io.on('connect', socket => {
     }
 
     io.emit('updateUserActivity', activeUserConnections);
+  });
+
+  socket.on('joinChannel', channelID => {
+    socket.leaveAll();
+    socket.join(channelID);
   });
 
   //handle disconnect: remove disconnected user from either array

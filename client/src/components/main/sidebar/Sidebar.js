@@ -15,7 +15,8 @@ function Sidebar() {
   const [activeUsers, setActiveUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const { socket, appState, appDispatch } = useContext(AppContext);
+  const { socket, appDispatch } = useContext(AppContext);
+  const [currentChannelID, setCurrentChannelID] = useState();
   let errorMessage = useContext(MessageContext);
 
   useEffect(() => {
@@ -36,10 +37,22 @@ function Sidebar() {
         setIsError(true);
       }
     };
-    getChannels().then(res => {
-      appDispatch({ type: 'SET_CHANNEL', channel: res[0] });
+    getChannels().then(channels => {
+      const generalChannel = channels[0];
+
+      if (currentChannelID) {
+        const [currentChannel] = channels.filter(channel => {
+          return channel.id === currentChannelID;
+        });
+
+        appDispatch({ type: 'SET_CHANNEL', channel: currentChannel });
+      } else {
+        appDispatch({ type: 'SET_CHANNEL', channel: generalChannel });
+        setCurrentChannelID(generalChannel.id)
+        socket.emit('joinChannel', generalChannel.id);
+      }
     });
-  }, [appDispatch]);
+  }, [appDispatch, currentChannelID]);
 
   //socket listeners on Sidebar
   useEffect(() => {
@@ -101,6 +114,11 @@ function Sidebar() {
     }
   };
 
+  useEffect(() => {
+    socket.emit('joinChannel', currentChannelID);
+    console.log(currentChannelID);
+  }, [currentChannelID]);
+
   return (
     <Aside>
       <SidebarButton onClick={toggleSidebar} className={sidebar ? 'show' : ''}>
@@ -114,7 +132,11 @@ function Sidebar() {
           <Message message={errorMessage.message} />
         ) : (
           <>
-            <Channels allChannels={allChannels} appDispatch={appDispatch} appState={appState} />
+            <Channels
+              currentChannelID={currentChannelID}
+              setCurrentChannelID={setCurrentChannelID}
+              allChannels={allChannels}
+            />
             {/* TODO: Choose selected channel / Harcoded General Channel */}
             <AllUsers
               allUsersInChannel={allChannels && allChannels[0].users}

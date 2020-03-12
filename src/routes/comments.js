@@ -9,10 +9,10 @@ const Channel = require('../models/Channel');
 
 const commentRouter = io => {
   //function that emits comment events to client
-  const sendCommentToClient = (comment, event) => {
+  const sendCommentToClient = (comment, channelID, event) => {
     const { date, _id, text, isEdited } = comment;
 
-    io.sockets.emit(event, {
+    io.sockets.to(channelID).emit(event, {
       _id,
       text,
       date,
@@ -21,6 +21,10 @@ const commentRouter = io => {
       ...(comment.user ? { user_id: comment.user._id } : { user_id: null }),
       ...(comment.user ? { userImage: comment.user.userImage } : { userImage: null }),
     });
+  };
+
+  const deleteCommentFromClient = (channelID, commentID) => {
+    io.sockets.to(channelID).emit('delete', commentID);
   };
 
   /*
@@ -162,7 +166,8 @@ Return response containing new comment in JSON
                       return Comment.populate(comment, { path: 'user' });
                     })
                     .then(comment => {
-                      sendCommentToClient(comment, 'post');
+                      sendCommentToClient(comment, channelID, 'post');
+                      console.log(channelID);
                     })
                     .catch(err => {
                       console.log(err);
@@ -193,7 +198,7 @@ Create mongoose ObjectId from parameter
 Find and delete comment in db using findByIdAndDelete()
 Return confirmation message on success
 */
-  router.delete('/:commentID', (req, res) => {
+  router.delete('/:channelID/:commentID', (req, res) => {
     Comment.findById(req.params.commentID)
       .then(comment => {
         if (!comment) {
@@ -209,7 +214,7 @@ Return confirmation message on success
           .then(() => res.status(204).end())
           .then(
             //emit delete event to all connected sockets
-            io.emit('delete', req.params.commentID),
+            deleteCommentFromClient(req.params.channelID, req.params.commentID),
           );
       })
       .catch(err => res.status(500).json('Something went wrong'));
@@ -222,7 +227,7 @@ Find and update comment in db using findByIdAndUpdate()
 Return response containing updated comment in JSON on succes
 */
   router.patch('/:commentID', (req, res) => {
-    const { text: textToUpdate } = req.body;
+    const { text: textToUpdate, channelID } = req.body;
     const { name } = req.user;
 
     Comment.findById(req.params.commentID)
@@ -254,7 +259,7 @@ Return response containing updated comment in JSON on succes
             return Comment.populate(comment, { path: 'user' });
           })
           .then(comment => {
-            sendCommentToClient(comment, 'edit');
+            sendCommentToClient(comment, channelID, 'edit');
           });
       })
       .catch(err => res.status(500).json('Something went wrong'));

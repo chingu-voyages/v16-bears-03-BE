@@ -18,6 +18,8 @@ if (process.env.NODE_ENV === 'development') {
 socket.on('connect', () => {
   socket.send(`${socket.id} connected`);
   socket.emit('activeUser', { userId: localStorage.userId, clientSocket: socket.id });
+  //socket.emit('joinChannel', generalChannel.id);
+
 });
 
 const initialState = {
