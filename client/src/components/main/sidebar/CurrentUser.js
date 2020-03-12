@@ -12,7 +12,7 @@ function CurrentUser(props) {
   const [userWindow, setUserWindow] = useState(false);
   const [loggedinUser, setLoggedinUser] = useState('');
   const [imageUrl, setImageUrl] = useState(null);
-  const socket = useContext(AppContext);
+  const { socket }= useContext(AppContext);
   let errorMessage = useContext(MessageContext);
 
   useEffect(() => {
