@@ -42,7 +42,7 @@ function AppContainer() {
   return (
     <AppContext.Provider value={{ socket, appState, appDispatch }}>
       <Container>
-        <Sidebar />
+        <Sidebar currentChannel={appState} />
         <ChatWindow currentChannel={appState} />
       </Container>
     </AppContext.Provider>

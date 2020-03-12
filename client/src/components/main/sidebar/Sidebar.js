@@ -9,7 +9,7 @@ import Channels from './Channels';
 import AllUsers from './AllUsers';
 import CurrentUser from './CurrentUser';
 
-function Sidebar() {
+function Sidebar(props) {
   const [sidebar, setToggleSidebar] = useState(false);
   const [allChannels, setAllChannels] = useState();
   const [activeUsers, setActiveUsers] = useState([]);
@@ -122,7 +122,7 @@ function Sidebar() {
               appState={appState}
             />
             <AllUsers
-              allUsersInChannel={allChannels && allChannels[0].users}
+              allUsersInChannel={props.currentChannel.channel.users}
               activeUsers={activeUsers}
             />
           </>
