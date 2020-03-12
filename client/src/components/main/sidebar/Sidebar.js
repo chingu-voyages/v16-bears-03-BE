@@ -18,24 +18,25 @@ function Sidebar() {
   const { socket, appState, appDispatch } = useContext(AppContext);
   let errorMessage = useContext(MessageContext);
 
-  useEffect(() => {
-    const getChannels = async () => {
-      setIsLoading(true);
+  // Get all channels
+  const getChannels = async () => {
+    setIsLoading(true);
 
-      try {
-        // Get all channels
-        const result = await axios('/api/channels', {
-          headers: { authorization: `bearer ${localStorage.authToken}` },
-        });
-        setAllChannels(result.data);
-        setIsLoading(false);
-        return result.data;
-      } catch (error) {
-        setIsLoading(false);
-        errorMessage.set_message([{ msg: 'Unable to get channels.' }]);
-        setIsError(true);
-      }
-    };
+    try {
+      const result = await axios('/api/channels', {
+        headers: { authorization: `bearer ${localStorage.authToken}` },
+      });
+      setAllChannels(result.data);
+      setIsLoading(false);
+      return result.data;
+    } catch (error) {
+      setIsLoading(false);
+      errorMessage.set_message([{ msg: 'Unable to get channels.' }]);
+      setIsError(true);
+    }
+  };
+
+  useEffect(() => {
     getChannels().then(res => {
       appDispatch({ type: 'SET_CHANNEL', channel: res[0] });
     });
@@ -114,8 +115,12 @@ function Sidebar() {
           <Message message={errorMessage.message} />
         ) : (
           <>
-            <Channels allChannels={allChannels} appDispatch={appDispatch} appState={appState} />
-            {/* TODO: Choose selected channel / Harcoded General Channel */}
+            <Channels
+              allChannels={allChannels}
+              getChannels={getChannels}
+              appDispatch={appDispatch}
+              appState={appState}
+            />
             <AllUsers
               allUsersInChannel={allChannels && allChannels[0].users}
               activeUsers={activeUsers}
