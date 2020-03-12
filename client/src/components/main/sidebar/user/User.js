@@ -63,7 +63,7 @@ function User(props) {
   const [changeUserName, SetChangeUserName] = useState(false);
   const [openImageWindow, SetOpenImageWindow] = useState(false);
   const container = React.useRef();
-  const socket = useContext(AppContext);
+  const {socket} = useContext(AppContext);
 
   useEffect(() => {
     createJdention(userstate.imageurl, userstate.userid, 'smallimage');
