@@ -25,7 +25,7 @@ function ViewThread(props) {
           userImage: thread.userImage,
         };
 
-        return <Thread threadinfo={threadinfo} dispatch={props.dispatch} />;
+        return <Thread key={thread._id} threadinfo={threadinfo} dispatch={props.dispatch} />;
       })}
       <div ref={messageEndRef} />
     </AllThreads>
