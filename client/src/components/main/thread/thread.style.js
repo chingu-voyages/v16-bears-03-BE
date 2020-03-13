@@ -52,6 +52,18 @@ const ThreadAvatar = styled.div`
     width: 3.6rem;
     border-radius: 10%;
   }
+  ${props => {
+    if (props.type === 'small') {
+      return `height:2.5rem;
+                width:2.5rem;
+                margin-right: 0.3rem;
+                border:0.5px solid lightgray;
+                & > svg,
+                img {
+                height: 2.5rem;
+                width: 2.5rem;`;
+    }
+  }};
 `;
 
 const AllThreads = styled.section`
@@ -90,7 +102,7 @@ const Textarea = styled.textarea`
   color: #555;
   border-radius: 5px;
   width: 100%;
-  margin: 1rem auto;
+  margin: auto;
   font-size: 1.5rem;
   position: relative;
   resize: none;

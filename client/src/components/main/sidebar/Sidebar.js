@@ -38,10 +38,11 @@ function Sidebar(props) {
 
   useEffect(() => {
     getChannels().then(res => {
-      appDispatch({ type: 'SET_CHANNEL', channel: res[0] });
+      if (res !== undefined) {
+        appDispatch({ type: 'SET_CHANNEL', channel: res[0] });
+      }
     });
-  }, [appDispatch,errorMessage]);
-
+  }, [appDispatch, errorMessage]);
 
   //socket listeners on Sidebar
   useEffect(() => {
