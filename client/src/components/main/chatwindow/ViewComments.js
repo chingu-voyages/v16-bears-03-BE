@@ -3,8 +3,7 @@ import axios from 'axios';
 import styled from 'styled-components';
 import Comment from './Comment';
 import { ChatContext } from './ChatWindow';
-import { AppContext } from '../AppContainer'
-
+import { AppContext } from '../AppContainer';
 
 /*
 Requests all comments from database and handles  socket events  
@@ -22,8 +21,8 @@ const ViewComments = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const { chatState } = useContext(ChatContext);  
-  const socket = useContext(AppContext)
+  const { chatState } = useContext(ChatContext);
+  const socket = useContext(AppContext);
 
   //Requests all comments using http on first render. Socket connection will then handle all comment events.
   useEffect(() => {
@@ -34,6 +33,7 @@ const ViewComments = props => {
         const result = await axios.get('/api/comments', {
           headers: { authorization: `bearer ${localStorage.authToken}` },
         });
+        console.log(result.data);
         setAllComments(result.data);
         setIsLoading(false);
       } catch (error) {

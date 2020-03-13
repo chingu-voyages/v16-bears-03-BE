@@ -51,6 +51,13 @@ const ThreadAvatar = styled.div`
     height: 3.6rem;
     width: 3.6rem;
     border-radius: 10%;
+    ${props => {
+      if (props.type === 'small') {
+        return `height:2.5rem;
+                width:2.5rem;
+                border:0.5px solid gray;`;
+      }
+    }};
   }
 `;
 
