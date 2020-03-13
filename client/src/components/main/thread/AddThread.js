@@ -8,9 +8,9 @@ import axios from 'axios';
 import { AppContext } from '../AppContainer';
 
 
-function AddThread({ dispatch, commentid }) {
+function AddThread({ dispatch, commentid, channelID }) {
   const [reply, setReply] = useState('');
-  const { socket } = useContext(AppContext);
+  const { socket, appDispatch } = useContext(AppContext);
 
 
   function SubmitReply(e) {
@@ -20,6 +20,9 @@ function AddThread({ dispatch, commentid }) {
       text: reply,
       threadedComment: true,
       parentID: commentid,
+      channelID
+
+
     };
 
     axios
@@ -37,7 +40,8 @@ function AddThread({ dispatch, commentid }) {
           userImage: res.data.userImage,
         };
         dispatch({ type: 'REPLY_THREAD', thread });
-        socket.emit('post_thread', {...thread, commentid})
+        appDispatch({type: 'REPLY_THREAD', thread: {...thread, commentid, channelID}})
+        socket.emit('post_thread', {...thread, commentid, channelID})
         setReply('');
       })
       .catch(err => console.log(err.response.data));

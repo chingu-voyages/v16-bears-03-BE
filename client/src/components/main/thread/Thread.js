@@ -11,11 +11,11 @@ import axios from 'axios';
 import { AppContext } from '../AppContainer';
 
 
-function Thread({ threadinfo, dispatch }) {
+function Thread({ threadinfo, dispatch, channelID }) {
   const [hidden, setHidden] = useState(true);
   const [editThread, setEditThread] = useState(false);
   const menuContainer = React.useRef();
-  const { socket } = useContext(AppContext);
+  const { socket, appDispatch } = useContext(AppContext);
 
 
   function handleClickOutside(e) {
@@ -43,9 +43,10 @@ function Thread({ threadinfo, dispatch }) {
           headers: { authorization: `bearer ${localStorage.authToken}` },
         })
         .then(res => {
-          console.log(res)
+          console.log(threadinfo.parent_id)
           dispatch({ type: 'DELETE_THREAD', id: threadinfo.id });
-          socket.emit('delete_thread', {id: threadinfo.id, parentID: threadinfo.parent_id}   )
+          appDispatch({type: 'DELETE_THREAD', data: {id: threadinfo.id, parentID: threadinfo.parent_id, channelID}} )
+          socket.emit('delete_thread', {id: threadinfo.id, parentID: threadinfo.parent_id, channelID}   )
         })
         .catch(err => {
           console.log(err.response.data);
@@ -65,7 +66,8 @@ function Thread({ threadinfo, dispatch }) {
       )
       .then(res => {
         dispatch({ type: 'EDIT_THREAD', data: { text, id: threadinfo.id } });
-        socket.emit('edit_thread', {text, id: threadinfo.id, parentID: threadinfo.parent_id } )
+        appDispatch({type: 'EDIT_THREAD', data: {text, id: threadinfo.id, parentID: threadinfo.parent_id, channelID}} )
+        socket.emit('edit_thread', {text, id: threadinfo.id, parentID: threadinfo.parent_id, channelID } )
         setEditThread(false);
       })
       .catch(err => console.log(err.response.data));

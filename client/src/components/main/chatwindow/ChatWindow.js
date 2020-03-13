@@ -1,8 +1,9 @@
-import React, { useReducer, useState } from 'react';
+import React, { useReducer, useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import CreateComment from './CreateComment';
 import ViewComments from './ViewComments';
 import ThreadWindow from '../thread/ThreadWindow';
+import { AppContext } from '../AppContainer';
 export const ChatContext = React.createContext(null);
 
 /*
@@ -32,8 +33,9 @@ const ChatWindow = () => {
   const [chatState, dispatch] = useReducer(reducer, initialState);
   const [threadWindow, setThreadWindow] = useState(false);
   const [threadinfo, setThreadInfo] = useState({});
+  const {socket} = useContext(AppContext)
 
-  function getThreadInfo(id, name, date, text, user_id, userImage, thread) {
+  function getThreadInfo(id, name, date, text, user_id, userImage, thread, channelID) {
     setThreadInfo({
       id,
       name,
@@ -42,8 +44,15 @@ const ChatWindow = () => {
       user_id,
       userImage,
       thread,
+      channelID
     });
   }
+
+  useEffect(()=>{
+    if(threadWindow){
+      socket.emit('joinThread', threadinfo.id)
+    }
+  }, [threadWindow])
 
   return (
     <ChatContext.Provider value={{ chatState, dispatch }}>

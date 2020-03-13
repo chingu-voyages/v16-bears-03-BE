@@ -52,10 +52,7 @@ function ThreadBody(props) {
   useEffect(()=>{
 
     socket.on('post_thread', (thread) =>{
-      console.log(thread)
       dispatch({type: 'REPLY_THREAD', thread})
-
-      
     })
 
     socket.on('edit_thread', data =>{
@@ -78,9 +75,9 @@ function ThreadBody(props) {
     <div style={{ padding: '1.5rem' }}>
       <Span>{`${allThreads.length} replies`}</Span>
       {allThreads.length > 0 && (
-        <ViewThread commentid={props.commentid} dispatch={dispatch} allThreads={allThreads} />
+        <ViewThread commentid={props.commentid} dispatch={dispatch} allThreads={allThreads} channelID ={props.channelID} />
       )}
-      <AddThread dispatch={dispatch} commentid={props.commentid} />
+      <AddThread dispatch={dispatch} commentid={props.commentid} channelID ={props.channelID} />
     </div>
   );
 }

@@ -27,7 +27,13 @@ const ViewComments = props => {
     setIsLoading(true);
     try {
       if (appState.channel.comments) {
-        setAllComments(appState.channel.comments);
+        setAllComments(() =>{
+          return appState.channel.comments.map(comment =>{
+            comment.channelID = appState.channel.id
+            
+            return comment
+          })});
+        
         setIsLoading(false);
       }
     } catch (error) {
@@ -45,7 +51,6 @@ const ViewComments = props => {
     
       setAllComments(prev=>{
         return prev.map(comment =>{
-          console.log(comment)
           if(comment._id ===thread.commentid){
             if(comment.thread){
             comment.thread = comment.thread.concat(thread)}
@@ -59,6 +64,7 @@ const ViewComments = props => {
     })
 
     socket.on('delete_thread', (data)=>{
+    
       setAllComments(prev=>{
         return prev.map(comment =>{
        
@@ -76,7 +82,7 @@ const ViewComments = props => {
       
       setAllComments(prev=>{
         return prev.map(comment =>{
-          console.log(comment)
+    
           if(comment._id === data.parentID){
             comment.thread.forEach(thread =>{
               if (thread._id === data.id){
@@ -160,6 +166,7 @@ const ViewComments = props => {
         <div>"Something Went Wrong"</div>
       ) : (
         allComments.map(comment => {
+          console.log(comment.channelID)
           return (
             <Comment
               id={comment._id}
@@ -174,6 +181,7 @@ const ViewComments = props => {
               refContainer={refContainer}
               setThreadWindow={props.setThreadWindow}
               getThreadInfo={props.getThreadInfo}
+              channelID = {comment.channelID}
             ></Comment>
           );
         })

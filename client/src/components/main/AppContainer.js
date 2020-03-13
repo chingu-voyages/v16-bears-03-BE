@@ -25,13 +25,63 @@ const initialState = {
   channel: '',
 };
 
+const isThreadinCurrentChannel = (currentChannel, threadedCommentChannel)=>{
+  return currentChannel === threadedCommentChannel
+}
+
 const reducer = (state, action) => {
+  const comments = state.channel.comments
+  const channel = state.channel
+  let updatedComments;
+
   switch (action.type) {
     case 'SET_CHANNEL':
       socket.emit('setChannel', action.channel);
       return { ...state, channel: action.channel };
-    case 'THREAD':
-        return { ...state, thread: action.thread};
+    case 'REPLY_THREAD':
+   
+      updatedComments = comments.map(comment =>{
+        if(comment._id ===action.thread.commentid){
+          if(comment.thread){
+          comment.thread = comment.thread.concat(action.thread)}
+          else{
+            comment.thread = [action.thread]
+          }
+        }
+        return comment
+      });
+      return {channel:{...channel, comments: updatedComments}}
+    
+    case 'DELETE_THREAD': 
+ 
+      updatedComments = comments.map(comment =>{
+       
+      if(comment._id === action.data.parentID){
+        comment.thread = comment.thread.filter(thread =>{
+          return thread._id !== action.data.id
+        })
+      }
+      return comment
+    })
+
+      return {channel:{...channel, comments: updatedComments}}
+  
+    case 'EDIT_THREAD':
+
+      updatedComments = comments.map(comment =>{
+        if(comment._id === action.data.parentID){
+          comment.thread.forEach(thread =>{
+            if (thread._id === action.data.id){
+              thread.text = action.data.text
+            }
+
+          })
+        }
+        return comment
+      })
+        return {channel:{...channel, comments: updatedComments}}
+    
+     
     default:
       return initialState;
   }
@@ -39,6 +89,7 @@ const reducer = (state, action) => {
 
 function AppContainer() {
   const [appState, appDispatch] = useReducer(reducer, initialState);
+
 
   return (
     <AppContext.Provider value={{ socket, appState, appDispatch }}>

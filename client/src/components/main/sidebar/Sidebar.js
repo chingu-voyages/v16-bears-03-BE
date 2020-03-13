@@ -49,7 +49,7 @@ function Sidebar() {
       } else {
         appDispatch({ type: 'SET_CHANNEL', channel: generalChannel });
         setCurrentChannelID(generalChannel.id)
-        socket.emit('joinChannel', generalChannel.id);
+        //socket.emit('joinChannel', generalChannel.id);
       }
     });
   }, [appDispatch, currentChannelID]);
@@ -115,8 +115,14 @@ function Sidebar() {
   };
 
   useEffect(() => {
-    socket.emit('joinChannel', currentChannelID);
-  }, [socket, currentChannelID]);
+    if (allChannels && currentChannelID){
+    let allChannelIDs = allChannels.map(channel=>{
+      return channel.id
+    })
+    socket.emit('joinChannel', {currentChannelID, allChannelIDs});
+    console.log('test')
+  }
+  }, [socket, currentChannelID, allChannels]);
 
   return (
     <Aside>

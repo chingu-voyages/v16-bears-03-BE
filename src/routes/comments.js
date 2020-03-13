@@ -158,6 +158,7 @@ Return response containing new comment in JSON
                         _id,
                         text,
                         user: user.name,
+                        channelID
                       });
 
                       return comment;
@@ -250,6 +251,7 @@ Return response containing updated comment in JSON on succes
               text,
               date,
               user: name,
+              channelID
             });
 
             return comment;
