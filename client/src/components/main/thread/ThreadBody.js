@@ -4,11 +4,6 @@ import ViewThread from './ViewThread';
 import AddThread from './AddThread';
 import { AppContext } from '../AppContainer';
 
-
-
-
-
-
 function ThreadBody(props) {
   const initialstate = {
     threads: props.thread === undefined ? [] : props.thread,
@@ -36,7 +31,21 @@ function ThreadBody(props) {
         });
         return output;
       }
-
+      case 'UPDATE_USER':
+        const output = state.map(thread => {
+          if (thread.user_id == action.data.id) {
+            if (action.data.name) {
+              thread.user = action.data.name;
+            }
+            if (action.data.userImage) {
+              thread.userImage = action.data.userImage;
+            }
+            return thread;
+          } else {
+            return thread;
+          }
+        });
+        return output;
       default:
         return initialstate;
     }
@@ -44,40 +53,38 @@ function ThreadBody(props) {
 
   const [allThreads, dispatch] = useReducer(reducer, initialstate.threads);
 
-
-
   const { socket } = useContext(AppContext);
 
+  useEffect(() => {
+    socket.on('post_threadBody', thread => {
+      dispatch({ type: 'REPLY_THREAD', thread });
+    });
 
-  useEffect(()=>{
+    socket.on('edit_threadBody', data => {
+      dispatch({ type: 'EDIT_THREAD', data });
+    });
 
-    socket.on('post_thread', (thread) =>{
-      dispatch({type: 'REPLY_THREAD', thread})
-    })
+    socket.on('delete_threadBody', ({ id }) => {
+      dispatch({ type: 'DELETE_THREAD', id });
+    });
 
-    socket.on('edit_thread', data =>{
-
-      dispatch({ type: 'EDIT_THREAD', data })
-    } )
-
-    socket.on('delete_thread', ({id}) =>{
-      dispatch({ type: 'DELETE_THREAD', id })
-    })
-
-    
-
-  }, [socket])
-
-
-
+    socket.on('updateUser', data => {
+      dispatch({ type: 'UPDATE_USER', data });
+    });
+  }, [socket]);
 
   return (
     <div style={{ padding: '1.5rem' }}>
       <Span>{`${allThreads.length} replies`}</Span>
       {allThreads.length > 0 && (
-        <ViewThread commentid={props.commentid} dispatch={dispatch} allThreads={allThreads} channelID ={props.channelID} />
+        <ViewThread
+          commentid={props.commentid}
+          dispatch={dispatch}
+          allThreads={allThreads}
+          channelID={props.channelID}
+        />
       )}
-      <AddThread dispatch={dispatch} commentid={props.commentid} channelID ={props.channelID} />
+      <AddThread dispatch={dispatch} commentid={props.commentid} channelID={props.channelID} />
     </div>
   );
 }

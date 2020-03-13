@@ -49,7 +49,7 @@ function Sidebar() {
       } else {
         appDispatch({ type: 'SET_CHANNEL', channel: generalChannel });
         setCurrentChannelID(generalChannel.id)
-        //socket.emit('joinChannel', generalChannel.id);
+        socket.emit('joinChannel', generalChannel.id);
       }
     });
   }, [appDispatch, currentChannelID]);

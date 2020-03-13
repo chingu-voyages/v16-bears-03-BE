@@ -130,16 +130,20 @@ const socketListener = io.on('connect', socket => {
 
   socket.on('post_thread', thread =>{
     console.log(thread.channelID)
-    socket.to(thread.commentid).to(thread.channelID).broadcast.emit("post_thread", thread)
+    socket.to(thread.commentid).broadcast.emit("post_threadBody", thread)
+    socket.to(thread.channelID).broadcast.emit("post_thread", thread)
+    
   })
 
 
   socket.on('edit_thread', (data)=>{
-    socket.to(data.parentID).to(data.channelID).broadcast.emit("edit_thread", data)
+    socket.to(data.parentID).broadcast.emit("edit_threadBody", data)
+    socket.to(data.channelID).broadcast.emit("edit_thread", data)
   })
 
   socket.on('delete_thread', (data)=>{
-    socket.to(data.parentID).to(data.channelID).broadcast.emit("delete_thread", data)
+    socket.to(data.parentID).broadcast.emit("delete_threadBody", data)
+    socket.to(data.channelID).broadcast.emit("delete_thread", data)
   })
 
   //handle disconnect: remove disconnected user from either array
