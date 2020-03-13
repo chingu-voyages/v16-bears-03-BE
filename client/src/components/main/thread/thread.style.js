@@ -55,7 +55,7 @@ const ThreadAvatar = styled.div`
       if (props.type === 'small') {
         return `height:2.5rem;
                 width:2.5rem;
-                border:0.5px solid gray;`;
+                border:0.5px solid lightgray;`;
       }
     }};
   }
