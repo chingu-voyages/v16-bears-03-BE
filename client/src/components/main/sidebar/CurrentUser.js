@@ -31,7 +31,7 @@ function CurrentUser(props) {
         setIsError(true);
         errorMessage.set_message([{ msg: 'Unable to get the user.' }]);
       });
-  }, [loggedinUser, imageUrl]);
+  }, [loggedinUser, imageUrl, errorMessage]);
 
   useEffect(() => {
     socket.on('updateUser', ({ id, name }) => {

@@ -39,7 +39,8 @@ function Sidebar() {
     getChannels().then(res => {
       appDispatch({ type: 'SET_CHANNEL', channel: res[0] });
     });
-  }, [appDispatch]);
+  }, [appDispatch,errorMessage]);
+
 
   //socket listeners on Sidebar
   useEffect(() => {
