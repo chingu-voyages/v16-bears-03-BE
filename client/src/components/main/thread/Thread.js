@@ -15,7 +15,7 @@ function Thread({ threadinfo, dispatch }) {
   const [hidden, setHidden] = useState(true);
   const [editThread, setEditThread] = useState(false);
   const menuContainer = React.useRef();
-  const { socket, appState } = useContext(AppContext);
+  const { socket } = useContext(AppContext);
 
 
   function handleClickOutside(e) {

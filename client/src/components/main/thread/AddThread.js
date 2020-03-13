@@ -10,7 +10,7 @@ import { AppContext } from '../AppContainer';
 
 function AddThread({ dispatch, commentid }) {
   const [reply, setReply] = useState('');
-  const { socket, appState } = useContext(AppContext);
+  const { socket } = useContext(AppContext);
 
 
   function SubmitReply(e) {

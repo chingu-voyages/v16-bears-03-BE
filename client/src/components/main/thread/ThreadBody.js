@@ -46,7 +46,7 @@ function ThreadBody(props) {
 
 
 
-  const { socket, appDispatch} = useContext(AppContext);
+  const { socket } = useContext(AppContext);
 
 
   useEffect(()=>{
