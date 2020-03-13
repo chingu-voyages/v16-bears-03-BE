@@ -21,7 +21,9 @@ socket.on('connect', () => {
 });
 
 const initialState = {
-  channel: '',
+  channel: {
+    name: 'General',
+  },
 };
 
 const reducer = (state, action) => {
@@ -40,8 +42,8 @@ function AppContainer() {
   return (
     <AppContext.Provider value={{ socket, appState, appDispatch }}>
       <Container>
-        <Sidebar />
-        <ChatWindow />
+        <Sidebar currentChannel={appState} />
+        <ChatWindow currentChannel={appState} />
       </Container>
     </AppContext.Provider>
   );
