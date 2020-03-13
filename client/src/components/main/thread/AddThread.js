@@ -1,13 +1,17 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import { Textarea } from './thread.style';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faReply } from '@fortawesome/free-solid-svg-icons';
 import { Tooltip } from '../../../theme/theme';
 import axios from 'axios';
+import { AppContext } from '../AppContainer';
+
 
 function AddThread({ dispatch, commentid }) {
   const [reply, setReply] = useState('');
+  const { socket, appState } = useContext(AppContext);
+
 
   function SubmitReply(e) {
     e.preventDefault();
@@ -33,6 +37,7 @@ function AddThread({ dispatch, commentid }) {
           userImage: res.data.userImage,
         };
         dispatch({ type: 'REPLY_THREAD', thread });
+        socket.emit('post_thread', {...thread, commentid})
         setReply('');
       })
       .catch(err => console.log(err.response.data));

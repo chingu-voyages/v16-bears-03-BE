@@ -87,6 +87,19 @@ const socketListener = io.on('connect', socket => {
     socket.join(channelID);
   });
 
+  socket.on('post_thread', thread =>{
+    socket.broadcast.emit("post_thread", thread)
+  })
+
+
+  socket.on('edit_thread', data=>{
+    socket.broadcast.emit("edit_thread", data)
+  })
+
+  socket.on('delete_thread', (data)=>{
+    socket.broadcast.emit("delete_thread", data)
+  })
+
   //handle disconnect: remove disconnected user from either array
   socket.on('disconnect', reason => {
     activeUserConnections = activeUserConnections.filter(({ clientSocket }) => {

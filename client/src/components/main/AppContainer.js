@@ -18,7 +18,6 @@ if (process.env.NODE_ENV === 'development') {
 socket.on('connect', () => {
   socket.send(`${socket.id} connected`);
   socket.emit('activeUser', { userId: localStorage.userId, clientSocket: socket.id });
-  //socket.emit('joinChannel', generalChannel.id);
 
 });
 
@@ -31,6 +30,8 @@ const reducer = (state, action) => {
     case 'SET_CHANNEL':
       socket.emit('setChannel', action.channel);
       return { ...state, channel: action.channel };
+    case 'THREAD':
+        return { ...state, thread: action.thread};
     default:
       return initialState;
   }

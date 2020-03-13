@@ -116,8 +116,7 @@ function Sidebar() {
 
   useEffect(() => {
     socket.emit('joinChannel', currentChannelID);
-    console.log(currentChannelID);
-  }, [currentChannelID]);
+  }, [socket, currentChannelID]);
 
   return (
     <Aside>

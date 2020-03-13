@@ -9,10 +9,9 @@ const Channel = require('../models/Channel');
 
 const commentRouter = io => {
   //function that emits comment events to client
-  const sendCommentToClient = (comment, channelID, event) => {
+  const sendCommentToClient = (event, comment, channelID = "") => {
     const { date, _id, text, isEdited } = comment;
-
-    io.sockets.to(channelID).emit(event, {
+    const toSend = {
       _id,
       text,
       date,
@@ -20,7 +19,14 @@ const commentRouter = io => {
       ...(comment.user ? { user: comment.user.name } : { user: 'Deleted User' }),
       ...(comment.user ? { user_id: comment.user._id } : { user_id: null }),
       ...(comment.user ? { userImage: comment.user.userImage } : { userImage: null }),
-    });
+    }
+
+    if(channelID){
+    io.sockets.to(channelID).emit(event, toSend);
+    } else{
+      io.sockets.emit(event, toSend)
+      console.log("thread")
+    }
   };
 
   const deleteCommentFromClient = (channelID, commentID) => {
@@ -125,12 +131,6 @@ Return response containing new comment in JSON
                     });
                     return comment;
                   })
-                  .then(comment => {
-                    return Comment.populate(comment, { path: 'user' });
-                  })
-                  .then(comment => {
-                    sendCommentToClient(comment, 'post_thread');
-                  })
                   .catch(err => {
                     console.log(err);
                     res.status(500).json({ message: 'Something went wrong' });
@@ -166,8 +166,7 @@ Return response containing new comment in JSON
                       return Comment.populate(comment, { path: 'user' });
                     })
                     .then(comment => {
-                      sendCommentToClient(comment, channelID, 'post');
-                      console.log(channelID);
+                      sendCommentToClient('post', comment, channelID, );
                     })
                     .catch(err => {
                       console.log(err);
@@ -198,7 +197,7 @@ Create mongoose ObjectId from parameter
 Find and delete comment in db using findByIdAndDelete()
 Return confirmation message on success
 */
-  router.delete('/:channelID/:commentID', (req, res) => {
+  router.delete('/:channelID?/:commentID', (req, res) => {
     Comment.findById(req.params.commentID)
       .then(comment => {
         if (!comment) {
@@ -259,7 +258,7 @@ Return response containing updated comment in JSON on succes
             return Comment.populate(comment, { path: 'user' });
           })
           .then(comment => {
-            sendCommentToClient(comment, channelID, 'edit');
+            sendCommentToClient('edit', comment, channelID, );
           });
       })
       .catch(err => res.status(500).json('Something went wrong'));

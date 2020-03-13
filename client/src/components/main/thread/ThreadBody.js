@@ -1,7 +1,13 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import ViewThread from './ViewThread';
 import AddThread from './AddThread';
+import { AppContext } from '../AppContainer';
+
+
+
+
+
 
 function ThreadBody(props) {
   const initialstate = {
@@ -37,6 +43,36 @@ function ThreadBody(props) {
   };
 
   const [allThreads, dispatch] = useReducer(reducer, initialstate.threads);
+
+
+
+  const { socket, appDispatch} = useContext(AppContext);
+
+
+  useEffect(()=>{
+
+    socket.on('post_thread', (thread) =>{
+      console.log(thread)
+      dispatch({type: 'REPLY_THREAD', thread})
+
+      
+    })
+
+    socket.on('edit_thread', data =>{
+
+      dispatch({ type: 'EDIT_THREAD', data })
+    } )
+
+    socket.on('delete_thread', ({id}) =>{
+      dispatch({ type: 'DELETE_THREAD', id })
+    })
+
+    
+
+  }, [socket])
+
+
+
 
   return (
     <div style={{ padding: '1.5rem' }}>

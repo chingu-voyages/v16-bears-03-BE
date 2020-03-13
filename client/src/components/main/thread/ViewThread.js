@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
 import { AllThreads } from './thread.style';
 import Thread from './Thread';
 

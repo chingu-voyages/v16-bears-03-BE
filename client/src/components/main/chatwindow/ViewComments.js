@@ -39,6 +39,60 @@ const ViewComments = props => {
   //Initialize client socket event listeners. Handles all post, edit and delete comment events.
 
   useEffect(() => {
+
+    //threaded comments live update in ViewComments 
+    socket.on('post_thread', thread =>{
+    
+      setAllComments(prev=>{
+        return prev.map(comment =>{
+          console.log(comment)
+          if(comment._id ===thread.commentid){
+            if(comment.thread){
+            comment.thread = comment.thread.concat(thread)}
+            else{
+              comment.thread = [thread]
+            }
+          }
+          return comment
+        })
+      })
+    })
+
+    socket.on('delete_thread', (data)=>{
+      setAllComments(prev=>{
+        return prev.map(comment =>{
+       
+          if(comment._id === data.parentID){
+            comment.thread = comment.thread.filter(thread =>{
+              return thread._id !== data.id
+            })
+          }
+          return comment
+        })
+      })
+    } )
+
+    socket.on('edit_thread', data =>{
+      
+      setAllComments(prev=>{
+        return prev.map(comment =>{
+          console.log(comment)
+          if(comment._id === data.parentID){
+            comment.thread.forEach(thread =>{
+              if (thread._id === data.id){
+                thread.text = data.text
+              }
+
+            })
+          }
+          return comment
+        })
+      })
+
+    })
+
+    //non-threaded comments live updates
+
     socket.on('post', comment => {
       setAllComments(prev => prev.concat([comment]));
     });
