@@ -63,7 +63,7 @@ function User(props) {
   const [changeUserName, SetChangeUserName] = useState(false);
   const [openImageWindow, SetOpenImageWindow] = useState(false);
   const container = React.useRef();
-  const socket = useContext(AppContext);
+  const { socket } = useContext(AppContext);
 
   useEffect(() => {
     createJdention(userstate.imageurl, userstate.userid, 'smallimage');
@@ -132,13 +132,16 @@ function User(props) {
         ) : (
           <Ol
             onClick={() => {
-              socket.emit('setActiveUser', { userId: localStorage.userId, clientSocket: socket.id });
+              socket.emit('setActiveUser', {
+                userId: localStorage.userId,
+                clientSocket: socket.id,
+              });
             }}
           >
             Set Yourself To Active
           </Ol>
         )}
-        
+
         <Ol onClick={deleteAccount}>Delete Account</Ol>
         <Ol
           onClick={() => {

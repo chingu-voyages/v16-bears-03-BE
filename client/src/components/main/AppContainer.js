@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useReducer } from 'react';
 import styled from 'styled-components';
 import Sidebar from './sidebar/Sidebar';
 import ChatWindow from './chatwindow/ChatWindow';
@@ -20,9 +20,25 @@ socket.on('connect', () => {
   socket.emit('activeUser', { userId: localStorage.userId, clientSocket: socket.id });
 });
 
+const initialState = {
+  channel: '',
+};
+
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'SET_CHANNEL':
+      socket.emit('setChannel', action.channel);
+      return { ...state, channel: action.channel };
+    default:
+      return initialState;
+  }
+};
+
 function AppContainer() {
+  const [appState, appDispatch] = useReducer(reducer, initialState);
+
   return (
-    <AppContext.Provider value={socket}>
+    <AppContext.Provider value={{ socket, appState, appDispatch }}>
       <Container>
         <Sidebar />
         <ChatWindow />

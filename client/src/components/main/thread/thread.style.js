@@ -10,11 +10,11 @@ const ThreadContainer = styled.div`
   position: absolute;
   z-index: 10;
   width: 40%;
-  height: calc(100vh - 4rem);
+  height: calc(100vh - 7.2rem);
   border: 1px solid lightgray;
   display: flex;
   flex-direction: column;
-  top: 4rem;
+  top: 7.2rem;
   right: 0px;
   background: white;
   @media (max-width: 480px) {
