@@ -15,7 +15,7 @@ function Sidebar() {
   const [activeUsers, setActiveUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const socket = useContext(AppContext);
+  const { socket, appState, appDispatch } = useContext(AppContext);
   let errorMessage = useContext(MessageContext);
 
   useEffect(() => {
@@ -29,14 +29,18 @@ function Sidebar() {
         });
         setAllChannels(result.data);
         setIsLoading(false);
+        return result.data;
       } catch (error) {
         setIsLoading(false);
         errorMessage.set_message([{ msg: 'Unable to get channels.' }]);
         setIsError(true);
       }
     };
-    getChannels();
-  }, [errorMessage]);
+    getChannels().then(res => {
+      appDispatch({ type: 'SET_CHANNEL', channel: res[0] });
+    });
+  }, [appDispatch,errorMessage]);
+
 
   //socket listeners on Sidebar
   useEffect(() => {
@@ -111,7 +115,7 @@ function Sidebar() {
           <Message message={errorMessage.message} />
         ) : (
           <>
-            <Channels allChannels={allChannels} />
+            <Channels allChannels={allChannels} appDispatch={appDispatch} appState={appState} />
             {/* TODO: Choose selected channel / Harcoded General Channel */}
             <AllUsers
               allUsersInChannel={allChannels && allChannels[0].users}

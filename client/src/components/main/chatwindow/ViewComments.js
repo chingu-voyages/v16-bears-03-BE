@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
 import Comment from './Comment';
 import { ChatContext } from './ChatWindow';
-import { AppContext } from '../AppContainer'
-
+import { AppContext } from '../AppContainer';
 
 /*
 Requests all comments from database and handles  socket events  
@@ -22,28 +20,21 @@ const ViewComments = props => {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
 
-  const { chatState } = useContext(ChatContext);  
-  const socket = useContext(AppContext)
+  const { chatState } = useContext(ChatContext);
+  const { socket, appState } = useContext(AppContext);
 
-  //Requests all comments using http on first render. Socket connection will then handle all comment events.
   useEffect(() => {
-    const getComments = async () => {
-      setIsLoading(true);
-
-      try {
-        const result = await axios.get('/api/comments', {
-          headers: { authorization: `bearer ${localStorage.authToken}` },
-        });
-        setAllComments(result.data);
+    setIsLoading(true);
+    try {
+      if (appState.channel.comments) {
+        setAllComments(appState.channel.comments);
         setIsLoading(false);
-      } catch (error) {
-        console.error('Unable to get comments', error);
-        setIsError(true);
       }
-    };
-
-    getComments();
-  }, []);
+    } catch (error) {
+      setIsLoading(false);
+      setIsError(true);
+    }
+  }, [appState]);
 
   //Initialize client socket event listeners. Handles all post, edit and delete comment events.
 
