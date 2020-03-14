@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import { Form, Label, Input, Button } from './../../theme/theme.js';
 import axios from 'axios';
+import Message from '../message/Message';
+import { MessageContext } from '../../App';
 
 const P = styled.p`
   margin-left: 25%;
@@ -27,6 +29,7 @@ function Register(props) {
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
+  let errorMessage = useContext(MessageContext);
 
   function subRegisterForm(e) {
     e.preventDefault();
@@ -44,10 +47,14 @@ function Register(props) {
             localStorage.setItem('loggedIn', true);
             props.onChange(Math.random());
           })
-          .catch(err => props.set_message(err.response.data.errors));
+          .catch(err => {
+            console.log(err);
+            // errorMessage.set_message(err, true);
+          });
       })
       .catch(err => {
-        props.set_message(err.response.data.errors);
+        console.log(err);
+        // errorMessage.set_message(err, true);
       });
   }
 
@@ -95,7 +102,7 @@ function Register(props) {
           />
           <br />
         </Label>
-
+        <Message message={errorMessage.message} />
         <Button type="submit">Sign Up</Button>
       </FormWrap>
       <hr />

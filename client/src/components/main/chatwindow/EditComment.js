@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Styled from './styles/comment.styles';
 import axios from 'axios';
 import { ChatContext } from './ChatWindow';
+import { AppContext } from '../AppContainer';
 
 /*
 Updates comment in database when enter key pressed and triggers re-render by updating ChatWindow state
@@ -12,6 +13,7 @@ const EditComment = props => {
   const { _id, className, setEditComment, children } = props;
   const [comment, setComment] = useState(children);
   const { dispatch } = useContext(ChatContext);
+  const { appState } = useContext(AppContext);
 
   const handleSubmit = text => {
     axios
@@ -20,6 +22,7 @@ const EditComment = props => {
         {
           user: localStorage.userId,
           text: text,
+          channelID: appState.channel.id,
         },
         {
           headers: { authorization: `bearer ${localStorage.authToken}` },

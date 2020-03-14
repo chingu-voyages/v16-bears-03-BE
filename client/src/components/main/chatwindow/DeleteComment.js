@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Styled from './styles/comment.styles';
 import axios from 'axios';
 import { ChatContext } from './ChatWindow';
+import { AppContext } from '../AppContainer';
 
 const DeleteComment = props => {
   const {
@@ -18,11 +19,12 @@ const DeleteComment = props => {
     useAvatar,
   } = props;
   const { dispatch } = useContext(ChatContext);
+  const { appState } = useContext(AppContext);
   const deletedId = 'deletedId';
 
   const handleDelete = e => {
     axios
-      .delete(`/api/comments/${id}`, {
+      .delete(`/api/comments/${appState.channel.id}/${id}`, {
         headers: { authorization: `bearer ${localStorage.authToken}` },
       })
       .then(() => {

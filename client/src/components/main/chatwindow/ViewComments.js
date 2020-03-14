@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef, useContext } from 'react';
-import axios from 'axios';
 import styled from 'styled-components';
 import Comment from './Comment';
 import { ChatContext } from './ChatWindow';
+import { AppContext } from '../AppContainer';
+import { formatDate } from '../chatwindow/Comment';
 
 /*
-Requests all comments from database and renders to screen when component first loads and ChatWindow state changes
+Requests all comments from database and handles  socket events  
 */
 
 //keeps overflow scroll at the bottom of container
@@ -21,26 +22,27 @@ const ViewComments = props => {
   const [isError, setIsError] = useState(false);
 
   const { chatState } = useContext(ChatContext);
+  const {  appState } = useContext(AppContext);
 
-  //triggers when ChatWindow state changes
   useEffect(() => {
-    const getComments = async () => {
-      setIsLoading(true);
-
-      try {
-        const result = await axios.get('/api/comments', {
-          headers: { authorization: `bearer ${localStorage.authToken}` },
-        });
-        setAllComments(result.data);
+    setIsLoading(true);
+    try {
+      if (appState.channel.comments) {
+        setAllComments(() =>{
+          return appState.channel.comments.map(comment =>{
+            comment.channelID = appState.channel.id
+            
+            return comment
+          })});
+        
         setIsLoading(false);
-      } catch (error) {
-        console.error('Unable to get comments', error);
-        setIsError(true);
       }
-    };
+    } catch (error) {
+      setIsLoading(false);
+      setIsError(true);
+    }
+  }, [appState]);
 
-    getComments();
-  }, [chatState]);
 
   useEffect(() => {
     if (chatState.newComment) {
@@ -53,10 +55,13 @@ const ViewComments = props => {
       {/*hardcoded channel section */}
 
       <ChannelSection>
-        <Name>#Slack Clone</Name>
+        <Name># {props.currentChannel.name}</Name>
         <Description>
-          <ChannelLink href ="https://github.com/chingu-voyages/v16-bears-03-BE"  target="_blank">Bears-Team-03</ChannelLink> created this channel on February 8th. This is the very beginning of the
-          #Slack Clone channel.
+          <ChannelLink href="https://github.com/chingu-voyages/v16-bears-03-BE" target="_blank">
+            Bears-Team-03
+          </ChannelLink>{' '}
+          created this channel on {formatDate(props.currentChannel.dateCreated)}. This is the very
+          beginning of the {props.currentChannel.name} channel.
         </Description>
       </ChannelSection>
 
@@ -75,7 +80,11 @@ const ViewComments = props => {
               text={comment.text}
               isEdited={comment.isEdited}
               user_id={comment.user_id}
+              thread={comment.thread}
               refContainer={refContainer}
+              setThreadWindow={props.setThreadWindow}
+              getThreadInfo={props.getThreadInfo}
+              channelID = {comment.channelID}
             ></Comment>
           );
         })
@@ -89,7 +98,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-flow: row wrap;
   overflow: auto;
-  border-top: 0.1rem solid rgb(29, 28, 29, .3);
+  border-top: 0.1rem solid rgb(29, 28, 29, 0.3);
   padding: 1rem 0rem;
   scrollbar-color: #919191;
   scrollbar-width: thin;
@@ -123,16 +132,18 @@ const Description = styled.p`
 `;
 
 const ChannelSection = styled.section`
-  border-bottom: 0.1rem solid rgb(29, 28, 29, .3);
+  border-bottom: 0.1rem solid rgb(29, 28, 29, 0.3);
   width: 100%;
   display: flex;
   flex-direction: column;
+  margin-bottom: 1rem;
 `;
 
 const ChannelLink = styled.a`
-background-color: rgb(29, 155, 209, .1);
-color: rgb(18, 100, 163, 1);
-border: 0;
-border-radius: .3rem;`;
+  background-color: rgb(29, 155, 209, 0.1);
+  color: rgb(18, 100, 163, 1);
+  border: 0;
+  border-radius: 0.3rem;
+`;
 
 export default ViewComments;

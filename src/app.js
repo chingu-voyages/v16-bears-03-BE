@@ -7,11 +7,20 @@ const { NODE_ENV } = require('./config');
 const passport = require('passport');
 const path = require('path');
 
-const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
-const userRouter = require('./routes/users');
-const commentRouter = require('./routes/comments');
-
 const app = express();
+
+//create http server
+const server = require('http').Server(app);
+
+//mount Socket.io server to http server
+const io = require('socket.io')(server);
+
+const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
+const userRouter = require('./routes/users')(io);
+const channelRouter = require('./routes/channel')(io);
+
+//pass mounted Socket.io server to comments router
+const commentRouter = require('./routes/comments')(io);
 
 const morganOption = NODE_ENV === 'production' ? 'tiny' : 'common';
 
@@ -39,6 +48,9 @@ app.use('/api/users', userRouter);
 // Comment route
 app.use('/api/comments', jwtAuth, commentRouter);
 
+// Channel route
+app.use('/api/channels', jwtAuth, channelRouter);
+
 app.use(function errorHandler(error, req, res, next) {
   let response;
   if (NODE_ENV === 'production') {
@@ -59,4 +71,4 @@ if (process.env.NODE_ENV === 'production') {
   });
 }
 
-module.exports = app;
+module.exports = { app, server, io };

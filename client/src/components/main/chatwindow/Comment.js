@@ -3,10 +3,14 @@ import styled from 'styled-components';
 import Styled from './styles/comment.styles';
 import EditComment from './EditComment';
 import DeleteComment from './DeleteComment';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCommentDots } from '@fortawesome/free-solid-svg-icons';
+import { Tooltip } from '../../../theme/theme';
+import ReplyAvatar from './ReplyAvatar';
 
 //Receives UTC date and returns time and date in local twelve-hour time
 
-const formatDate = date => {
+export const formatDate = date => {
   const dateInLocalTime = new Date(date);
 
   const hours =
@@ -66,7 +70,7 @@ const useAvatar = (user_id, userImage, id) => {
 // Comment Component
 
 const Comment = props => {
-  const { id, name, date, text, user_id, userImage, isEdited, refContainer } = props;
+  const { id, name, date, text, user_id, userImage, isEdited, thread, channelID, refContainer } = props;
   const dropdown = useRef(null);
   const menu = useRef(null);
   const [isHidden, setIsHidden] = useHideDropdown(dropdown);
@@ -94,6 +98,22 @@ const Comment = props => {
 
   useAvatar(user_id, userImage, id);
 
+  const OpenThreadWindow = e => {
+    props.setThreadWindow(true);
+    props.getThreadInfo(id, name, date, text, user_id, userImage, thread, channelID );
+  };
+
+  const getDateDifferent = date => {
+    let currentDate = new Date();
+    let differentInTime = currentDate.getTime() - new Date(date).getTime();
+    let differentInDays = differentInTime / (1000 * 3600 * 24);
+    if (parseInt(differentInDays) > 1) {
+      return `${parseInt(differentInDays)} days ago`;
+    } else if (parseInt(differentInDays) === 1) {
+      return `1 day ago`;
+    }
+  };
+
   return (
     <Styled.CommentContainer>
       <Styled.CommentAvatar id={id} />
@@ -111,14 +131,31 @@ const Comment = props => {
         <Styled.CommentTextWrapper>
           <Styled.CommentText>{text}</Styled.CommentText>
           <Styled.CommentEdited isEdited={isEdited}>(edited)</Styled.CommentEdited>
+          {thread && (
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+              <ReplyAvatar thread={thread} />
+              <ThreadNote onClick={OpenThreadWindow}>
+                {thread.length > 0 && thread.length !== 1 ? `${thread.length} replies` : '1 reply'}
+              </ThreadNote>
+              <Time>{getDateDifferent(thread[thread.length - 1].date)}</Time>
+            </div>
+          )}
         </Styled.CommentTextWrapper>
       )}
 
-      <Styled.CommentMenu show={user_id === localStorage.userId} onClick={handleMenu} ref={menu}>
-        <Styled.CommentKebab></Styled.CommentKebab>
-        <Styled.CommentKebab></Styled.CommentKebab>
-        <Styled.CommentKebab></Styled.CommentKebab>
-      </Styled.CommentMenu>
+      <GroupButton>
+        <Span onClick={OpenThreadWindow}>
+          <Tooltip>{thread && thread.length > 0 ? 'Reply to thread' : 'Start a thread'}</Tooltip>
+          <FontAwesomeIcon icon={faCommentDots} style={{ color: 'rgb(29, 28, 29)' }} size="2x" />
+        </Span>
+
+        <Styled.CommentMenu show={user_id === localStorage.userId} onClick={handleMenu} ref={menu}>
+          <Tooltip>Edit/Delete</Tooltip>
+          <Styled.CommentKebab></Styled.CommentKebab>
+          <Styled.CommentKebab></Styled.CommentKebab>
+          <Styled.CommentKebab></Styled.CommentKebab>
+        </Styled.CommentMenu>
+      </GroupButton>
 
       {!isHidden && (
         <Styled.CommentDropdown ref={dropdown} pos={() => getMenuPos(menu)}>
@@ -151,4 +188,38 @@ const StyledEditComment = styled(EditComment)`
   grid-area: 2/2/3/3;
 `;
 
+const GroupButton = styled.div`
+  visibility: hidden;
+  padding: 0.5rem;
+  border: 0.5px solid lightgray;
+  position: absolute;
+  top: -1.5rem;
+  right: 3rem;
+  border-radius: 10%;
+  background: rgb(224, 224, 224);
+`;
+const Span = styled.span`
+  cursor: pointer;
+  float: right;
+  &:hover {
+    & > div {
+      visibility: visible;
+    }
+  }
+`;
+
+const ThreadNote = styled.div`
+  color: rgb(18, 100, 163);
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding-top: 1rem;
+  font-weight: bold;
+`;
+
+const Time = styled.span`
+  color: gray;
+  font-size: 1.2rem;
+  margin-left: 1.2rem;
+  padding-top: 1rem;
+`;
 export default Comment;

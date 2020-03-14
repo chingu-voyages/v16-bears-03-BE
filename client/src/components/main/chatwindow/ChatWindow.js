@@ -1,7 +1,9 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useState, useEffect, useContext } from 'react';
 import styled from 'styled-components';
 import CreateComment from './CreateComment';
 import ViewComments from './ViewComments';
+import ThreadWindow from '../thread/ThreadWindow';
+import { AppContext } from '../AppContainer';
 export const ChatContext = React.createContext(null);
 
 /*
@@ -27,24 +29,48 @@ const reducer = (state, action) => {
   }
 };
 
-const ChatWindow = () => {
+const ChatWindow = props => {
   const [chatState, dispatch] = useReducer(reducer, initialState);
+  const [threadWindow, setThreadWindow] = useState(false);
+  const [threadinfo, setThreadInfo] = useState({});
+  const {socket} = useContext(AppContext)
+
+  function getThreadInfo(id, name, date, text, user_id, userImage, thread, channelID) {
+    setThreadInfo({
+      id,
+      name,
+      date,
+      text,
+      user_id,
+      userImage,
+      thread,
+      channelID
+    });
+  }
+
+  useEffect(()=>{
+    if(threadWindow){
+      socket.emit('joinThread', threadinfo.id)
+    }
+  }, [socket, threadWindow, threadinfo.id])
 
   return (
     <ChatContext.Provider value={{ chatState, dispatch }}>
       <Container>
-
-        {/*hardcoded channel header */}
-        <Header>#Slack Clone</Header>
-
-        <ViewComments />
+        <Header># {props.currentChannel.channel.name}</Header>
+        <ViewComments
+          setThreadWindow={setThreadWindow}
+          getThreadInfo={getThreadInfo}
+          currentChannel={props.currentChannel.channel}
+        />
         <CreateComment />
+        {threadWindow && <ThreadWindow threadinfo={threadinfo} setThreadWindow={setThreadWindow}  />}
       </Container>
     </ChatContext.Provider>
   );
 };
 
-const Container = styled.div`
+const Container = styled.main`
   width: 100%;
   height: 100%;
   grid-area: 1/2/3/3;
@@ -57,14 +83,14 @@ const Container = styled.div`
   color: rgb(29, 28, 29);
 `;
 
-const Header = styled.section`
+const Header = styled.header`
   display: flex;
-  margin-left: 0.5rem;
+  justify-content: center;
+  margin: 1.5rem 1.5rem 1.8rem 1.5rem;
   font-size: 2rem;
   align-items: flex-end;
   font-weight: 600;
   flex: 0 0 5%;
-  padding: 0.5rem 0.5rem;
   font-size: 1.8rem;
 `;
 

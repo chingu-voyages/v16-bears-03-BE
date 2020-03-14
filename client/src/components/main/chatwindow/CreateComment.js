@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react';
 import Styled from './styles/comment.styles';
 import axios from 'axios';
 import { ChatContext } from './ChatWindow';
+import { AppContext } from '../AppContainer';
 
 /*
 Posts new comment to database when enter key pressed and triggers re-render by updating ChatWindow state
@@ -9,6 +10,7 @@ Posts new comment to database when enter key pressed and triggers re-render by u
 
 const CreateComment = props => {
   const [comment, setComment] = useState('');
+  const { appState } = useContext(AppContext);
   const { dispatch } = useContext(ChatContext);
 
   const handleSubmit = text => {
@@ -18,6 +20,7 @@ const CreateComment = props => {
         {
           user: localStorage.userId,
           text: text,
+          channelID: appState.channel.id,
         },
         {
           headers: { authorization: `bearer ${localStorage.authToken}` },
@@ -45,11 +48,7 @@ const CreateComment = props => {
   return (
     <Styled.CommentFormWrapper>
       <Styled.CommentForm>
-        <Styled.CommentTextArea
-          onChange={handleOnChange}
-          onKeyDown={handleEnter}
-          value={comment}
-        />
+        <Styled.CommentTextArea onChange={handleOnChange} onKeyDown={handleEnter} value={comment} />
       </Styled.CommentForm>
     </Styled.CommentFormWrapper>
   );

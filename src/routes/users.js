@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { check, validationResult } = require('express-validator');
 const User = require('../models/User');
+const { createAuthToken } = require('../auth/router');
 const passport = require('passport');
 const jwtAuth = passport.authenticate('jwt', { session: false });
 
@@ -10,6 +11,7 @@ const jwtAuth = passport.authenticate('jwt', { session: false });
  * @access Public
  * @desc Register users
  */
+const userRouter = io => {
 router.post(
   '/register',
   [
@@ -41,6 +43,10 @@ router.post(
         });
       }
 
+      let generalChannelId = await Channel.find({ name: 'General' }).then(generalChannel => {
+        return generalChannel[0]._id;
+      });
+
       // this hashes the password
       password = await User.hashPassword(password);
 
@@ -49,42 +55,26 @@ router.post(
         name,
         email,
         password,
+        channels: [generalChannelId],
       });
 
-      res.status(201).json(user.serialize());
+      user = user.serialize();
+      const authToken = createAuthToken({ _id: user.id, name: user.name });
+
+      // Add the new user to general channel
+      Channel.findById(generalChannelId).then(channel => {
+        channel.users.push(user.id);
+        channel.save();
+      });
+
+      res.status(201).json({ authToken, user });
+      io.emit("addUserToChannel", {user, channelId: generalChannelId} )
     } catch (error) {
       console.error(error.message);
       res.status(500).send('Server error');
     }
   },
 );
-
-/**
- * @route GET api/users
- * @access Public
- * @desc Get all users
- */
-router.get('/', jwtAuth, async (req, res) => {
-  try {
-    const allUsers = await User.find();
-    let users;
-
-    if (allUsers) {
-      users = allUsers.map(user => {
-        return {
-          id: user._id,
-          name: user.name,
-          email: user.email,
-        };
-      });
-
-      return res.status(200).send(users);
-    }
-  } catch (error) {
-    console.error(error.message);
-    return res.status(500).send('Server error');
-  }
-});
 
 router
   .route('/:userID')
@@ -132,14 +122,23 @@ router
         user.save().then(user => {
           const { id, email, name, userImage } = user;
           res.status(201).send('success');
-        });
+          return {id, name, userImage}
+        }).then(res =>{
+            io.emit("updateUser", res)
+        })
       })
       .catch(err => res.status(500).json('Something went wrong'));
   })
   .delete((req, res) => {
     User.findByIdAndRemove(req.params.userID)
-      .then(user => res.status(204).end())
+      .then(user => res.status(204).end()).then(()=>{
+        io.emit("deleteUser", req.params.userID)
+      })
       .catch(err => res.status(500).json('Something went wrong'));
   });
 
-module.exports = router;
+  return router
+
+}
+
+module.exports = userRouter;
