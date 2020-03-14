@@ -117,7 +117,8 @@ const reducer = (state, action) => {
     case 'EDIT_COMMENT': {
       const updatedComments = state.channel.comments.map(comment => {
         if (comment._id === action.editedComment._id) {
-          return action.editedComment;
+                action.editedComment.thread = comment.thread
+                return action.editedComment;
         } else {
           return comment;
         }
