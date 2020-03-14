@@ -37,7 +37,9 @@ const GlobalStyles = createGlobalStyle`
   button {  font-family: 'Arimo', sans-serif; }
 `;
 
-axios.defaults.baseURL = 'http://localhost:8000';
+if (process.env.NODE_ENV === 'development') {
+  axios.defaults.baseURL = 'http://localhost:8000';
+}
 
 const AppWrap = styled.div`
   position: absolute;
