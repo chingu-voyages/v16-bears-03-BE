@@ -20,24 +20,25 @@ function Sidebar(props) {
   let errorMessage = useContext(MessageContext);
 
   // Get all channels
-  const getChannels = async () => {
-    setIsLoading(true);
-
-    try {
-      const result = await axios('/api/channels', {
-        headers: { authorization: `bearer ${localStorage.authToken}` },
-      });
-      setAllChannels(result.data);
-      setIsLoading(false);
-      return result.data;
-    } catch (error) {
-      setIsLoading(false);
-      errorMessage.set_message([{ msg: 'Unable to get channels.' }]);
-      setIsError(true);
-    }
-  };
+ 
 
   useEffect(() => {
+    const getChannels = async () => {
+      setIsLoading(true);
+  
+      try {
+        const result = await axios('/api/channels', {
+          headers: { authorization: `bearer ${localStorage.authToken}` },
+        });
+        setAllChannels(result.data);
+        setIsLoading(false);
+        return result.data;
+      } catch (error) {
+        setIsLoading(false);
+        errorMessage.set_message([{ msg: 'Unable to get channels.' }]);
+        setIsError(true);
+      }
+    };
     getChannels().then(channels => {
       
       const generalChannel = channels[0];
@@ -54,7 +55,7 @@ function Sidebar(props) {
         socket.emit('joinChannel', generalChannel.id);
       }
     });
-  }, [appDispatch, errorMessage]);
+  }, [appDispatch, errorMessage, currentChannelID, socket]);
 
   //socket listeners on Sidebar
   useEffect(() => {
@@ -143,7 +144,6 @@ function Sidebar(props) {
               currentChannelID={currentChannelID}
               setCurrentChannelID={setCurrentChannelID}
               allChannels={allChannels}
-              getChannels={getChannels}
               appDispatch={appDispatch}
               appState={appState}
               />

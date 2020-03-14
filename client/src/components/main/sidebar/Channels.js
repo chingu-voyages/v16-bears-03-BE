@@ -6,7 +6,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons';
 
 function Channels(props) {
  
-  const { allChannels, getChannels, appState, appDispatch,currentChannelID, setCurrentChannelID } = props;
+  const { allChannels,currentChannelID, setCurrentChannelID } = props;
 
   async function createNewChannel() {
     const name = prompt('Channel name?');
@@ -25,22 +25,16 @@ function Channels(props) {
           headers: { authorization: `bearer ${localStorage.authToken}` },
         },
       );
-
-      getChannels();
-
+      console.log(result.data)
+      setCurrentChannelID(result.data._id)
       return result.data;
+     
     } catch (error) {
       console.log('Create channel error: ', error);
     }
   }
 
-  const setChannel = id => {
-    let [channel] = allChannels.filter(channel => {
-      return channel.id === id;
-    });
 
-    appDispatch({ type: 'SET_CHANNEL', channel: channel });
-  };
 
   return (
     <>
@@ -57,10 +51,9 @@ function Channels(props) {
                 id={channel.id}
                 title={channel.name}
                 onClick={() => {
-                  setChannel(channel.id)
+                 
                   setCurrentChannelID(channel.id)
                 }}
-                currentChannel={appState.channel.id}
                 currentChannel={currentChannelID}
               >
                 # {channel.name}
