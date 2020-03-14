@@ -96,9 +96,9 @@ $ npm run dev
 
 ## Team
 <a href="https://github.com/Junjpan"><img src="https://avatars1.githubusercontent.com/u/27034919?s=400&u=551e7ed956f1cd8e377221def8af1ed26606e04c&v=4" width="100"/></a>
-<a href="https://github.com/rusye"><img src="https://avatars3.githubusercontent.com/u/42260235?s=60&v=4" width="150"/></a>
-<a href="https://github.com/Igor333m"><img src="https://avatars1.githubusercontent.com/u/10785230?s=400&u=d04506ed02698cf2f7e3434c8397bf571bd78a52&v=4" width="200"/></a>
-<a href="https://github.com/a-w-m"><img src="https://avatars2.githubusercontent.com/u/47095419?s=60&v=4" width="200"/></a>
+<a href="https://github.com/rusye"><img src="https://avatars3.githubusercontent.com/u/42260235?s=60&v=4" width="100"/></a>
+<a href="https://github.com/Igor333m"><img src="https://avatars1.githubusercontent.com/u/10785230?s=400&u=d04506ed02698cf2f7e3434c8397bf571bd78a52&v=4" width="100"/></a>
+<a href="https://github.com/a-w-m"><img src="https://avatars2.githubusercontent.com/u/47095419?s=60&v=4" width="100"/></a>
 
 ---
 
