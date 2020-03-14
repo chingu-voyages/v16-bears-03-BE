@@ -2,12 +2,38 @@
 
 # Slack CLone
 
-> This project clones the popular communication app, Slack, using the MERN stack. 
+> This project clones the popular communication app, Slack, using the MERN stack.
 
-- Images
-[![Screen Shot](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Channel-Image.png)]
+## Table of Contents
 
-[![Screen Shot](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Thread-Image.png)]
+- [Motivation](#motivation)
+- [Description](#description)
+- [Screenshots](#screenshots)
+- [Demo](#demo)
+- [Installation](#installation)
+- [Technology](#technology)
+- [Features](#features)
+- [Team](#team)
+- [License](#license)
+
+## Motivation
+
+> We discussed as a group as to what we wanted to do and after discussing somethings one of the members suggested a live chat app and then clonging [Slack](https://slack.com/) was brought up and we stuck with it and ran.
+
+## Description
+
+> This app behaves in a smiliar manner to [Slack](https://slack.com/).  A user can register, login, start a new channel, start a new thread, leave comments, update their name and even change their profile image.  A user can also edit their own comments as well.
+
+## Demo
+> [Live App](https://slack-clone-bears-03.herokuapp.com/)
+
+## Screenshots
+
+- Dashboard
+[![Screenshot](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Channel-Image.png)]
+
+- Thread
+[![Screenshot](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Thread-Image.png)]
 
 - Live Messages
 ![Add Comment](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Add-Comment.gif)
@@ -18,16 +44,6 @@
 - Update User Details
 ![Update User](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Update-User.gif)
 ---
-
-## Table of Contents (Optional)
-
-- [Installation](#installation)
-- [Technology](#technology)
-- [Features](#features)
-- [Team](#team)
-- [FAQ](#faq)
-- [Support](#support)
-- [License](#license)
 
 ## Installation
 
@@ -66,7 +82,9 @@ $ npm run dev
  - MongoDB w/ Mongoose
  - Node.js
  - Socket.io
- - JWT Authorization
+ - Passport.js
+ - JWT Token
+ - Bcrypt
 
 ## Features
 
@@ -76,43 +94,11 @@ $ npm run dev
 - Update user profile
 - Live updates in client browser 
 
-
-## Tests (Optional)
-
-- ???
-
----
-
-## Contributing
-
-> To get started...
-
-### Step 1
-
-- **Option 1**
-    - 🍴 Fork this repo!
-
-- **Option 2**
-    - 👯 Clone this repo to your local machine using `https://github.com/chingu-voyages/v16-bears-03-BE.git`
-
-### Step 2
-
-- **HACK AWAY!** 🔨🔨🔨
-
-### Step 3
-
-- 🔃 Create a new pull request at <a href="https://github.com/chingu-voyages/v16-bears-03-BE" target="_blank">.
-
----
-
 ## Team
-
-> Or Contributors/People
-
-[![Junjpan](https://avatars2.githubusercontent.com/u/27034919?s=60&v=4?s=200)](https://github.com/Junjpan)
-[![Rusye](https://avatars3.githubusercontent.com/u/42260235?s=60&v=4)](https://github.com/rusye)
-[![Igor33m](https://avatars0.githubusercontent.com/u/10785230?s=60&v=4?s=200)](https://github.com/Igor333m)
-[![a-w-m](https://avatars2.githubusercontent.com/u/47095419?s=60&v=4)](https://github.com/a-w-m)
+<a href="https://github.com/Junjpan"><img src="https://avatars1.githubusercontent.com/u/27034919?s=400&u=551e7ed956f1cd8e377221def8af1ed26606e04c&v=4" width="200"/></a>
+<a href="https://github.com/rusye"><img src="https://avatars3.githubusercontent.com/u/42260235?s=60&v=4" width="200"/></a>
+<a href="https://github.com/Igor333m"><img src="https://avatars1.githubusercontent.com/u/10785230?s=400&u=d04506ed02698cf2f7e3434c8397bf571bd78a52&v=4" width="200"/></a>
+<a href="https://github.com/a-w-m"><img src="https://avatars2.githubusercontent.com/u/47095419?s=60&v=4" width="200"/></a>
 
 ---
 
@@ -121,7 +107,3 @@ $ npm run dev
 [![License](http://img.shields.io/:license-mit-blue.svg?style=flat-square)](http://badges.mit-license.org)
 
 - **[MIT license](http://opensource.org/licenses/mit-license.php)**
-
-## Note
-
-[ReadMe Template Credited fvcproductions](https://gist.github.com/fvcproductions/1bfc2d4aecb01a834b46#file-samplereadme-md)
