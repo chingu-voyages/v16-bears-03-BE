@@ -24,6 +24,31 @@ const initialState = {
   channel: '',
 };
 
+//updates user info in entire comment
+const updateUser = (arr, data) => {
+  const { id, name, userImage } = data;
+
+  const updatedComments = arr.map(element => {
+    if (element.thread) {
+      element.thread = updateUser(element.thread, data);
+    }
+
+    if (element.user_id === id) {
+      if (name) {
+        element.user = name;
+      }
+
+      if (userImage) {
+        element.userImage = userImage;
+      }
+      return element;
+    }
+    return element;
+  });
+
+  return updatedComments;
+};
+
 //reducer that handles user action
 const reducer = (state, action) => {
   const comments = state.channel.comments;
@@ -103,20 +128,7 @@ const reducer = (state, action) => {
 
     //user profile actions
     case 'UPDATE_USER': {
-      const { id, name, userImage } = action.data;
-      const updatedComments = state.channel.comments.map(comment => {
-        if (comment.user_id === id) {
-          if (name) {
-            comment.user = name;
-          }
-
-          if (userImage) {
-            comment.userImage = userImage;
-          }
-          return comment;
-        }
-        return comment;
-      });
+      const updatedComments = updateUser(state.channel.comments, action.data);
 
       return { channel: { ...channel, comments: updatedComments } };
     }
@@ -143,7 +155,7 @@ function AppContainer() {
     socket.on('updateUser', data => {
       appDispatch({ type: 'UPDATE_USER', data });
     });
-  }, [socket]);
+  }, []);
 
   const [appState, appDispatch] = useReducer(reducer, initialState);
 

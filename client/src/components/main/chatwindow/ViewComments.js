@@ -97,30 +97,6 @@ const ViewComments = props => {
 
     })
 
-    // //non-threaded comments live updates
-
-    // socket.on('post', comment => {
-    //   setAllComments(prev => prev.concat([comment]));
-    // });
-
-    // socket.on('edit', editedComment => {
-    //   setAllComments(prev => {
-    //     return prev.map(comment => {
-    //       if (comment._id === editedComment._id) {
-    //         return editedComment;
-    //       } else {
-    //         return comment;
-    //       }
-    //     });
-    //   });
-    // });
-
-    // socket.on('delete', id => {
-    //   setAllComments(prev => {
-    //     return prev.filter(comment => comment._id !== id);
-    //   });
-    // });
-
     // socket.on('updateUser', ({ id, name, userImage }) => {
     //   setAllComments(prev => {
     //     return prev.map(comment => {

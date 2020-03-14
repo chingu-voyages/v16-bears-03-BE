@@ -53,7 +53,7 @@ function Sidebar() {
         socket.emit('joinChannel', generalChannel.id);
       }
     });
-  }, [appDispatch, currentChannelID]);
+  }, [socket, appDispatch, currentChannelID]);
 
   //socket listeners on Sidebar
   useEffect(() => {
