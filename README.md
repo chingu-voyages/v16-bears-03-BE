@@ -7,18 +7,18 @@
 > This project clones the popular communication app, Slack, using the MERN stack. 
 
 - Images
-[![Screen Shot](assets\Channel-Image.png)]
+[![Screen Shot](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Channel-Image.png)]
 
-[![Screen Shot](assets\Thread-Image.png)]
+[![Screen Shot](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Thread-Image.png)]
 
 - Live Messages
-![Add Comment](assets\Add-Comment.gif)
+![Add Comment](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Add-Comment.gif)
 
 - Threaded Replies
-![Add Thread](assets\Add-Thread.gif)
+![Add Thread](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Add-Thread.gif)
 
 - Update User Details
-![Update User](assets\Update-User.gif)
+![Update User](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Update-User.gif)
 ---
 
 ## Table of Contents (Optional)
