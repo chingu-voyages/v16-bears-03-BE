@@ -111,8 +111,6 @@ const Comment = props => {
       return `${parseInt(differentInDays)} days ago`;
     } else if (parseInt(differentInDays) === 1) {
       return `1 day ago`;
-    } else {
-      return 'Today';
     }
   };
 
