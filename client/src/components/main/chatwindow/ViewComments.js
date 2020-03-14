@@ -22,13 +22,19 @@ const ViewComments = props => {
   const [isError, setIsError] = useState(false);
 
   const { chatState } = useContext(ChatContext);
-  const { socket, appState } = useContext(AppContext);
+  const {  appState } = useContext(AppContext);
 
   useEffect(() => {
     setIsLoading(true);
     try {
       if (appState.channel.comments) {
-        setAllComments(appState.channel.comments);
+        setAllComments(() =>{
+          return appState.channel.comments.map(comment =>{
+            comment.channelID = appState.channel.id
+            
+            return comment
+          })});
+        
         setIsLoading(false);
       }
     } catch (error) {
@@ -37,49 +43,6 @@ const ViewComments = props => {
     }
   }, [appState]);
 
-  //Initialize client socket event listeners. Handles all post, edit and delete comment events.
-
-  useEffect(() => {
-    socket.on('post', comment => {
-      setAllComments(prev => prev.concat([comment]));
-    });
-
-    socket.on('edit', editedComment => {
-      setAllComments(prev => {
-        return prev.map(comment => {
-          if (comment._id === editedComment._id) {
-            return editedComment;
-          } else {
-            return comment;
-          }
-        });
-      });
-    });
-
-    socket.on('delete', id => {
-      setAllComments(prev => {
-        return prev.filter(comment => comment._id !== id);
-      });
-    });
-
-    socket.on('updateUser', ({ id, name, userImage }) => {
-      setAllComments(prev => {
-        return prev.map(comment => {
-          if (comment.user_id === id) {
-            if (name) {
-              comment.user = name;
-            }
-
-            if (userImage) {
-              comment.userImage = userImage;
-            }
-            return comment;
-          }
-          return comment;
-        });
-      });
-    });
-  }, [socket]);
 
   useEffect(() => {
     if (chatState.newComment) {
@@ -121,6 +84,7 @@ const ViewComments = props => {
               refContainer={refContainer}
               setThreadWindow={props.setThreadWindow}
               getThreadInfo={props.getThreadInfo}
+              channelID = {comment.channelID}
             ></Comment>
           );
         })

@@ -70,7 +70,7 @@ const useAvatar = (user_id, userImage, id) => {
 // Comment Component
 
 const Comment = props => {
-  const { id, name, date, text, user_id, userImage, isEdited, thread, refContainer } = props;
+  const { id, name, date, text, user_id, userImage, isEdited, thread, channelID, refContainer } = props;
   const dropdown = useRef(null);
   const menu = useRef(null);
   const [isHidden, setIsHidden] = useHideDropdown(dropdown);
@@ -100,7 +100,7 @@ const Comment = props => {
 
   const OpenThreadWindow = e => {
     props.setThreadWindow(true);
-    props.getThreadInfo(id, name, date, text, user_id, userImage, thread);
+    props.getThreadInfo(id, name, date, text, user_id, userImage, thread, channelID );
   };
 
   const getDateDifferent = date => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 import createJdention from '../sidebar/user/createJdenticon';
 import { ThreadAvatar, Title, ThreadInfo, Menu } from './thread.style';
@@ -8,11 +8,15 @@ import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { Tooltip } from '../../../theme/theme';
 import EditThread from './EditThread';
 import axios from 'axios';
+import { AppContext } from '../AppContainer';
 
-function Thread({ threadinfo, dispatch }) {
+
+function Thread({ threadinfo, dispatch, channelID }) {
   const [hidden, setHidden] = useState(true);
   const [editThread, setEditThread] = useState(false);
   const menuContainer = React.useRef();
+  const { socket, appDispatch } = useContext(AppContext);
+
 
   function handleClickOutside(e) {
     if (menuContainer.current && !menuContainer.current.contains(e.target)) {
@@ -39,7 +43,10 @@ function Thread({ threadinfo, dispatch }) {
           headers: { authorization: `bearer ${localStorage.authToken}` },
         })
         .then(res => {
+          
           dispatch({ type: 'DELETE_THREAD', id: threadinfo.id });
+          appDispatch({type: 'DELETE_THREAD', data: {id: threadinfo.id, parentID: threadinfo.parent_id, channelID}} )
+          socket.emit('delete_thread', {id: threadinfo.id, parentID: threadinfo.parent_id, channelID}   )
         })
         .catch(err => {
           console.log(err.response.data);
@@ -59,6 +66,8 @@ function Thread({ threadinfo, dispatch }) {
       )
       .then(res => {
         dispatch({ type: 'EDIT_THREAD', data: { text, id: threadinfo.id } });
+        appDispatch({type: 'EDIT_THREAD', data: {text, id: threadinfo.id, parentID: threadinfo.parent_id, channelID}} )
+        socket.emit('edit_thread', {text, id: threadinfo.id, parentID: threadinfo.parent_id, channelID } )
         setEditThread(false);
       })
       .catch(err => console.log(err.response.data));

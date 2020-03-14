@@ -16,7 +16,7 @@ const io = require('socket.io')(server);
 
 const { router: authRouter, localStrategy, jwtStrategy } = require('./auth');
 const userRouter = require('./routes/users')(io);
-const channelRouter = require('./routes/channel');
+const channelRouter = require('./routes/channel')(io);
 
 //pass mounted Socket.io server to comments router
 const commentRouter = require('./routes/comments')(io);

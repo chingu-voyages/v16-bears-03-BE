@@ -15,10 +15,10 @@ function Sidebar(props) {
   const [activeUsers, setActiveUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const { socket, appState, appDispatch } = useContext(AppContext);
+  const { socket, appDispatch, appState } = useContext(AppContext);
+  const [currentChannelID, setCurrentChannelID] = useState();
   let errorMessage = useContext(MessageContext);
-
-  // Get all channels
+  
   const getChannels = async () => {
     setIsLoading(true);
 
@@ -40,12 +40,39 @@ function Sidebar(props) {
   };
 
   useEffect(() => {
-    getChannels().then(res => {
-      if (res !== undefined) {
-        appDispatch({ type: 'SET_CHANNEL', channel: res[0] });
+    const getChannels = async () => {
+      setIsLoading(true);
+  
+      try {
+        const result = await axios('/api/channels', {
+          headers: { authorization: `bearer ${localStorage.authToken}` },
+        });
+        setAllChannels(result.data);
+        setIsLoading(false);
+        return result.data;
+      } catch (error) {
+        setIsLoading(false);
+        errorMessage.set_message([{ msg: 'Unable to get channels.' }]);
+        setIsError(true);
+      }
+    };
+    getChannels().then(channels => {
+      
+      const generalChannel = channels[0];
+
+      if (currentChannelID) {
+        const [currentChannel] = channels.filter(channel => {
+          return channel.id === currentChannelID;
+        });
+
+        appDispatch({ type: 'SET_CHANNEL', channel: currentChannel });
+      } else {
+        appDispatch({ type: 'SET_CHANNEL', channel: generalChannel });
+        setCurrentChannelID(generalChannel.id)
+        socket.emit('joinChannel', generalChannel.id);
       }
     });
-  }, [appDispatch, errorMessage]);
+  }, [appDispatch, errorMessage, currentChannelID, socket]);
 
   //socket listeners on Sidebar
   useEffect(() => {
@@ -107,6 +134,16 @@ function Sidebar(props) {
     }
   };
 
+  useEffect(() => {
+    if (allChannels && currentChannelID){
+    let allChannelIDs = allChannels.map(channel=>{
+      return channel.id
+    })
+    socket.emit('joinChannel', {currentChannelID, allChannelIDs});
+
+  }
+  }, [socket, currentChannelID, allChannels]);
+
   return (
     <Aside>
       <SidebarButton onClick={toggleSidebar} className={sidebar ? 'show' : ''}>
@@ -121,11 +158,12 @@ function Sidebar(props) {
         ) : (
           <>
             <Channels
+              currentChannelID={currentChannelID}
+              setCurrentChannelID={setCurrentChannelID}
               allChannels={allChannels}
-              getChannels={getChannels}
               appDispatch={appDispatch}
               appState={appState}
-            />
+              />
             <AllUsers
               allUsersInChannel={props.currentChannel.channel.users}
               activeUsers={activeUsers}
