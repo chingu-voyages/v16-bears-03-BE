@@ -103,6 +103,17 @@ const Comment = props => {
     props.getThreadInfo(id, name, date, text, user_id, userImage, thread, channelID );
   };
 
+  const getDateDifferent = date => {
+    let currentDate = new Date();
+    let differentInTime = currentDate.getTime() - new Date(date).getTime();
+    let differentInDays = differentInTime / (1000 * 3600 * 24);
+    if (parseInt(differentInDays) > 1) {
+      return `${parseInt(differentInDays)} days ago`;
+    } else if (parseInt(differentInDays) === 1) {
+      return `1 day ago`;
+    }
+  };
+
   return (
     <Styled.CommentContainer>
       <Styled.CommentAvatar id={id} />
@@ -126,6 +137,7 @@ const Comment = props => {
               <ThreadNote onClick={OpenThreadWindow}>
                 {thread.length > 0 && thread.length !== 1 ? `${thread.length} replies` : '1 reply'}
               </ThreadNote>
+              <Time>{getDateDifferent(thread[thread.length - 1].date)}</Time>
             </div>
           )}
         </Styled.CommentTextWrapper>
@@ -202,5 +214,12 @@ const ThreadNote = styled.div`
   font-size: 1.2rem;
   padding-top: 1rem;
   font-weight: bold;
+`;
+
+const Time = styled.span`
+  color: gray;
+  font-size: 1.2rem;
+  margin-left: 1.2rem;
+  padding-top: 1rem;
 `;
 export default Comment;

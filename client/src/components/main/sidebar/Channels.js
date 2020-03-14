@@ -11,7 +11,6 @@ function Channels(props) {
   async function createNewChannel() {
     const name = prompt('Channel name?');
     const description = prompt('Channel description?');
-    console.log('name: ', name, 'description: ', description);
 
     try {
       const result = await axios.post(

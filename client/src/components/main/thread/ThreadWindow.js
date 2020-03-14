@@ -11,6 +11,7 @@ function ThreadWindow(props) {
   const {socket} = useContext(AppContext)
 
   //todo:change channel's name after chanel route is set.
+  
   return (
     <ThreadContainer>
       <Header>

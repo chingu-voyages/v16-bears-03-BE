@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { AllThreads } from './thread.style';
 import Thread from './Thread';
 
 function ViewThread(props) {
+  const messageEndRef = useRef();
+
+  const scrollToBottom = () => {
+    messageEndRef.current.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  useEffect(scrollToBottom, [props.allThreads]);
+
   return (
     <AllThreads>
       {props.allThreads.map(thread => {
@@ -19,6 +27,7 @@ function ViewThread(props) {
 
         return <Thread key={thread._id} threadinfo={threadinfo} dispatch={props.dispatch} channelID ={props.channelID} />;
       })}
+      <div ref={messageEndRef} />
     </AllThreads>
   );
 }

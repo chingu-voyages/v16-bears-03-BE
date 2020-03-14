@@ -17,20 +17,22 @@ function CurrentUser(props) {
 
   useEffect(() => {
     setIsLoading(true);
-    axios
-      .get(`/api/users/${localStorage.userId}`, {
-        headers: { authorization: `bearer ${localStorage.authToken}` },
-      })
-      .then(res => {
-        setIsLoading(false);
-        setLoggedinUser(res.data.name);
-        setImageUrl(res.data.userImage);
-      })
-      .catch(err => {
-        setIsLoading(false);
-        setIsError(true);
-        errorMessage.set_message([{ msg: 'Unable to get the user.' }]);
-      });
+    if (localStorage.loggedIn) {
+      axios
+        .get(`/api/users/${localStorage.userId}`, {
+          headers: { authorization: `bearer ${localStorage.authToken}` },
+        })
+        .then(res => {
+          setIsLoading(false);
+          setLoggedinUser(res.data.name);
+          setImageUrl(res.data.userImage);
+        })
+        .catch(err => {
+          setIsLoading(false);
+          setIsError(true);
+          errorMessage.set_message([{ msg: 'Unable to get the user.' }]);
+        });
+    }
   }, [loggedinUser, imageUrl, errorMessage]);
 
   useEffect(() => {
