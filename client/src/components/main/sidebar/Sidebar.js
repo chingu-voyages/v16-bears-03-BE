@@ -22,17 +22,20 @@ function Sidebar(props) {
   const getChannels = async () => {
     setIsLoading(true);
 
-    try {
-      const result = await axios('/api/channels', {
-        headers: { authorization: `bearer ${localStorage.authToken}` },
-      });
-      setAllChannels(result.data);
-      setIsLoading(false);
-      return result.data;
-    } catch (error) {
-      setIsLoading(false);
-      errorMessage.set_message([{ msg: 'Unable to get channels.' }]);
-      setIsError(true);
+    if (localStorage.loggedIn) {
+      try {
+        const result = await axios('/api/channels', {
+          headers: { authorization: `bearer ${localStorage.authToken}` },
+        });
+        setAllChannels(result.data);
+        setIsLoading(false);
+        return result.data;
+      } catch (error) {
+        localStorage.clear();
+        setIsLoading(false);
+        errorMessage.set_message([{ msg: 'Unable to get channels.' }]);
+        setIsError(true);
+      }
     }
   };
 
