@@ -1,6 +1,4 @@
-<a href=""><img src="client\src\assets\logo.svg" title="Slack Clone" alt="Slack Clone"></a>
-
-***INSERT GRAPHIC HERE (include hyperlink in image)***
+<a href=""><img src="https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/client/src/assets/logo.svg" title="Slack Clone" alt="Slack Clone"></a>
 
 # Slack CLone
 
