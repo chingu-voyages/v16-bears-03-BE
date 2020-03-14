@@ -30,10 +30,10 @@
 ## Screenshots
 
 - Dashboard
-[![Screenshot](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Channel-Image.png)]
+![Screenshot](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Channel-Image.png)
 
 - Thread
-[![Screenshot](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Thread-Image.png)]
+![Screenshot](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Thread-Image.png)
 
 - Live Messages
 ![Add Comment](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Add-Comment.gif)
