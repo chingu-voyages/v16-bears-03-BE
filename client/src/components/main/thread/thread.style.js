@@ -10,11 +10,11 @@ const ThreadContainer = styled.div`
   position: absolute;
   z-index: 10;
   width: 40%;
-  height: calc(100vh - 4rem);
+  height: calc(100vh - 7.2rem);
   border: 1px solid lightgray;
   display: flex;
   flex-direction: column;
-  top: 4rem;
+  top: 7.2rem;
   right: 0px;
   background: white;
   @media (max-width: 480px) {
@@ -52,6 +52,18 @@ const ThreadAvatar = styled.div`
     width: 3.6rem;
     border-radius: 10%;
   }
+  ${props => {
+    if (props.type === 'small') {
+      return `height:2.5rem;
+                width:2.5rem;
+                margin-right: 0.3rem;
+                border:0.5px solid lightgray;
+                & > svg,
+                img {
+                height: 2.5rem;
+                width: 2.5rem;`;
+    }
+  }};
 `;
 
 const AllThreads = styled.section`
@@ -90,7 +102,7 @@ const Textarea = styled.textarea`
   color: #555;
   border-radius: 5px;
   width: 100%;
-  margin: 1rem auto;
+  margin: auto;
   font-size: 1.5rem;
   position: relative;
   resize: none;

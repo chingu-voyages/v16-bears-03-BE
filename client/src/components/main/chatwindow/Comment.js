@@ -6,6 +6,7 @@ import DeleteComment from './DeleteComment';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCommentDots } from '@fortawesome/free-solid-svg-icons';
 import { Tooltip } from '../../../theme/theme';
+import ReplyAvatar from './ReplyAvatar';
 
 //Receives UTC date and returns time and date in local twelve-hour time
 
@@ -119,12 +120,20 @@ const Comment = props => {
         <Styled.CommentTextWrapper>
           <Styled.CommentText>{text}</Styled.CommentText>
           <Styled.CommentEdited isEdited={isEdited}>(edited)</Styled.CommentEdited>
+          {thread && (
+            <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+              <ReplyAvatar thread={thread} />
+              <ThreadNote onClick={OpenThreadWindow}>
+                {thread.length > 0 && thread.length !== 1 ? `${thread.length} replies` : '1 reply'}
+              </ThreadNote>
+            </div>
+          )}
         </Styled.CommentTextWrapper>
       )}
 
       <GroupButton>
         <Span onClick={OpenThreadWindow}>
-          <Tooltip>Start a Thread</Tooltip>
+          <Tooltip>{thread && thread.length > 0 ? 'Reply to thread' : 'Start a thread'}</Tooltip>
           <FontAwesomeIcon icon={faCommentDots} style={{ color: 'rgb(29, 28, 29)' }} size="2x" />
         </Span>
 
@@ -187,4 +196,11 @@ const Span = styled.span`
   }
 `;
 
+const ThreadNote = styled.div`
+  color: rgb(18, 100, 163);
+  cursor: pointer;
+  font-size: 1.2rem;
+  padding-top: 1rem;
+  font-weight: bold;
+`;
 export default Comment;

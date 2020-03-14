@@ -9,34 +9,35 @@ import Channels from './Channels';
 import AllUsers from './AllUsers';
 import CurrentUser from './CurrentUser';
 
-function Sidebar() {
+function Sidebar(props) {
   const [sidebar, setToggleSidebar] = useState(false);
   const [allChannels, setAllChannels] = useState();
   const [activeUsers, setActiveUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
-  const { socket, appDispatch } = useContext(AppContext);
+  const { socket, appDispatch, appState } = useContext(AppContext);
   const [currentChannelID, setCurrentChannelID] = useState();
   let errorMessage = useContext(MessageContext);
 
-  useEffect(() => {
-    const getChannels = async () => {
-      setIsLoading(true);
+  // Get all channels
+  const getChannels = async () => {
+    setIsLoading(true);
 
-      try {
-        // Get all channels
-        const result = await axios('/api/channels', {
-          headers: { authorization: `bearer ${localStorage.authToken}` },
-        });
-        setAllChannels(result.data);
-        setIsLoading(false);
-        return result.data;
-      } catch (error) {
-        setIsLoading(false);
-        errorMessage.set_message([{ msg: 'Unable to get channels.' }]);
-        setIsError(true);
-      }
-    };
+    try {
+      const result = await axios('/api/channels', {
+        headers: { authorization: `bearer ${localStorage.authToken}` },
+      });
+      setAllChannels(result.data);
+      setIsLoading(false);
+      return result.data;
+    } catch (error) {
+      setIsLoading(false);
+      errorMessage.set_message([{ msg: 'Unable to get channels.' }]);
+      setIsError(true);
+    }
+  };
+
+  useEffect(() => {
     getChannels().then(channels => {
       
       const generalChannel = channels[0];
@@ -53,7 +54,7 @@ function Sidebar() {
         socket.emit('joinChannel', generalChannel.id);
       }
     });
-  }, [socket, appDispatch, currentChannelID]);
+  }, [appDispatch, errorMessage]);
 
   //socket listeners on Sidebar
   useEffect(() => {
@@ -142,10 +143,12 @@ function Sidebar() {
               currentChannelID={currentChannelID}
               setCurrentChannelID={setCurrentChannelID}
               allChannels={allChannels}
-            />
-            {/* TODO: Choose selected channel / Harcoded General Channel */}
+              getChannels={getChannels}
+              appDispatch={appDispatch}
+              appState={appState}
+              />
             <AllUsers
-              allUsersInChannel={allChannels && allChannels[0].users}
+              allUsersInChannel={props.currentChannel.channel.users}
               activeUsers={activeUsers}
             />
           </>
