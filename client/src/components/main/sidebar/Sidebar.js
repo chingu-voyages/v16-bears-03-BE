@@ -38,6 +38,7 @@ function Sidebar() {
       }
     };
     getChannels().then(channels => {
+      
       const generalChannel = channels[0];
 
       if (currentChannelID) {
@@ -120,7 +121,7 @@ function Sidebar() {
       return channel.id
     })
     socket.emit('joinChannel', {currentChannelID, allChannelIDs});
-    console.log('test')
+
   }
   }, [socket, currentChannelID, allChannels]);
 

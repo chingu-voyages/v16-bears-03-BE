@@ -8,7 +8,7 @@ import axios from 'axios';
 import { AppContext } from '../AppContainer';
 
 
-function AddThread({ dispatch, commentid, channelID }) {
+function AddThread({ dispatch, commentid, channelID,  }) {
   const [reply, setReply] = useState('');
   const { socket, appDispatch } = useContext(AppContext);
 

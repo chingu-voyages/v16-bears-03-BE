@@ -48,7 +48,7 @@ const ViewComments = props => {
 
     //threaded comments live update in ViewComments 
     socket.on('post_thread', thread =>{
-    
+      
       setAllComments(prev=>{
         return prev.map(comment =>{
           if(comment._id ===thread.commentid){
@@ -97,47 +97,47 @@ const ViewComments = props => {
 
     })
 
-    //non-threaded comments live updates
+    // //non-threaded comments live updates
 
-    socket.on('post', comment => {
-      setAllComments(prev => prev.concat([comment]));
-    });
+    // socket.on('post', comment => {
+    //   setAllComments(prev => prev.concat([comment]));
+    // });
 
-    socket.on('edit', editedComment => {
-      setAllComments(prev => {
-        return prev.map(comment => {
-          if (comment._id === editedComment._id) {
-            return editedComment;
-          } else {
-            return comment;
-          }
-        });
-      });
-    });
+    // socket.on('edit', editedComment => {
+    //   setAllComments(prev => {
+    //     return prev.map(comment => {
+    //       if (comment._id === editedComment._id) {
+    //         return editedComment;
+    //       } else {
+    //         return comment;
+    //       }
+    //     });
+    //   });
+    // });
 
-    socket.on('delete', id => {
-      setAllComments(prev => {
-        return prev.filter(comment => comment._id !== id);
-      });
-    });
+    // socket.on('delete', id => {
+    //   setAllComments(prev => {
+    //     return prev.filter(comment => comment._id !== id);
+    //   });
+    // });
 
-    socket.on('updateUser', ({ id, name, userImage }) => {
-      setAllComments(prev => {
-        return prev.map(comment => {
-          if (comment.user_id === id) {
-            if (name) {
-              comment.user = name;
-            }
+    // socket.on('updateUser', ({ id, name, userImage }) => {
+    //   setAllComments(prev => {
+    //     return prev.map(comment => {
+    //       if (comment.user_id === id) {
+    //         if (name) {
+    //           comment.user = name;
+    //         }
 
-            if (userImage) {
-              comment.userImage = userImage;
-            }
-            return comment;
-          }
-          return comment;
-        });
-      });
-    });
+    //         if (userImage) {
+    //           comment.userImage = userImage;
+    //         }
+    //         return comment;
+    //       }
+    //       return comment;
+    //     });
+    //   });
+    // });
   }, [socket]);
 
   useEffect(() => {
@@ -166,7 +166,6 @@ const ViewComments = props => {
         <div>"Something Went Wrong"</div>
       ) : (
         allComments.map(comment => {
-          console.log(comment.channelID)
           return (
             <Comment
               id={comment._id}

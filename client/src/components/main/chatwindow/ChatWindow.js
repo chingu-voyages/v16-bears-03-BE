@@ -52,7 +52,7 @@ const ChatWindow = () => {
     if(threadWindow){
       socket.emit('joinThread', threadinfo.id)
     }
-  }, [threadWindow])
+  }, [socket, threadWindow, threadinfo.id])
 
   return (
     <ChatContext.Provider value={{ chatState, dispatch }}>
@@ -62,7 +62,7 @@ const ChatWindow = () => {
 
         <ViewComments setThreadWindow={setThreadWindow} getThreadInfo={getThreadInfo} />
         <CreateComment />
-        {threadWindow && <ThreadWindow threadinfo={threadinfo} setThreadWindow={setThreadWindow} />}
+        {threadWindow && <ThreadWindow threadinfo={threadinfo} setThreadWindow={setThreadWindow}  />}
       </Container>
     </ChatContext.Provider>
   );

@@ -33,7 +33,7 @@ function ThreadBody(props) {
       }
       case 'UPDATE_USER':
         const output = state.map(thread => {
-          if (thread.user_id == action.data.id) {
+          if (thread.user_id === action.data.id) {
             if (action.data.name) {
               thread.user = action.data.name;
             }
@@ -54,7 +54,8 @@ function ThreadBody(props) {
   const [allThreads, dispatch] = useReducer(reducer, initialstate.threads);
 
   const { socket } = useContext(AppContext);
-
+  
+  //handles live updates to threadbody
   useEffect(() => {
     socket.on('post_threadBody', thread => {
       dispatch({ type: 'REPLY_THREAD', thread });

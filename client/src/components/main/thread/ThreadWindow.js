@@ -26,7 +26,7 @@ function ThreadWindow(props) {
         socket.emit('leaveThread', props.threadinfo.id)}}>X</CloseButton>
       </Header>
       <Thread threadinfo={props.threadinfo} />
-      <ThreadBody commentid={props.threadinfo.id} thread={props.threadinfo.thread} channelID ={props.threadinfo.channelID} />
+      <ThreadBody commentid={props.threadinfo.id} thread={props.threadinfo.thread} channelID ={props.threadinfo.channelID}  />
     </ThreadContainer>
   );
 }

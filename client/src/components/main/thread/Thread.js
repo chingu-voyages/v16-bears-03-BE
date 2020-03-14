@@ -43,7 +43,7 @@ function Thread({ threadinfo, dispatch, channelID }) {
           headers: { authorization: `bearer ${localStorage.authToken}` },
         })
         .then(res => {
-          console.log(threadinfo.parent_id)
+          
           dispatch({ type: 'DELETE_THREAD', id: threadinfo.id });
           appDispatch({type: 'DELETE_THREAD', data: {id: threadinfo.id, parentID: threadinfo.parent_id, channelID}} )
           socket.emit('delete_thread', {id: threadinfo.id, parentID: threadinfo.parent_id, channelID}   )

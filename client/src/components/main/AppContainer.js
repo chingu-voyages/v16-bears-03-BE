@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react';
+import React, { useReducer, useEffect } from 'react';
 import styled from 'styled-components';
 import Sidebar from './sidebar/Sidebar';
 import ChatWindow from './chatwindow/ChatWindow';
@@ -18,78 +18,134 @@ if (process.env.NODE_ENV === 'development') {
 socket.on('connect', () => {
   socket.send(`${socket.id} connected`);
   socket.emit('activeUser', { userId: localStorage.userId, clientSocket: socket.id });
-
 });
 
 const initialState = {
   channel: '',
 };
 
-const isThreadinCurrentChannel = (currentChannel, threadedCommentChannel)=>{
-  return currentChannel === threadedCommentChannel
-}
-
+//reducer that handles user action
 const reducer = (state, action) => {
-  const comments = state.channel.comments
-  const channel = state.channel
-  let updatedComments;
+  const comments = state.channel.comments;
+  const channel = state.channel;
 
   switch (action.type) {
+    //channel actions
     case 'SET_CHANNEL':
       socket.emit('setChannel', action.channel);
       return { ...state, channel: action.channel };
-    case 'REPLY_THREAD':
-   
-      updatedComments = comments.map(comment =>{
-        if(comment._id ===action.thread.commentid){
-          if(comment.thread){
-          comment.thread = comment.thread.concat(action.thread)}
-          else{
-            comment.thread = [action.thread]
+
+    //thread actions
+    case 'REPLY_THREAD': {
+      const updatedComments = comments.map(comment => {
+        if (comment._id === action.thread.commentid) {
+          if (comment.thread) {
+            comment.thread = comment.thread.concat(action.thread);
+          } else {
+            comment.thread = [action.thread];
           }
         }
-        return comment
+        return comment;
       });
-      return {channel:{...channel, comments: updatedComments}}
-    
-    case 'DELETE_THREAD': 
- 
-      updatedComments = comments.map(comment =>{
-       
-      if(comment._id === action.data.parentID){
-        comment.thread = comment.thread.filter(thread =>{
-          return thread._id !== action.data.id
-        })
-      }
-      return comment
-    })
 
-      return {channel:{...channel, comments: updatedComments}}
-  
-    case 'EDIT_THREAD':
+      return { channel: { ...state.channel, comments: updatedComments } };
+    }
 
-      updatedComments = comments.map(comment =>{
-        if(comment._id === action.data.parentID){
-          comment.thread.forEach(thread =>{
-            if (thread._id === action.data.id){
-              thread.text = action.data.text
-            }
-
-          })
+    case 'DELETE_THREAD': {
+      const updatedComments = comments.map(comment => {
+        if (comment._id === action.data.parentID) {
+          comment.thread = comment.thread.filter(thread => {
+            return thread._id !== action.data.id;
+          });
         }
-        return comment
-      })
-        return {channel:{...channel, comments: updatedComments}}
-    
-     
+        return comment;
+      });
+
+      return { channel: { ...channel, comments: updatedComments } };
+    }
+
+    case 'EDIT_THREAD': {
+      const updatedComments = comments.map(thread => {
+        if (thread._id === action.data.id) {
+          thread.text = action.data.text;
+          thread.isEdited = true;
+          return thread;
+        } else {
+          return thread;
+        }
+      });
+      return { channel: { ...channel, comments: updatedComments } };
+    }
+
+    //comment actions
+    case 'ADD_COMMENT': {
+      const updatedComments = state.channel.comments.concat(action.comment);
+      return { channel: { ...channel, comments: updatedComments } };
+    }
+
+    case 'EDIT_COMMENT': {
+      const updatedComments = state.channel.comments.map(comment => {
+        if (comment._id === action.editedComment._id) {
+          return action.editedComment;
+        } else {
+          return comment;
+        }
+      });
+
+      return { channel: { ...channel, comments: updatedComments } };
+    }
+
+    case 'DELETE_COMMENT': {
+      const updatedComments = state.channel.comments.filter(comment => comment._id !== action.id);
+
+      return { channel: { ...channel, comments: updatedComments } };
+    }
+
+    //user profile actions
+    case 'UPDATE_USER': {
+      const { id, name, userImage } = action.data;
+      const updatedComments = state.channel.comments.map(comment => {
+        if (comment.user_id === id) {
+          if (name) {
+            comment.user = name;
+          }
+
+          if (userImage) {
+            comment.userImage = userImage;
+          }
+          return comment;
+        }
+        return comment;
+      });
+
+      return { channel: { ...channel, comments: updatedComments } };
+    }
+
     default:
       return initialState;
   }
 };
 
 function AppContainer() {
-  const [appState, appDispatch] = useReducer(reducer, initialState);
+  useEffect(() => {
+    socket.on('post', comment => {
+      appDispatch({ type: 'ADD_COMMENT', comment });
+    });
 
+    socket.on('edit', editedComment => {
+      appDispatch({ type: 'EDIT_COMMENT', editedComment });
+    });
+
+    socket.on('delete', id => {
+      appDispatch({ type: 'DELETE_COMMENT', id });
+    });
+
+    socket.on('updateUser', data => {
+      appDispatch({ type: 'UPDATE_USER', data });
+    });
+  }, [socket]);
+
+  const [appState, appDispatch] = useReducer(reducer, initialState);
 
   return (
     <AppContext.Provider value={{ socket, appState, appDispatch }}>

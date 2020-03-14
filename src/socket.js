@@ -82,69 +82,43 @@ const socketListener = io.on('connect', socket => {
     io.emit('updateUserActivity', activeUserConnections);
   });
 
-  socket.on('joinChannel', ({currentChannelID, allChannelIDs}) => {
-   
+  socket.on('joinChannel', ({ currentChannelID, allChannelIDs }) => {
     const rooms = Object.keys(socket.rooms);
-  
+
+    //leave all other channels, but remain in thread if present
     
-    socket.join(currentChannelID, ()=>{
-
-      if (allChannelIDs){
-        rooms.forEach(room =>{
-          if(room !== currentChannelID && allChannelIDs.indexOf(room) !== -1)
-            socket.leave(room)
-        })}
-
-
-
-
-      
-      console.log(`channel:`)
-      console.log( socket.rooms)
-    
-  });
-    
+    socket.join(currentChannelID, () => {
+      if (allChannelIDs) {
+        rooms.forEach(room => {
+          if (room !== currentChannelID && allChannelIDs.indexOf(room) !== -1) socket.leave(room);
+        });
+      }
+    });
   });
 
   socket.on('joinThread', commentID => {
-    console.log(socket.rooms)
-    socket.join(commentID, ()=>{
-      console.log(`join Thread:`)
-      console.log( socket.rooms)
-     
-    
-  })
-});
-
-  socket.on('leaveThread', commentID => {
-  
-    socket.leave(commentID, ()=>{
-      console.log(`leave Thread:`)
-      console.log( socket.rooms)
-    
-    
-  
+    socket.join(commentID);
   });
 
-})
+  socket.on('leaveThread', commentID => {
+    socket.leave(commentID);
+  });
 
-  socket.on('post_thread', thread =>{
-    console.log(thread.channelID)
-    socket.to(thread.commentid).broadcast.emit("post_threadBody", thread)
-    socket.to(thread.channelID).broadcast.emit("post_thread", thread)
-    
-  })
+  //emit to clients in thread and in channel that contains thread
+  socket.on('post_thread', thread => {
+    socket.broadcast.to(thread.commentid).emit('post_threadBody', thread);
+    socket.broadcast.to(thread.channelID).emit('post_thread', thread);
+  });
 
+  socket.on('edit_thread', data => {
+    socket.broadcast.to(data.parentID).emit('edit_threadBody', data);
+    socket.broadcast.to(data.channelID).emit('edit_thread', data);
+  });
 
-  socket.on('edit_thread', (data)=>{
-    socket.to(data.parentID).broadcast.emit("edit_threadBody", data)
-    socket.to(data.channelID).broadcast.emit("edit_thread", data)
-  })
-
-  socket.on('delete_thread', (data)=>{
-    socket.to(data.parentID).broadcast.emit("delete_threadBody", data)
-    socket.to(data.channelID).broadcast.emit("delete_thread", data)
-  })
+  socket.on('delete_thread', data => {
+    socket.broadcast.to(data.parentID).emit('delete_threadBody', data);
+    socket.broadcast.to(data.channelID).emit('delete_thread', data);
+  });
 
   //handle disconnect: remove disconnected user from either array
   socket.on('disconnect', reason => {
