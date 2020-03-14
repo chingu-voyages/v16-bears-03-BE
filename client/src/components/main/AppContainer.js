@@ -92,14 +92,18 @@ const reducer = (state, action) => {
     }
 
     case 'EDIT_THREAD': {
-      const updatedComments = comments.map(thread => {
-        if (thread._id === action.data.id) {
-          thread.text = action.data.text;
-          thread.isEdited = true;
-          return thread;
-        } else {
-          return thread;
-        }
+      const updatedComments = comments.map(comment => {
+    
+        if (comment._id === action.data.parentID) {
+          comment.thread.forEach(thread => {
+            if (thread._id === action.data.id) {
+              thread.text = action.data.text;
+              thread.isEdited = true;
+            }
+          });
+        } 
+          return comment;
+        
       });
       return { channel: { ...channel, comments: updatedComments } };
     }
@@ -139,7 +143,7 @@ const reducer = (state, action) => {
       return initialState;
   }
 };
-
+//handle incoming socket events
 function AppContainer() {
   useEffect(() => {
     socket.on('post', comment => {
@@ -156,6 +160,18 @@ function AppContainer() {
 
     socket.on('updateUser', data => {
       appDispatch({ type: 'UPDATE_USER', data });
+    });
+
+    socket.on('post_thread', thread => {
+      appDispatch({ type: 'REPLY_THREAD', thread });
+    });
+
+    socket.on('delete_thread', data => {
+      appDispatch({ type: 'DELETE_THREAD', data });
+    });
+
+    socket.on('edit_thread', data => {
+      appDispatch({ type: 'EDIT_THREAD', data });
     });
   }, []);
 

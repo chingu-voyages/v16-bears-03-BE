@@ -22,7 +22,7 @@ const ViewComments = props => {
   const [isError, setIsError] = useState(false);
 
   const { chatState } = useContext(ChatContext);
-  const { socket, appState } = useContext(AppContext);
+  const {  appState } = useContext(AppContext);
 
   useEffect(() => {
     setIsLoading(true);
@@ -43,79 +43,6 @@ const ViewComments = props => {
     }
   }, [appState]);
 
-  //Initialize client socket event listeners. Handles all post, edit and delete comment events.
-
-  useEffect(() => {
-
-    //threaded comments live update in ViewComments 
-    socket.on('post_thread', thread =>{
-      
-      setAllComments(prev=>{
-        return prev.map(comment =>{
-          if(comment._id ===thread.commentid){
-            if(comment.thread){
-            comment.thread = comment.thread.concat(thread)}
-            else{
-              comment.thread = [thread]
-            }
-          }
-          return comment
-        })
-      })
-    })
-
-    socket.on('delete_thread', (data)=>{
-    
-      setAllComments(prev=>{
-        return prev.map(comment =>{
-       
-          if(comment._id === data.parentID){
-            comment.thread = comment.thread.filter(thread =>{
-              return thread._id !== data.id
-            })
-          }
-          return comment
-        })
-      })
-    } )
-
-    socket.on('edit_thread', data =>{
-      
-      setAllComments(prev=>{
-        return prev.map(comment =>{
-    
-          if(comment._id === data.parentID){
-            comment.thread.forEach(thread =>{
-              if (thread._id === data.id){
-                thread.text = data.text
-              }
-
-            })
-          }
-          return comment
-        })
-      })
-
-    })
-
-    // socket.on('updateUser', ({ id, name, userImage }) => {
-    //   setAllComments(prev => {
-    //     return prev.map(comment => {
-    //       if (comment.user_id === id) {
-    //         if (name) {
-    //           comment.user = name;
-    //         }
-
-    //         if (userImage) {
-    //           comment.userImage = userImage;
-    //         }
-    //         return comment;
-    //       }
-    //       return comment;
-    //     });
-    //   });
-    // });
-  }, [socket]);
 
   useEffect(() => {
     if (chatState.newComment) {
