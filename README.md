@@ -1,4 +1,4 @@
-[![Slack Clone](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/client/src/assets/logo.svg)]
+<img src="https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/client/src/assets/logo.svg" title="Slack Clone" alt="Slack Clone">
 
 # Slack CLone
 
