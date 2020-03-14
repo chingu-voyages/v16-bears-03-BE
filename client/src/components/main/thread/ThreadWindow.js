@@ -5,7 +5,6 @@ import Thread from './Thread';
 import ThreadBody from './ThreadBody';
 
 function ThreadWindow(props) {
-  //todo:change channel's name after chanel route is set.
   return (
     <ThreadContainer>
       <Header>
