@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { body, validationResult } = require('express-validator');
-const Comment = require('../models/comment');
+const Comment = require('../models/Comment');
 const User = require('../models/User');
 const Channel = require('../models/Channel');
 
@@ -9,7 +9,7 @@ const Channel = require('../models/Channel');
 
 const commentRouter = io => {
   //function that emits comment events to client
-  const sendCommentToClient = (event, comment, channelID = "") => {
+  const sendCommentToClient = (event, comment, channelID = '') => {
     const { date, _id, text, isEdited } = comment;
     const toSend = {
       _id,
@@ -19,13 +19,13 @@ const commentRouter = io => {
       ...(comment.user ? { user: comment.user.name } : { user: 'Deleted User' }),
       ...(comment.user ? { user_id: comment.user._id } : { user_id: null }),
       ...(comment.user ? { userImage: comment.user.userImage } : { userImage: null }),
-    }
+    };
 
-    if(channelID){
-    io.sockets.to(channelID).emit(event, toSend);
-    } else{
-      io.sockets.emit(event, toSend)
-      console.log("thread")
+    if (channelID) {
+      io.sockets.to(channelID).emit(event, toSend);
+    } else {
+      io.sockets.emit(event, toSend);
+      console.log('thread');
     }
   };
 
@@ -158,7 +158,7 @@ Return response containing new comment in JSON
                         _id,
                         text,
                         user: user.name,
-                        channelID
+                        channelID,
                       });
 
                       return comment;
@@ -167,7 +167,7 @@ Return response containing new comment in JSON
                       return Comment.populate(comment, { path: 'user' });
                     })
                     .then(comment => {
-                      sendCommentToClient('post', comment, channelID, );
+                      sendCommentToClient('post', comment, channelID);
                     })
                     .catch(err => {
                       console.log(err);
@@ -251,7 +251,7 @@ Return response containing updated comment in JSON on succes
               text,
               date,
               user: name,
-              channelID
+              channelID,
             });
 
             return comment;
@@ -260,7 +260,7 @@ Return response containing updated comment in JSON on succes
             return Comment.populate(comment, { path: 'user' });
           })
           .then(comment => {
-            sendCommentToClient('edit', comment, channelID, );
+            sendCommentToClient('edit', comment, channelID);
           });
       })
       .catch(err => res.status(500).json('Something went wrong'));
