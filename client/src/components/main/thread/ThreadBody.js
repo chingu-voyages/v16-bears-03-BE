@@ -11,6 +11,8 @@ function ThreadBody(props) {
 
   const reducer = (state, action) => {
     switch (action.type) {
+      case 'CLICK':
+        return [...action.threads];
       case 'REPLY_THREAD':
         return [...state, action.thread];
       case 'DELETE_THREAD': {
@@ -53,8 +55,13 @@ function ThreadBody(props) {
 
   const [allThreads, dispatch] = useReducer(reducer, initialstate.threads);
 
+  useEffect(() => {
+    const threads = props.thread === undefined ? [] : props.thread;
+    dispatch({ type: 'CLICK', threads });
+  }, [props.clickChange]);
+
   const { socket } = useContext(AppContext);
-  
+
   //handles live updates to threadbody
   useEffect(() => {
     socket.on('post_threadBody', thread => {

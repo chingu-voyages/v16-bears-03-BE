@@ -33,7 +33,8 @@ const ChatWindow = props => {
   const [chatState, dispatch] = useReducer(reducer, initialState);
   const [threadWindow, setThreadWindow] = useState(false);
   const [threadinfo, setThreadInfo] = useState({});
-  const {socket} = useContext(AppContext)
+  const [clickChange, setClickChange] = useState(1);
+  const { socket } = useContext(AppContext);
 
   function getThreadInfo(id, name, date, text, user_id, userImage, thread, channelID) {
     setThreadInfo({
@@ -44,15 +45,15 @@ const ChatWindow = props => {
       user_id,
       userImage,
       thread,
-      channelID
+      channelID,
     });
   }
 
-  useEffect(()=>{
-    if(threadWindow){
-      socket.emit('joinThread', threadinfo.id)
+  useEffect(() => {
+    if (threadWindow) {
+      socket.emit('joinThread', threadinfo.id);
     }
-  }, [socket, threadWindow, threadinfo.id])
+  }, [socket, threadWindow, threadinfo.id]);
 
   return (
     <ChatContext.Provider value={{ chatState, dispatch }}>
@@ -62,9 +63,16 @@ const ChatWindow = props => {
           setThreadWindow={setThreadWindow}
           getThreadInfo={getThreadInfo}
           currentChannel={props.currentChannel.channel}
+          setClickChange={setClickChange}
         />
         <CreateComment />
-        {threadWindow && <ThreadWindow threadinfo={threadinfo} setThreadWindow={setThreadWindow}  />}
+        {threadWindow && (
+          <ThreadWindow
+            clickChange={clickChange}
+            threadinfo={threadinfo}
+            setThreadWindow={setThreadWindow}
+          />
+        )}
       </Container>
     </ChatContext.Provider>
   );
