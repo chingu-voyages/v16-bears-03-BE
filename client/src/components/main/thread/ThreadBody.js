@@ -43,9 +43,9 @@ function ThreadBody(props) {
             if (action.data.name) {
               thread.user = action.data.name;
             }
-            if (action.data.userImage) {
-              thread.userImage = action.data.userImage;
-            }
+           
+              thread.userImage = action.data.userImage ? action.data.userImage : null
+            
             return thread;
           } else {
             return thread;
