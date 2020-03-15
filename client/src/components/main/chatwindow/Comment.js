@@ -150,9 +150,11 @@ const Comment = props => {
             <div style={{ display: 'flex', flexWrap: 'wrap' }}>
               <ReplyAvatar thread={thread} />
               <ThreadNote onClick={OpenThreadWindow}>
-                {thread.length > 0 && thread.length !== 1
+                {thread.length > 1
                   ? `${thread.length} replies`
-                  : `${thread.length} reply`}
+                  : thread.length === 1
+                  ? `${thread.length} reply`
+                  : ''}
               </ThreadNote>
               <Time>{getDateDifferent(thread)}</Time>
             </div>

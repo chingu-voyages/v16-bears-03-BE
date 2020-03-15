@@ -10,7 +10,6 @@ function ThreadBody(props) {
   };
 
   const reducer = (state, action) => {
-    console.log(state);
     switch (action.type) {
       case 'CLICK':
         return [...action.threads];
