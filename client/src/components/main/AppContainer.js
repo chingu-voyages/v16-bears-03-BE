@@ -40,9 +40,8 @@ const updateUser = (arr, data) => {
         element.user = name;
       }
 
-      if (userImage) {
-        element.userImage = userImage;
-      }
+      element.userImage = userImage ? userImage : null;
+
       return element;
     }
     return element;
@@ -93,7 +92,6 @@ const reducer = (state, action) => {
 
     case 'EDIT_THREAD': {
       const updatedComments = comments.map(comment => {
-    
         if (comment._id === action.data.parentID) {
           comment.thread.forEach(thread => {
             if (thread._id === action.data.id) {
@@ -101,9 +99,8 @@ const reducer = (state, action) => {
               thread.isEdited = true;
             }
           });
-        } 
-          return comment;
-        
+        }
+        return comment;
       });
       return { channel: { ...channel, comments: updatedComments } };
     }
@@ -117,8 +114,8 @@ const reducer = (state, action) => {
     case 'EDIT_COMMENT': {
       const updatedComments = state.channel.comments.map(comment => {
         if (comment._id === action.editedComment._id) {
-                action.editedComment.thread = comment.thread
-                return action.editedComment;
+          action.editedComment.thread = comment.thread;
+          return action.editedComment;
         } else {
           return comment;
         }
