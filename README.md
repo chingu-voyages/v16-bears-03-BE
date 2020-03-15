@@ -30,19 +30,19 @@
 ## Screenshots
 
 - Dashboard
-![Screenshot](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Channel-Image.png)
+![Screenshot](https://github.com/chingu-voyages/v16-bears-03-BE/assets/Channel-Image.png)
 
 - Thread
-![Screenshot](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Thread-Image.png)
+![Screenshot](https://github.com/chingu-voyages/v16-bears-03-BE/assets/Thread-Image.png)
 
 - Live Messages
-![Add Comment](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Add-Comment.gif)
+![Add Comment](https://github.com/chingu-voyages/v16-bears-03-BE/assets/Add-Comment.gif)
 
 - Threaded Replies
-![Add Thread](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Add-Thread.gif)
+![Add Thread](https://github.com/chingu-voyages/v16-bears-03-BE/assets/Add-Thread.gif)
 
 - Update User Details
-![Update User](https://github.com/chingu-voyages/v16-bears-03-BE/blob/project-readme/assets/Update-User.gif)
+![Update User](https://github.com/chingu-voyages/v16-bears-03-BE/assets/Update-User.gif)
 ---
 
 ## Installation
