@@ -43,9 +43,9 @@ function ThreadBody(props) {
             if (action.data.name) {
               thread.user = action.data.name;
             }
-           
-              thread.userImage = action.data.userImage ? action.data.userImage : null
-            
+
+            thread.userImage = action.data.userImage ? action.data.userImage : null;
+
             return thread;
           } else {
             return thread;
@@ -62,7 +62,7 @@ function ThreadBody(props) {
   useEffect(() => {
     const threads = props.thread === undefined ? [] : props.thread;
     dispatch({ type: 'CLICK', threads });
-  }, [props.clickChange]);
+  }, [props.thread, props.clickChange]);
 
   const { socket } = useContext(AppContext);
 
