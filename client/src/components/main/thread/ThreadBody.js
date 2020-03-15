@@ -10,16 +10,21 @@ function ThreadBody(props) {
   };
 
   const reducer = (state, action) => {
+    console.log(state);
     switch (action.type) {
       case 'CLICK':
         return [...action.threads];
       case 'REPLY_THREAD':
         return [...state, action.thread];
       case 'DELETE_THREAD': {
-        const output = state.filter(thread => {
-          return thread._id !== action.id;
-        });
-        return output;
+        if (state.length === 1) {
+          return [];
+        } else {
+          const output = state.filter(thread => {
+            return thread._id !== action.id;
+          });
+          return output;
+        }
       }
       case 'EDIT_THREAD': {
         const output = state.map(thread => {
