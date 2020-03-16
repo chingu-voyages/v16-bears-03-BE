@@ -33,7 +33,8 @@ const ChatWindow = props => {
   const [chatState, dispatch] = useReducer(reducer, initialState);
   const [threadWindow, setThreadWindow] = useState(false);
   const [threadinfo, setThreadInfo] = useState({});
-  const {socket} = useContext(AppContext)
+  const [clickChange, setClickChange] = useState(1);
+  const { socket } = useContext(AppContext);
 
   function getThreadInfo(id, name, date, text, user_id, userImage, thread, channelID) {
     setThreadInfo({
@@ -44,15 +45,37 @@ const ChatWindow = props => {
       user_id,
       userImage,
       thread,
-      channelID
+      channelID,
     });
   }
 
-  useEffect(()=>{
-    if(threadWindow){
-      socket.emit('joinThread', threadinfo.id)
+  useEffect(() => {
+    if (threadWindow) {
+      socket.emit('joinThread', threadinfo.id);
     }
-  }, [socket, threadWindow, threadinfo.id])
+  }, [socket, threadWindow, threadinfo.id]);
+
+  useEffect(() => {
+    socket.on('updateUser', data => {
+      if (threadinfo.user_id === data.id) {
+        if (data.name) {
+           setThreadInfo(prev => {
+            return { ...prev, name: data.name };
+          });
+        
+        if (data.userImage) {
+          setThreadInfo(prev => {
+            return { ...prev, userImage: data.userImage };
+          });
+        } else if (data.userImage === null) {
+           setThreadInfo(prev => {
+            return { ...prev, userImage: data.userImage };
+          });
+        }
+      }
+      }
+    });
+  }, [socket, threadinfo.user_id]);
 
   return (
     <ChatContext.Provider value={{ chatState, dispatch }}>
@@ -62,9 +85,16 @@ const ChatWindow = props => {
           setThreadWindow={setThreadWindow}
           getThreadInfo={getThreadInfo}
           currentChannel={props.currentChannel.channel}
+          setClickChange={setClickChange}
         />
         <CreateComment />
-        {threadWindow && <ThreadWindow threadinfo={threadinfo} setThreadWindow={setThreadWindow}  />}
+        {threadWindow && (
+          <ThreadWindow
+            clickChange={clickChange}
+            threadinfo={threadinfo}
+            setThreadWindow={setThreadWindow}
+          />
+        )}
       </Container>
     </ChatContext.Provider>
   );
