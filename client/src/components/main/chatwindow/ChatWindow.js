@@ -55,6 +55,28 @@ const ChatWindow = props => {
     }
   }, [socket, threadWindow, threadinfo.id]);
 
+  useEffect(() => {
+    socket.on('updateUser', data => {
+      if (threadinfo.user_id === data.id) {
+        if (data.name) {
+           setThreadInfo(prev => {
+            return { ...prev, name: data.name };
+          });
+        
+        if (data.userImage) {
+          setThreadInfo(prev => {
+            return { ...prev, userImage: data.userImage };
+          });
+        } else if (data.userImage === null) {
+           setThreadInfo(prev => {
+            return { ...prev, userImage: data.userImage };
+          });
+        }
+      }
+      }
+    });
+  }, [socket, threadinfo.user_id]);
+
   return (
     <ChatContext.Provider value={{ chatState, dispatch }}>
       <Container>
