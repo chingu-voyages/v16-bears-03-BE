@@ -22,19 +22,20 @@ const ViewComments = props => {
   const [isError, setIsError] = useState(false);
 
   const { chatState } = useContext(ChatContext);
-  const {  appState } = useContext(AppContext);
+  const { appState } = useContext(AppContext);
 
   useEffect(() => {
     setIsLoading(true);
     try {
       if (appState.channel.comments) {
-        setAllComments(() =>{
-          return appState.channel.comments.map(comment =>{
-            comment.channelID = appState.channel.id
-            
-            return comment
-          })});
-        
+        setAllComments(() => {
+          return appState.channel.comments.map(comment => {
+            comment.channelID = appState.channel.id;
+
+            return comment;
+          });
+        });
+
         setIsLoading(false);
       }
     } catch (error) {
@@ -42,7 +43,6 @@ const ViewComments = props => {
       setIsError(true);
     }
   }, [appState]);
-
 
   useEffect(() => {
     if (chatState.newComment) {
@@ -84,7 +84,8 @@ const ViewComments = props => {
               refContainer={refContainer}
               setThreadWindow={props.setThreadWindow}
               getThreadInfo={props.getThreadInfo}
-              channelID = {comment.channelID}
+              channelID={comment.channelID}
+              setClickChange={props.setClickChange}
             ></Comment>
           );
         })

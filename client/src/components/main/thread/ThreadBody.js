@@ -11,13 +11,19 @@ function ThreadBody(props) {
 
   const reducer = (state, action) => {
     switch (action.type) {
+      case 'CLICK':
+        return [...action.threads];
       case 'REPLY_THREAD':
         return [...state, action.thread];
       case 'DELETE_THREAD': {
-        const output = state.filter(thread => {
-          return thread._id !== action.id;
-        });
-        return output;
+        if (state.length === 1) {
+          return [];
+        } else {
+          const output = state.filter(thread => {
+            return thread._id !== action.id;
+          });
+          return output;
+        }
       }
       case 'EDIT_THREAD': {
         const output = state.map(thread => {
@@ -37,9 +43,9 @@ function ThreadBody(props) {
             if (action.data.name) {
               thread.user = action.data.name;
             }
-            if (action.data.userImage) {
-              thread.userImage = action.data.userImage;
-            }
+
+            thread.userImage = action.data.userImage ? action.data.userImage : null;
+
             return thread;
           } else {
             return thread;
@@ -53,8 +59,13 @@ function ThreadBody(props) {
 
   const [allThreads, dispatch] = useReducer(reducer, initialstate.threads);
 
+  useEffect(() => {
+    const threads = props.thread === undefined ? [] : props.thread;
+    dispatch({ type: 'CLICK', threads });
+  }, [props.thread, props.clickChange]);
+
   const { socket } = useContext(AppContext);
-  
+
   //handles live updates to threadbody
   useEffect(() => {
     socket.on('post_threadBody', thread => {
