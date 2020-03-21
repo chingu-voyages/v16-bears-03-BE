@@ -46,6 +46,7 @@ function Sidebar(props) {
           }
         })
         .catch(err => {
+          localStorage.clear();
           setIsLoading(false);
           errorMessage.set_message([{ msg: 'Unable to get channels.' }]);
           setIsError(true);

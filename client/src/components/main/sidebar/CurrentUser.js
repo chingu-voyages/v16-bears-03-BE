@@ -28,6 +28,7 @@ function CurrentUser(props) {
           setImageUrl(res.data.userImage);
         })
         .catch(err => {
+          localStorage.clear();
           setIsLoading(false);
           setIsError(true);
           errorMessage.set_message([{ msg: 'Unable to get the user.' }]);
