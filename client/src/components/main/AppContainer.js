@@ -20,6 +20,11 @@ socket.on('connect', () => {
   socket.emit('activeUser', { userId: localStorage.userId, clientSocket: socket.id });
 });
 
+socket.on('connect_error', () => {
+  socket.close();
+  console.log('Connection Failed');
+});
+
 const initialState = {
   channel: {
     name: 'General',
