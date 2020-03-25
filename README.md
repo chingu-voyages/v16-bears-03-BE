@@ -49,7 +49,7 @@
 
 ### Clone
 
-- Clone this repo to your local machine using `https://github.com/fvcproductions/SOMEREPO`
+- Clone this repo to your local machine using `https://github.com/chingu-voyages/v16-bears-03-BE.git`
 
 ### Setup
 
